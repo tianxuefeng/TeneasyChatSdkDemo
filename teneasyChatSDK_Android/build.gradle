@@ -8,10 +8,11 @@ plugins {
 group = 'tianxuefeng'
 version = '1.0'
 
-java {
+
+/*java {
     withJavadocJar()
     withSourcesJar()
-}
+}*/
 
 android {
     namespace 'com.teneasy.sdk'
@@ -40,47 +41,75 @@ android {
     }
 }
 
-
-publishing {
-   /* publications {
-        maven(MavenPublication) {
-            groupId = 'tianxuefeng'
-            artifactId = 'teneasychatSDK'
-            version = '1.0'
-            from(components["java"])
-        }
-    }*/
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = 'TeneasyChatSDK'
-            from components.java
-            pom {
-                name = 'TeneasyChatSDK'
-                description = 'A concise description of TeneasyChatSDK'
-                url = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo.git'
-                properties = [
-                        myProp: "value",
-                        "prop.with.dots": "anotherValue"
-                ]
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+/*
+java {
+    withJavadocJar()
+    withSourcesJar()
+}*/
+subprojects {
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = 'teneasychatSDK'
+                from components.java
+                versionMapping {
+                    usage('java-api') {
+                        fromResolutionOf('runtimeClasspath')
+                    }
+                    usage('java-runtime') {
+                        fromResolutionResult()
                     }
                 }
-                developers {
-                    developer {
-                        id = 'tian'
-                        name = 'John Doe'
-                        email = 'tianxuefeng@gmail.com'
+                pom {
+                    name = 'My Library'
+                    description = 'A concise description of my library'
+                    url = 'http://www.example.com/library'
+                    properties = [
+                            myProp          : "value",
+                            "prop.with.dots": "anotherValue"
+                    ]
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
                     }
-                }
-                scm {
-                    connection = 'scm:git:git://example.com/my-library.git'
-                    developerConnection = 'scm:git:git@github.com:tianxuefeng/TeneasyChatSdkDemo.git'
-                    url = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo.git'
+                    developers {
+                        developer {
+                            id = 'johnd'
+                            name = 'John Doe'
+                            email = 'john.doe@example.com'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:git://example.com/my-library.git'
+                        developerConnection = 'scm:git:ssh://example.com/my-library.git'
+                        url = 'http://example.com/my-library/'
+                    }
                 }
             }
+        }
+        repositories {
+            maven {
+                // change URLs to point to your repos, e.g. http://my.org/repo
+                //def releasesRepoUrl = layout.buildDirectory.dir('repos/releases')
+                //def snapshotsRepoUrl = layout.buildDirectory.dir('repos/snapshots')
+                def releasesRepoUrl = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo.git'
+                def snapshotsRepoUrl = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo.git'
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            }
+        }
+    }
+
+
+    signing {
+        sign publishing.publications.mavenJava
+    }
+
+
+    javadoc {
+        if(JavaVersion.current().isJava9Compatible()) {
+            options.addBooleanOption('html5', true)
         }
     }
 }
