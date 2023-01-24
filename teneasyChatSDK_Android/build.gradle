@@ -33,13 +33,45 @@ android {
 
 
 publishing {
-    publications {
+   /* publications {
         maven(MavenPublication) {
             groupId = 'tianxuefeng'
             artifactId = 'teneasychatSDK'
             version = '1.0'
-
-          //  from components.java
+            from(components["java"])
+        }
+    }*/
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                groupId = 'tianxuefeng'
+                name = 'TeneasyChatSDK'
+                version = '1.0'
+                description = 'A concise description of TeneasyChatSDK'
+                url = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo.git'
+                properties = [
+                        myProp: "value",
+                        "prop.with.dots": "anotherValue"
+                ]
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'tian'
+                        name = 'John Doe'
+                        email = 'tianxuefeng@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://example.com/my-library.git'
+                    developerConnection = 'scm:git:git@github.com:tianxuefeng/TeneasyChatSdkDemo.git'
+                    url = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo.git'
+                }
+            }
         }
     }
 }
