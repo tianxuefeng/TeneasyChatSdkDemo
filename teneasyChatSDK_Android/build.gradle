@@ -61,9 +61,9 @@ subprojects {
                     }
                 }
                 pom {
-                    name = 'My Library'
+                    name = 'teneasychatSDK'
                     description = 'A concise description of my library'
-                    url = 'http://www.example.com/library'
+                    url = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo'
                     properties = [
                             myProp          : "value",
                             "prop.with.dots": "anotherValue"
@@ -82,9 +82,9 @@ subprojects {
                         }
                     }
                     scm {
-                        connection = 'scm:git:git://example.com/my-library.git'
-                        developerConnection = 'scm:git:ssh://example.com/my-library.git'
-                        url = 'http://example.com/my-library/'
+                        connection = 'scm:git:git://github.com/tianxuefeng/TeneasyChatSdkDemo.git'
+                        developerConnection = 'scm:git:ssh://github.com/tianxuefeng/TeneasyChatSdkDemo.git'
+                        url = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo'
                     }
                 }
             }
