@@ -28,6 +28,17 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+
+    publish {
+        userOrg = 'tianxuefeng'
+        groupId = 'com.github.tianxuefeng'
+        artifactId = 'TeneasyChatSdkDemo'
+        publishVersion = '1.0'
+        desc = 'Teneasy ChatSdk'
+        website = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo'
+        licences = ['MIT']
+    }
 }
 
 dependencies {
