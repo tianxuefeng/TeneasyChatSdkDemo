@@ -55,7 +55,7 @@ subprojects {
             mavenJava(MavenPublication) {
                 artifactId = 'teneasy-chatsdk'
                 group = 'tianxuefeng'
-                version = '1.0'
+                version = '1.0.2'
                 from components.java
                 versionMapping {
                     usage('java-api') {
@@ -66,7 +66,7 @@ subprojects {
                     }
                 }
                 pom {
-                    name = 'teneasychatSDK'
+                    name = 'teneasy-chatsdk'
                     description = 'A concise description of my library'
                     url = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo'
                     properties = [
