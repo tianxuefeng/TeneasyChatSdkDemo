@@ -2,6 +2,15 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'maven-publish'
+    id 'signing'
+}
+
+group = 'tianxuefeng'
+version = '1.0'
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 android {
@@ -43,10 +52,10 @@ publishing {
     }*/
     publications {
         mavenJava(MavenPublication) {
+            artifactId = 'TeneasyChatSDK'
+            from components.java
             pom {
-                groupId = 'tianxuefeng'
                 name = 'TeneasyChatSDK'
-                version = '1.0'
                 description = 'A concise description of TeneasyChatSDK'
                 url = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo.git'
                 properties = [
