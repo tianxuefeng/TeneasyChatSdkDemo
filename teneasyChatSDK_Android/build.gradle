@@ -35,8 +35,8 @@ android {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = 'com.teneasy.chatsdk'
-            artifactId = 'library'
+            groupId = 'tianxuefeng'
+            artifactId = 'teneasychatSDK'
             version = '1.0'
 
           //  from components.java
