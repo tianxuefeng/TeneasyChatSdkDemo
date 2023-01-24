@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
 
 android {
@@ -28,16 +29,18 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+}
 
 
-    publish {
-        userOrg = 'tianxuefeng'
-        groupId = 'com.github.tianxuefeng'
-        artifactId = 'TeneasyChatSdkDemo'
-        publishVersion = '1.0'
-        desc = 'Teneasy ChatSdk'
-        website = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo'
-        licences = ['MIT']
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.teneasy.chatsdk'
+            artifactId = 'library'
+            version = '1.0'
+
+          //  from components.java
+        }
     }
 }
 
