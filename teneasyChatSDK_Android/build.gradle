@@ -5,8 +5,7 @@ plugins {
     id 'signing'
 }
 
-group = 'tianxuefeng'
-version = '1.0'
+
 
 
 /*java {
@@ -49,8 +48,14 @@ java {
 subprojects {
     publishing {
         publications {
+            singleVariant('release') {
+                withSourcesJar()
+                withJavadocJar()
+            }
             mavenJava(MavenPublication) {
                 artifactId = 'teneasy-chatsdk'
+                group = 'tianxuefeng'
+                version = '1.0'
                 from components.java
                 versionMapping {
                     usage('java-api') {
