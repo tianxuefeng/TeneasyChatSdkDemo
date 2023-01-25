@@ -41,11 +41,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
    //implementation 'com.github.tianxuefeng:teneasy-chatsdk:1.0.4'
    // commonMainApi("dev.icerock.moko:socket-io:0.3.0")
-    //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:1.0.4'
-    //implementation 'com.github.tianxuefeng:teneasy-chatsdk:v1.0.3'
-    //implementation 'tianxuefeng:teneasy-chatsdk:1.0.2'
-    //implementation 'com.github.tianxuefeng:teneasy-chatsdk:1.0.7'
-    implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:1.0.7'
+    //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:ef69b5cad857254dcfb6e0f2fdecd25b4ff73f19 '
+
+    implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:master-SNAPSHOT'
+    //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:1.0.8'
     implementation 'dev.icerock.moko:socket-io:0.3.0'
     //implementation project(path: ':teneasyChatSDK_Android')
     //implementation project(path: ':teneasyChatSDK_Android')

@@ -5,6 +5,6 @@ import android.widget.Toast
 
 class MyTest {
     fun sayHello(context: Context){
-        Toast.makeText(context, "Good sdk! Good morning!", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Good sdk! Good!", Toast.LENGTH_LONG).show()
     }
 }
