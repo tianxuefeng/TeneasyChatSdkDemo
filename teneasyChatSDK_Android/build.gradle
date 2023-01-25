@@ -58,6 +58,7 @@ tasks.register("sourcesJar", Jar) {
 artifacts {
     archives sourcesJar
 }
+/*
 subprojects {
     publishing {
         publications {
@@ -68,7 +69,7 @@ subprojects {
                 from components.java
             }
         }
-    }
+    }*/
 /*
 subprojects {
     publishing {
