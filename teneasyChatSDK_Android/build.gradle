@@ -49,7 +49,7 @@ java {
     from sourceSets.main.allJava
     archiveClassifier = "sources"
 }*/
-
+/*
 tasks.register("sourcesJar", Jar) {
     from android.sourceSets.main.java.srcDirs
     archiveClassifier.set('sources')
@@ -57,7 +57,7 @@ tasks.register("sourcesJar", Jar) {
 
 artifacts {
     archives sourcesJar
-}
+}*/
 /*
 subprojects {
     publishing {
@@ -132,7 +132,7 @@ subprojects {
         }
    }*/
 
-
+/*
     signing {
         sign publishing.publications.mavenJava
     }
@@ -143,7 +143,7 @@ subprojects {
             options.addBooleanOption('html5', true)
         }
     }
-}
+}*/
 
 dependencies {
 
@@ -153,4 +153,18 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.tianxuefeng'
+                artifactId = 'teneasy-chatsdk'
+                version = '1.0.6'
+            }
+        }
+    }
 }
