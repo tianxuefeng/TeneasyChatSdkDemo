@@ -49,6 +49,14 @@ class MyTest {
 
     fun makeConnect2(){
 
+        val obj = JSONObject()
+        obj.put("event", "addChannel")
+        obj.put("channel", "ok_btccny_ticker")
+        val message = obj.toString()
+        //send message
+        //send message
+
+
         val mWs: WebSocketClient =
             object : WebSocketClient(URI(url), Draft_6455()) {
                 override fun onMessage(message: String) {
@@ -71,12 +79,6 @@ class MyTest {
         //open websocket
         //open websocket
         mWs.connect()
-        val obj = JSONObject()
-        obj.put("event", "addChannel")
-        obj.put("channel", "ok_btccny_ticker")
-        val message = obj.toString()
-        //send message
-        //send message
-        //mWs.send(message)
+
     }
 }
