@@ -67,7 +67,7 @@ subprojects {
                 }
                 pom {
                     name = 'teneasy-chatsdk'
-                    description = 'A concise description of my library'
+                    description = 'This is a chat sdk for teneasy'
                     url = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo'
                     properties = [
                             myProp          : "value",
@@ -81,9 +81,9 @@ subprojects {
                     }
                     developers {
                         developer {
-                            id = 'johnd'
-                            name = 'John Doe'
-                            email = 'john.doe@example.com'
+                            id = 'tianxuefeng'
+                            name = 'tianxuefeng'
+                            email = 'tianxuefeng2010@gmail.com'
                         }
                     }
                     scm {
