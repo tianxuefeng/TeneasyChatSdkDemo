@@ -45,6 +45,31 @@ java {
     withJavadocJar()
     withSourcesJar()
 }*/
+/*task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = "sources"
+}*/
+
+tasks.register("sourcesJar", Jar) {
+    from android.sourceSets.main.java.srcDirs
+    archiveClassifier.set('sources')
+}
+
+artifacts {
+    archives sourcesJar
+}
+subprojects {
+    publishing {
+        publications {
+            myPublicationName(MavenPublication) {
+                artifactId = 'teneasy-chatsdk'
+                group = 'tianxuefeng'
+                version = '1.0.5'
+                from components.java
+            }
+        }
+    }
+/*
 subprojects {
     publishing {
         publications {
@@ -104,7 +129,7 @@ subprojects {
                 url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             }
         }
-    }
+   }*/
 
 
     signing {
