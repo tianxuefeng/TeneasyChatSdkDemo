@@ -38,6 +38,10 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/ASL2.0'
+    }
 }
 
 /*
@@ -153,6 +157,9 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+        implementation 'io.crossbar.autobahn:autobahn-android:21.7.1'
+    implementation 'dev.icerock.moko:socket-io:0.3.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1'
 }
 
 afterEvaluate {
@@ -163,7 +170,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.tianxuefeng'
                 artifactId = 'teneasy-chatsdk'
-                version = '1.0.7'
+                version = '1.0.8'
             }
         }
     }

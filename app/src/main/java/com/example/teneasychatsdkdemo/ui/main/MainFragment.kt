@@ -23,6 +23,10 @@ class MainFragment : Fragment() {
 
         val myTest = MyTest()
         myTest.sayHello(requireContext())
+        myTest.makeConnect(requireContext())
+
+        myTest.makeConnect2()
+        //myTest.m
     }
 
     override fun onCreateView(
