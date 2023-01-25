@@ -55,7 +55,7 @@ subprojects {
             mavenJava(MavenPublication) {
                 artifactId = 'teneasy-chatsdk'
                 group = 'tianxuefeng'
-                version = '1.0.4'
+                version = '1.0.5'
                 from components.java
                 versionMapping {
                     usage('java-api') {
