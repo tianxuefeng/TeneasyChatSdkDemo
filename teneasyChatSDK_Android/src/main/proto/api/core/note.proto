@@ -1,0 +1,86 @@
+syntax = "proto3";
+package api.core;
+
+option go_package = "wcs/api/core;core";
+import "api/option.proto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+import "api/common/c_note.proto";
+
+option(api.info) = {
+  authors: ["mango"],
+  date: "2022-12-15",
+};
+
+message CustomerNote{
+  common.NoteStore note = 1;
+  uint32 customerId = 2;
+}
+
+message NoteQueryResponse{
+    repeated CustomerNote note = 1;
+}
+
+message CreateNoteRequest {
+  common.NoteEntity note = 1;
+  uint32 customerId = 2;
+}
+
+message CreateNoteResponse {
+  int64 id = 1;
+}
+
+message UpdateNoteRequest {
+  common.NoteEntity note = 1;
+  uint32 customerId = 2;
+  int64 noteId = 3;
+}
+
+message DeleteNoteRequest {
+  int64 noteId = 1;
+  uint32 customerId = 2;
+}
+
+service Note {
+  option (api.service) = {
+    path: "tenant/note",
+    tags: ["note"],
+    auth: [AUTH_ROLE_TENANT],
+  };
+
+  // 查询
+  rpc QueryNote(google.protobuf.Empty) returns (NoteQueryResponse) {
+    option (api.method) = {
+      id: 700,
+      path:"query-note",
+      ready: true
+    };
+  }
+
+  // 创建
+  rpc CreateNote(CreateNoteRequest) returns (CreateNoteResponse) {
+    option (api.method) = {
+      id: 701,
+      path:"create-note",
+      ready: true
+    };
+  }
+
+  // 更新
+  rpc UpdateNote(UpdateNoteRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 702,
+      path:"update-note",
+      ready: true
+    };
+  }
+
+  // 删除
+  rpc DeleteNote(DeleteNoteRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 703,
+      path:"delete-note",
+      ready: true
+    };
+  }
+}

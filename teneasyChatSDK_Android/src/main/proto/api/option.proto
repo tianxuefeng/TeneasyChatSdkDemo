@@ -1,0 +1,177 @@
+syntax = "proto3";
+package api;
+import "google/protobuf/descriptor.proto";
+option go_package = "wcs/api";
+
+enum AuthenticationRole {
+    AUTH_ROLE_NONE      = 0;
+    // require account id
+    AUTH_ROLE_ACCOUNT   = 1;
+    // anonymous device
+    AUTH_ROLE_DEVICE    = 2;
+    // microservices
+    AUTH_ROLE_SERVICE   = 4;
+    // third party partners
+    AUTH_ROLE_EXTERNAL  = 8;
+    // call from tenant role
+    AUTH_ROLE_TENANT   = 16;
+    // call from app admin role
+    AUTH_ROLE_ADMIN    = 32;
+}
+
+enum PayloadType {
+    JSON_PAYLOAD    = 0;
+    BINARY_PAYLOAD  = 1;
+}
+
+message Payload {
+    PayloadType type = 1;
+    repeated Example examples = 2;
+}
+
+message ExternalDocumentation {
+    optional string description = 1;
+    optional string url = 2;
+}
+
+message Example {
+    optional string summary = 1;
+    optional string description = 2;
+    optional string value = 3;
+    optional string externalValue = 4;
+}
+
+// 表示方法请求以及响应操作的是一个数据集合
+message MessageCache {
+    // 元素集合名称， 例如: group_members。 如果api需要写入数据库，可以省略name属性
+    optional string  name       = 1;
+    // 请求以及响应中的元素集合id field, 与name组合后可以作为缓存key，分布式事务锁。 如果不设置则使用当前登陆用户id
+    optional string  id         = 2;
+    // 请求及响应的的元素集合tag field, 用来作为缓存的版本号
+    optional string  tag        = 3;
+}
+
+message InfoOptions {
+    optional string  app_id   = 13;
+
+    repeated string authors = 100;
+    optional bool inherit_authors = 101;
+    optional string date = 102;
+    repeated string tags = 103;
+
+    repeated AuthenticationRole auth = 201;
+    optional string  path   = 202;
+    optional int32 qos      = 203;
+}
+
+message ServiceOptions {
+    optional string summary = 1;
+
+    repeated string authors = 100;
+    optional bool inherit_authors = 101;
+    optional string date = 102;
+    repeated string tags = 103;
+
+    repeated AuthenticationRole auth = 201;
+    optional string  path   = 202;
+    optional int32 qos      = 203;
+    optional MessageCache cache = 204;
+}
+
+message MethodOptions {
+    // 每服务唯一的方法ID， 最大值 8191
+    uint32   id = 1;
+    optional string summary = 2;
+    // api开发完成可测试后设置为true
+    optional bool ready = 3;
+
+    repeated string authors = 100;
+    optional bool inherit_authors = 101;
+    optional string date = 102;
+    repeated string tags = 103;
+
+    repeated AuthenticationRole auth = 201;
+    optional string  path   = 202;
+    optional int32 qos      = 203;
+    optional MessageCache cache = 204;
+
+    optional bool readonly = 20;
+    optional Payload in = 21;
+    optional Payload out = 22;
+
+    repeated ExternalDocumentation docs = 50;
+}
+
+message PubSubOptions {
+    // 业务中不指定pubsubName时使用的默认值
+    // 如果为空则使用service name
+    string name = 1;
+    // 指定topic, 默认使用name.{method name}
+    string topic = 2;
+    // 指定route path, 默认使用"/${service name}/${method name}"
+    string route = 3;
+    // 当执行失败时是否重试
+    bool retry = 4;
+    // 指定content_type, 默认"application/json"
+    string content_type = 5;
+    // CEL格式的表达式, 用来筛选订阅
+    string match = 6;
+    // 优先级, 尚未实现
+    int32 priority = 7;
+    // DisableTopicValidation allows to receive events from publisher topics that differ from the subscribed topic.
+    bool disable_topic_validation = 8;
+}
+
+message MessageOptions {
+    optional string summary    = 1;
+}
+
+message FieldOptions {
+    optional string summary  = 1;
+    optional bool in         = 2;
+    optional bool out        = 3;
+    optional bool required   = 5;
+    optional string example  = 6;
+
+    // JSON Schema definition
+    optional int64 minimum = 10;
+    optional bool exclusiveMinimum = 11;
+    optional uint64 maximum = 12;
+    optional bool exclusiveMaximum = 13;
+    optional int64 multipleOf = 14;
+
+    optional uint32 maxLength = 20;
+    optional uint32 minLength = 21;
+
+    // This string SHOULD be a valid regular expression
+    optional string pattern  = 30;
+
+    optional uint32 maxItems = 40;
+    optional uint32 minItems = 41;
+    optional bool uniqueItems = 42;
+
+}
+
+extend google.protobuf.FileOptions {
+    optional InfoOptions info = 52199;
+}
+
+extend google.protobuf.ServiceOptions {
+    optional ServiceOptions service = 52199;
+}
+
+extend google.protobuf.MethodOptions {
+    optional MethodOptions method = 52199;
+}
+
+extend google.protobuf.MethodOptions {
+    optional PubSubOptions pub_sub = 52200;
+}
+
+extend google.protobuf.MessageOptions {
+    optional MessageOptions component = 52198;
+}
+
+extend google.protobuf.FieldOptions {
+    optional FieldOptions schema = 52199;
+}

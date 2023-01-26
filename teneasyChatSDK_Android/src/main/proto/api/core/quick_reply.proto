@@ -1,0 +1,255 @@
+syntax = "proto3";
+package api.core;
+
+option go_package = "wcs/api/core;core";
+import "api/option.proto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+import "api/common/c_message.proto";
+
+option(api.info) = {
+  authors: ["mango", "jeff"],
+  date: "2022-12-10",
+};
+
+// -------------------------------- 标签组 --------------------------------
+
+// 针对前端cooked的便签组
+// 避免前端摸不透结构
+message QuickReplyGroupItem {
+  string name = 1 [(validate.rules).string.min_bytes = 1];
+  int32 priority = 2 [(validate.rules).int32 = {gt:0}];
+}
+
+// 查询便签组
+message QuickReplyGroupQueryResponse {
+  repeated QuickReplyGroupItem items = 1;
+}
+
+// 创建便签组
+message QuickReplyGroupCreateRequest {
+  string name = 1 [(validate.rules).string.min_bytes = 1];
+  int32 priority = 2 [(validate.rules).int32 = {gt:0}];
+}
+
+// 更新便签组(全量更新)
+message QuickReplyGroupUpdateRequest {
+  // 旧群名
+  string old_name = 1 [(validate.rules).string.min_bytes = 1];
+  // 新群名 如未调整 则与旧群名一致
+  string new_name = 2 [(validate.rules).string.min_bytes = 1];
+  int32 priority = 3 [(validate.rules).int32 = {gt:0}];
+}
+
+// 删除便签组
+message QuickReplyGroupDeleteRequest {
+  string name = 1 [(validate.rules).string.min_bytes = 1];
+}
+
+// -------------------------------- 标签 --------------------------------
+
+// 针对前端cooked的便签
+// 避免前端摸不透结构
+message QuickReplyItem {
+  // 创建时不需要填
+  int64 id = 1;
+  // 便签 名称
+  string name = 2 [(validate.rules).string.min_bytes = 1];
+  // 便签分组名称
+  string group_name = 3 [(validate.rules).string.min_bytes = 1];
+  // 便签 展示优先级
+  int32 priority = 4 [(validate.rules).int32 = {gt:0}];
+  // 便签内容
+  string content = 5;
+  // 回复消息 图片 + 文字
+  repeated common.Message items = 6;
+}
+
+// 查询便签
+message QuickReplyQueryResponse {
+  repeated QuickReplyItem items = 1;
+}
+
+// 创建便签
+message CreateQuickReplyRequest {
+  QuickReplyItem reply = 1;
+}
+
+message CreateQuickReplyResponse {
+  QuickReplyItem reply = 1;
+}
+
+// 更新标签(全量更新)
+message UpdateQuickReplyRequest {
+  QuickReplyItem reply = 1;
+  // 旧的群名
+  string old_group_name = 2 [(validate.rules).string.min_bytes = 1];
+}
+
+// 删除标签
+message DeleteQuickReplyRequest {
+  int64 quick_reply_id = 1 [(validate.rules).int64 = {gt:0}];
+  string name = 2 [(validate.rules).string.min_bytes = 1];
+}
+
+message PushCommonRequest {
+  int64 quick_reply_id = 1;
+}
+
+message PopCommonRequest {
+  int64 quick_reply_id = 1;
+}
+
+message QueryCommonResponse {
+  // 显示在常用组的便签
+  repeated QuickReplyItem quick_reply = 1;
+}
+
+message QuickReplyItemGroup {
+  string group_name = 1;
+  int32 priority = 2;
+  repeated QuickReplyItem items = 3;
+}
+
+message QueryByWorkerResponse {
+  // 显示在常用组的便签
+  repeated QuickReplyItemGroup group = 1;
+}
+
+service QuickReply {
+  option (api.service) = {
+    path: "/tenant/quick-reply",
+    tags: ["quick_reply"],
+    auth: [AUTH_ROLE_TENANT],
+  };
+
+  // 查询便签组, 全量
+  rpc QueryGroup(google.protobuf.Empty) returns (QuickReplyGroupQueryResponse) {
+    option (api.method) = {
+      id: 300,
+      readonly: true,
+      path:"query-group",
+      ready:true
+
+    };
+  }
+
+  // 创建便签组
+  rpc CreateGroup(QuickReplyGroupCreateRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 301,
+      path:"create-group",
+      ready:true
+
+    };
+  }
+
+  // 更新便签组
+  rpc UpdateGroup(QuickReplyGroupUpdateRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 302,
+      path:"update-group",
+      ready:true
+
+    };
+  }
+
+  // 删除便签组
+  rpc DeleteGroup(QuickReplyGroupDeleteRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 303,
+      path:"delete-group",
+      ready:true
+
+    };
+  }
+
+  // 查询便签
+  rpc QueryReply(google.protobuf.Empty) returns (QuickReplyQueryResponse) {
+    option (api.method) = {
+      id: 304,
+      path:"query-reply",
+      ready:true
+
+    };
+  }
+
+  // 创建便签
+  rpc CreateReply(CreateQuickReplyRequest) returns (CreateQuickReplyResponse) {
+    option (api.method) = {
+      id: 305,
+      path:"create-reply",
+      ready:true
+
+    };
+  }
+
+  // 更新便签
+  rpc UpdateReply(UpdateQuickReplyRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 306,
+      path:"update-reply",
+      ready:true
+
+    };
+  }
+
+  // 删除便签
+  rpc DeleteReply(DeleteQuickReplyRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 307,
+      path:"delete-reply",
+      ready:true
+
+    };
+  }
+
+  // 初始化便签组
+  rpc InitGroup(google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 308,
+      path:"init-group",
+      ready:true
+
+    };
+  }
+
+  // 添加进个人常用组
+  // 操作表 worker_quick_reply
+  rpc PushCommon(PushCommonRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 309,
+      path:"push-common",
+      ready:true
+
+    };
+  }
+
+  // 从个人常用组移除
+  // 操作表 worker_quick_reply
+  rpc PopCommon(PopCommonRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 310,
+      path:"pop-common",
+      ready:true
+    };
+  }
+
+  // 查询个人自定义的常用组
+  rpc QueryCommon(google.protobuf.Empty) returns (QueryCommonResponse) {
+    option (api.method) = {
+      id: 311,
+      path:"query-common",
+      ready:true
+    };
+  }
+
+  // 根据客服查询便签组
+  rpc QueryByWorker(google.protobuf.Empty) returns (QueryByWorkerResponse) {
+    option (api.method) = {
+      id: 312,
+      path:"query-by-worker",
+      ready:true
+    };
+  }
+}

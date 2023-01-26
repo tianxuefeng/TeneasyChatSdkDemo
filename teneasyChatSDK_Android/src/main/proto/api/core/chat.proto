@@ -1,0 +1,84 @@
+syntax = "proto3";
+package api.core;
+
+option go_package = "wcs/api/core;core";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
+import "api/option.proto";
+import "api/common/c_worker.proto";
+import "api/common/c_message.proto";
+import "api/core/front.proto";
+
+option(api.info) = {
+  authors: ["jeff"],
+  date: "2023-01-02",
+};
+
+message ChatItem {
+  int64 chat_id = 1;
+  common.ChatState state = 2;
+  int32 unread = 3;
+  common.Message latest_msg = 4;
+  // 创建时间(用于3分钟规则, 起始点)
+  google.protobuf.Timestamp create_at = 5;
+  // 第一次服务时间(用于3分钟规则, 终止点)
+  google.protobuf.Timestamp service_at = 6;
+  // 会话详情
+  ChatDetail detail = 7;
+}
+
+// 聊天会话列表
+message ChatListQueryResponse {
+  repeated ChatItem chats = 1;
+}
+
+// 标记已读
+message ChatMarkReadRequest {
+  int64 chat_id = 1;
+}
+
+message OrphanResponse {
+  int32 worker_id = 1;
+  string nick = 2;
+  string avatar = 3;
+}
+
+service Chat {
+  option (api.service) = {
+    path: "/tenant/chat",
+    tags: ["chat"],
+    auth: [AUTH_ROLE_TENANT, AUTH_ROLE_SERVICE],
+  };
+
+  // 查询聊天会话列表
+  rpc Query(google.protobuf.Empty) returns (ChatListQueryResponse) {
+    option (api.method) = {
+      id: 1000,
+      path: "query",
+      ready: true,
+      date: "2023-01-02"
+    };
+  }
+
+  // 标记已读
+  rpc MarkRead(ChatMarkReadRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 1001,
+      path: "mark-read",
+      ready: true,
+      date: "2023-01-02"
+    };
+  }
+
+  // 孤儿处理(找不到分配客服)
+  rpc Orphan(google.protobuf.Empty) returns (OrphanResponse) {
+    option (api.method) = {
+      id: 1002,
+      path: "orphan",
+      auth: [AUTH_ROLE_SERVICE],
+      ready: true,
+      date: "2023-01-17"
+    };
+  }
+}

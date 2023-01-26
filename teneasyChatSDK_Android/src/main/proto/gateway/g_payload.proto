@@ -1,0 +1,14 @@
+syntax = "proto3";
+package gateway;
+
+option go_package = "wcs/service/gateway/protocol;protocol";
+import "validate/validate.proto";
+
+import "gateway/g_action.proto";
+
+message Payload {
+  uint64 id = 1;
+  gateway.Action act = 2;
+  // max: 4MB
+  bytes data = 3[(validate.rules).bytes.max_len = 4194304];
+}

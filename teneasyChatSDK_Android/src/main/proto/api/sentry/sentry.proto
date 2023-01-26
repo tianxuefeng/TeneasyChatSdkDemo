@@ -1,0 +1,71 @@
+syntax = "proto3";
+package api.sentry;
+
+import "google/protobuf/wrappers.proto";
+import "api/common/c_device.proto";
+import "api/option.proto";
+option go_package = "wcs/api/sentry;sentry";
+
+option(api.info) = {
+  app_id: "sentry",
+  auth: [AUTH_ROLE_NONE],
+} ;
+
+// 角色
+enum AuthRole {
+  // 未授权
+  ROLE_NONE = 0;
+  // 商户临时客户 (h5接入)
+  ROLE_ANONYMOUS = 1;
+  // 商户客户
+  ROLE_CUSTOMER = 2;
+  // 商户客服工作者
+  ROLE_WORKER = 3;
+  // 系统服务
+  ROLE_SYSTEM = 4;
+  // 商户入口
+  ROLE_ENTRANCE = 5;
+  // 总管理员
+  ROLE_ADMINISTRATOR = 6;
+}
+
+message AuthToken {
+  // 商户id
+  int32     tenant_id = 1;
+  // 授权角色
+  AuthRole  owner_role = 2;
+  // 授权id
+  int32     owner_id = 3;
+  // 会话id
+  int32     owner_session = 4;
+  // 会话建立时间
+  int64     owner_session_time = 5;
+  // 授权设备
+  int64     owner_device = 6;
+}
+
+message AuthRequest {
+  string path = 1;
+  string ip = 2;
+  string token = 3;
+  uint32 auth = 4;
+  bool   readonly = 5;
+  uint32 qos = 6;
+}
+
+message AuthResponse  {
+  api.common.DeviceType device_type = 1;
+  int32  user_id = 2;
+  int32  session_id = 3;
+  int32  device_id = 4;
+  int32  external_id = 5;
+  int64  unique_id = 6;
+  bytes   unique_key = 7;
+  bool    is_command = 8;
+  int32   err_code = 9;
+  string  err_msg = 10;
+  string jwt_token = 11;
+  string cloudflare_ip = 12;
+  //真实ip
+  string real_ip = 13;
+}

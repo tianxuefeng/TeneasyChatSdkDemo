@@ -1,0 +1,64 @@
+syntax = "proto3";
+package api.common;
+
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "wcs/api/common;common";
+option swift_prefix = "Common";
+
+message Asset {
+  // shorturi 短url， 在消息体里表示资源地址
+  string uri = 1 [(validate.rules).string.max_bytes = 128];
+}
+
+enum AssetUploadState {
+  ASSET_UPLOAD_STATE_UNKNOWN = 0;
+  // 上传中
+  ASSET_UPLOAD_STATE_PUTTING = 1;
+  // 上传完成
+  ASSET_UPLOAD_STATE_PUT = 2;
+}
+
+// 文件类型类型 0 ～ 4
+enum AssetKind {
+  ASSET_KIND_NONE = 0;
+  // 商户公共文件
+  ASSET_KIND_PUBLIC = 1;
+  // 商户私有文件
+  ASSET_KIND_PRIVATE = 2;
+  // 头像
+  ASSET_KIND_AVATAR = 3;
+  // 会话私有文件
+  ASSET_KIND_SESSION = 4;
+}
+
+// 资源类型 0 ～ 7
+enum AssetType {
+  ASSET_TYPE_UNKNOWN = 0;
+  // 图片 （缩略图复用图片id）
+  ASSET_TYPE_IMAGE = 1;
+  // 音频
+  ASSET_TYPE_AUDIO = 2;
+  // 视频
+  ASSET_TYPE_VIDEO = 3;
+  // 文件
+  ASSET_TYPE_FILE = 4;
+}
+
+// 资源用途 0 ～ 15
+enum AssetContext {
+  ASSET_CONTEXT_UNKNOWN = 0;
+  // 消息体
+  ASSET_CONTEXT_MESSAGE = 1;
+  // 朋友圈
+  ASSET_CONTEXT_MOMENT = 2;
+  // 个人/群 头像 二维码 背景图
+  ASSET_CONTEXT_PROFILE = 3;
+  // 收藏夹
+  ASSET_CONTEXT_FAVORITE = 4;
+  // 表情
+  ASSET_CONTEXT_EMOJI   = 5;
+  // 公告
+  ASSET_CONTEXT_BULLETIN   = 6;
+}

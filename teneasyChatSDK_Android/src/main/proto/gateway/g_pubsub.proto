@@ -1,0 +1,11 @@
+syntax = "proto3";
+package gateway;
+
+option go_package = "wcs/service/gateway/protocol;protocol";
+import "api/common/c_message.proto";
+
+message PubSubMessage {
+  // 接收人clientId
+  int64 target = 1;
+  api.common.Message msg = 2;
+}

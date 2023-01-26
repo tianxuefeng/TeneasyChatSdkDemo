@@ -1,0 +1,210 @@
+syntax = "proto3";
+package api.core;
+
+option go_package = "wcs/api/core;core";
+import "api/option.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
+import "api/common/c_worker.proto";
+import "api/common/c_base.proto";
+
+option(api.info) = {
+  authors: ["calvin"],
+  date: "2022-12-03",
+};
+
+// TODO: 加入 验证请求机制
+message LoginRequest {
+  string account = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  // 拿到 token 后, 在需要鉴权的请求中填入Header, Key为X-Token
+  string token = 1;
+  // 客服信息
+  common.Worker items = 2;
+}
+
+// 登录下级账号
+message ManagerLoginRequest {
+  string token = 1;
+  int32 worker_id = 2;
+}
+
+message ManagerLoginResponse {
+  // 拿到 token 后, 在需要鉴权的请求中填入Header, Key为X-Token
+  string token = 1;
+}
+
+message TenantCreateRequest {
+  // 商户名
+  string name = 1;
+  // 商户账号
+  string account = 2;
+  string password = 3;
+  int32 worker_capacity = 4;
+  int32 daily_service_capacity = 5;
+}
+
+message TenantQueryRequest {
+  common.Batch batch = 1;
+}
+
+message DeleteTenantRequest {
+  uint32 tenant_id = 1;
+}
+
+message TenantQueryResponse {
+  common.Batch batch = 1;
+  repeated TenantItem tenant_item = 2;
+  int32 total = 3;
+}
+
+message TenantItem {
+  // 商户id
+  uint32 tenant_id = 1;
+  // 商户绑定公钥
+  string tenant_public_key = 2;
+  // 商户名称
+  string name = 3;
+  // 最大工作人员数量
+  int32 workers_capacity = 4;
+  // 每日服务数量
+  int32 daily_service_capacity = 5;
+  // 入口数量
+  int32 entrance_num = 6;
+  // 用户名(商户账号)
+  string user_name = 7;
+  // 月均咨询量
+  int32 average_monthly = 8;
+  // 累计咨询量
+  int32 cumulative_volume = 9;
+  // 商户账号密码
+  string password = 10;
+  // 创建时间
+  google.protobuf.Timestamp create_at = 11;
+  // 删除时间（依次判断是否已删除）
+  google.protobuf.Timestamp delete_at = 12;
+}
+
+message AdminLoginRequest {
+  string account = 1;
+  string password = 2;
+}
+
+message AdminLoginResponse {
+  // 拿到 token 后, 在需要鉴权的请求中填入Header, Key为X-Token
+  string token = 1;
+}
+
+// TODO: 修改商户登录账号和密码
+message UpdateTenantRequest {
+  // 商户id
+  uint32 tenant_id = 1;
+  // 商户名称
+  string name = 2;
+  // 客服数量
+  int32 worker_capacity = 3;
+  // 每日服务数量
+  int32 daily_service_capacity = 4;
+  // 商户账号密码
+  string password = 5;
+}
+
+service Tenant {
+  option (api.service) = {
+    path: "/tenant",
+    auth: [AUTH_ROLE_TENANT],
+    tags: ["tenant"],
+  };
+
+  // 总管理员登录 TODO:待删除
+  rpc AdminLogin(AdminLoginRequest) returns (AdminLoginResponse){
+    option (api.method) = {
+      id: 107,
+      path: "admin-login",
+      auth: [AUTH_ROLE_DEVICE],
+      ready: true,
+      date: "2022-12-10"
+    };
+  }
+
+  // 商户客服登陆接口
+  rpc Login(LoginRequest) returns (LoginResponse){
+    option (api.method) = {
+      id: 100,
+      auth: [AUTH_ROLE_DEVICE],
+      path: "login",
+      ready: true,
+      date: "2022-12-10"
+    };
+  }
+
+  // 商户客服登出接口(优雅登出)
+  rpc Logout(google.protobuf.Empty) returns (google.protobuf.Empty){
+    option (api.method) = {
+      id: 101,
+      auth: [AUTH_ROLE_DEVICE],
+      path: "logout",
+      ready: true,
+      date: "2022-12-10"
+    };
+  }
+
+  // (临时)新增商户
+  // TODO: 管理后台实现后删除
+  rpc Create(TenantCreateRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 102,
+      auth: [AUTH_ROLE_DEVICE],
+      path: "create",
+      ready: true,
+      date: "2022-12-10"
+    };
+  }
+
+  // 商户列表查询
+  rpc Query(TenantQueryRequest) returns (TenantQueryResponse) {
+    option (api.method) = {
+      id: 104,
+      auth: [AUTH_ROLE_ADMIN],
+      path: "query",
+      ready: true,
+      date: "2022-12-10"
+    };
+  }
+
+  // 修改商户
+  rpc UpdateTenant(UpdateTenantRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 105,
+      auth: [AUTH_ROLE_ADMIN],
+      path: "update",
+      ready: true,
+      date: "2022-12-10"
+    };
+  }
+
+  // 删除商户
+  rpc DeleteTenant(DeleteTenantRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 106,
+      auth: [AUTH_ROLE_ADMIN],
+      path: "delete",
+      ready: true,
+      date: "2022-12-10"
+    };
+  }
+
+  // 管理登录, 登录下级账号
+  rpc ManagerLogin(ManagerLoginRequest) returns (ManagerLoginResponse){
+    option (api.method) = {
+      id: 103,
+      path: "manager-login",
+      ready: true,
+      date: "2022-12-12"
+    };
+  }
+}

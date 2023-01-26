@@ -1,0 +1,251 @@
+syntax = "proto3";
+package api.core;
+
+option go_package = "wcs/api/core;core";
+import "api/option.proto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+import "api/common/c_entrance.proto";
+import "google/protobuf/timestamp.proto";
+import "api/common/c_reply.proto";
+
+option(api.info) = {
+  authors: ["mango"],
+  date: "2022-12-12",
+};
+
+
+message AssignWorkerRequest {
+  // 咨询id
+  uint32 consult_id = 1 [(validate.rules).uint32 = {gt:0}];
+}
+
+message AssignWorkerResponse {
+  // 昵称
+  string nick = 1;
+  // 头像
+  string avatar = 2;
+  // id
+  int32 worker_id = 3;
+}
+
+message QueryEntranceResponse {
+  // 入口名称
+  string name = 1;
+  // 用户昵称
+  string nick = 2;
+  // 用户头像
+  string avatar = 3;
+  // 咨询类型引导文案
+  string  guide = 4;
+  // 默认咨询文案id
+  int32 default_consult_id = 5;
+  // 转默认咨询文案的时间 需/10
+  string change_default_time = 6;
+  // 该入口咨询类型
+  repeated ConsultItem consults = 7;
+}
+
+message QueryAutoReplyResponse {
+  common.AutoReplyItem autoReplyItem = 1;
+}
+
+
+message BindWorkerResponse{
+  // 昵称
+  string nick = 1;
+  // 头像
+  string avatar = 2;
+  // id
+  int32 worker_id = 3;
+}
+
+message ConsultItem {
+  // 咨询id
+  uint32 consult_id = 1;
+  // 咨询类型名称
+  string name = 2;
+  // 咨询类型文案
+  string guide = 3;
+}
+
+// 商户请求用户token
+// 不填id, 将生成匿名用户
+message CreateAnonUserRequest {
+  int32 tenant_id = 1;
+  int32 entrance_id = 2;
+  string ip = 3;
+}
+
+message CreateAnonUserResponse {
+  string token = 1;
+  string name = 2;
+  string avatar = 3;
+}
+
+message CustomerDataRequest {
+  // 对于持久化, 可作为 分区 id
+  int64 chat_id = 1;
+}
+
+// TODO: H5链接（web链接，内嵌来源，客服联盟App）
+message CustomerDataResponse {
+  // 入口名称
+  string name = 1;
+  //用户来源
+  string user_source = 2;
+  //IP地址
+  string ip_address = 3;
+  //首次联系时间
+  google.protobuf.Timestamp first_contact_time = 4;
+  //最后联系时间
+  google.protobuf.Timestamp last_contact_time = 5;
+  //用户称呼
+  string user_name = 6;
+  //用户诉求
+  string user_appeal = 7;
+}
+
+message QueryWorkerRequest {
+  int32 worker_id = 1;
+}
+
+message QueryWorkerResponse {
+  string worker_name = 1;
+  string worker_avatar = 2;
+}
+
+message QueryChatRequest {
+  repeated int64 chat_id = 1;
+}
+
+message ChatDetail {
+  int64 chat_id = 1;
+  // 入口id
+  uint32 entrance_id = 2;
+  // 入口名称
+  string entrance_name = 3;
+  // 用户来源
+  string platform = 4;
+  // IP
+  string ip = 5;
+  // 首次联系时间
+  google.protobuf.Timestamp create_at = 6;
+  // 最后联系时间
+  google.protobuf.Timestamp update_at = 7;
+  // 用户名
+  string name = 8;
+  // 用户头像
+  string avatar = 9;
+  // 用户称呼(备注)
+  string nick = 10;
+  // 用户诉求
+  string appeal = 11;
+}
+
+message QueryChatResponse {
+  repeated ChatDetail chats = 1;
+}
+
+message UpdateUserAppealRequest {
+   string user_name = 1;
+   string user_appeal = 2;
+}
+
+// 客户调用接口
+service Front {
+  option (api.service) = {
+    path: "api",
+    tags: ["front"],
+    auth: [AUTH_ROLE_ACCOUNT,AUTH_ROLE_SERVICE],
+  };
+
+  // 用户资料
+  rpc CustomerInfo(CustomerDataRequest) returns (CustomerDataResponse) {
+    option (api.method) = {
+      id: 905,
+      path:"customer-info",
+      ready: true
+    };
+  }
+
+  // 分配客服
+  rpc AssignWorker(AssignWorkerRequest) returns (AssignWorkerResponse) {
+    option (api.method) = {
+      id: 901,
+      path:"assign-worker",
+      ready: true
+    };
+  }
+
+  // 请求入口
+  rpc QueryEntrance(google.protobuf.Empty) returns (QueryEntranceResponse) {
+    option (api.method) = {
+      id: 902,
+      path:"query-entrance",
+      ready: true
+    };
+  }
+
+  // 自动回复
+  rpc QueryAutoReply(google.protobuf.Empty) returns (QueryAutoReplyResponse) {
+    option (api.method) = {
+      id: 903,
+      path:"query-auto-reply",
+      ready: true
+    };
+  }
+
+  // 测试用 临时绑定客服
+  rpc BindWorker(google.protobuf.Empty) returns (BindWorkerResponse) {
+    option (api.method) = {
+      id: 904,
+      path:"bind-worker",
+      ready: true
+    };
+  }
+
+  // 创建匿名用户
+  rpc CreateAnonUser(CreateAnonUserRequest) returns (CreateAnonUserResponse){
+    option (api.method) = {
+      id: 905,
+      auth: [AUTH_ROLE_SERVICE],
+      path: "create-anon-user",
+      ready: true,
+      date: "2022-12-31"
+    };
+  }
+
+  // 查询客服信息(名/头像)
+  rpc QueryWorker(QueryWorkerRequest) returns (QueryWorkerResponse){
+    option (api.method) = {
+      id: 906,
+      auth: [AUTH_ROLE_SERVICE],
+      path: "query-worker",
+      ready: true,
+      date: "2023-01-05"
+    };
+  }
+
+  // 查询聊天会话信息
+  rpc QueryChat(QueryChatRequest) returns (QueryChatResponse){
+    option (api.method) = {
+      id: 907,
+      auth: [AUTH_ROLE_SERVICE, AUTH_ROLE_TENANT],
+      path: "query-chat",
+      ready: true,
+      date: "2023-01-05"
+    };
+  }
+
+  // 修改用户诉求和称呼
+  rpc UpdateUserAppeal(UpdateUserAppealRequest) returns (google.protobuf.Empty){
+    option (api.method) = {
+      id: 907,
+      auth: [AUTH_ROLE_SERVICE, AUTH_ROLE_TENANT],
+      path: "update-user-appeal",
+      ready: true,
+      date: "2023-01-05"
+    };
+  }
+}

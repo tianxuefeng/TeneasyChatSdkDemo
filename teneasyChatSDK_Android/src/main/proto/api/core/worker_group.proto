@@ -1,0 +1,93 @@
+syntax = "proto3";
+package api.core;
+
+option go_package = "wcs/api/core;core";
+import "api/option.proto";
+import "api/common/c_worker.proto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+
+option(api.info) = {
+  authors: ["jeff"],
+  date: "2022-12-06",
+};
+
+// 查询组
+message WorkerGroupQueryResponse {
+  repeated common.WorkerGroup items = 1;
+}
+
+// 创建分组
+message WorkerGroupCreateRequest {
+  // 组名称
+  string name = 1[(validate.rules).string = {min_len: 1, max_len: 10}];
+  // 显示优先级
+  int32 priority = 2[(validate.rules).int32 = {gte:0, lt: 1000}];
+}
+
+message WorkerGroupCreateResponse {
+  int64 id = 1;
+  string name = 2;
+  int32 priority = 3;
+}
+
+// 更新分组内容
+message WorkerGroupUpdateRequest {
+  // 指定分组id
+  int64 id = 1;
+  // 全量更新
+  string name = 2[(validate.rules).string = {min_len: 1, max_len: 10}];
+  int32 priority = 3[(validate.rules).int32 = {gte:0, lt: 1000}];
+}
+
+message WorkerGroupUpdateResponse {
+  int64 id = 1;
+  string name = 2;
+  int32 priority = 3;
+}
+
+// 删除分组
+message WorkerGroupDeleteRequest {
+  // 指定分组id
+  int64 id = 1;
+}
+
+service WorkerGroup {
+  option (api.service) = {
+    path: "/tenant/worker-group",
+    tags: ["worker_group"],
+    auth: [AUTH_ROLE_TENANT],
+  };
+
+  rpc Query(google.protobuf.Empty) returns (WorkerGroupQueryResponse) {
+    option (api.method) = {
+      id: 400,
+      path: "query",
+      ready:true
+    };
+  }
+
+  rpc Create(WorkerGroupCreateRequest) returns (WorkerGroupCreateResponse) {
+    option (api.method) = {
+      id: 401,
+      path: "create",
+      ready:true
+    };
+  }
+
+  rpc Update(WorkerGroupUpdateRequest) returns (WorkerGroupUpdateResponse) {
+    option (api.method) = {
+      id: 402,
+      path: "update",
+      ready:true
+    };
+  }
+
+  rpc Delete(WorkerGroupDeleteRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 403,
+      path: "delete",
+      ready:true
+    };
+  }
+}

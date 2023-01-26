@@ -1,0 +1,22 @@
+syntax = "proto3";
+package api.common;
+
+import "google/protobuf/timestamp.proto";
+import "api/common/c_message.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "wcs/api/common;common";
+
+message NoteEntity {
+  // 客服id
+  int32 id = 1;
+  // 客服名称
+  string name = 2;
+  // 客户发言内容或者客服自己编辑内容
+  api.common.Message message = 3;
+}
+
+message NoteStore {
+  // 群数据
+  map<int64, NoteEntity> store = 1;
+}

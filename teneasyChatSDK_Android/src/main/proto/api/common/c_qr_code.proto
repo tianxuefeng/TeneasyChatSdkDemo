@@ -1,0 +1,27 @@
+syntax = "proto3";
+package api.common;
+
+option go_package = "wcs/api/common;common";
+option swift_prefix = "Common";
+
+// 二维码类别: QRCode(CAT)egory
+enum QRCodeCAT {
+  QR_CODE_CAT_UNKNOWN = 0;
+  // 用户名片, 包含 用户ID, AssetID, Name 信息
+  QR_CODE_CAT_USER_CARD = 1;
+  // 用户精简名片, 包含 用户ID, AssetID, Name 信息, 每个字段 部分隐藏
+  QR_CODE_CAT_USER_CARD_LITE = 2;
+  // 群名片, 包含 群ID, AssetID, Name 信息
+  QR_CODE_CAT_GROUP_CARD = 3;
+  // 群精简名片, 包含 群ID, AssetID, Name 信息, 每个字段 部分隐藏
+  QR_CODE_CAT_GROUP_CARD_LITE = 4;
+}
+
+// 二维码类型: 动态码,静态码
+enum QRCodeType {
+  QR_CODE_TYPE_UNKNOWN = 0;
+  // 静态码
+  QR_CODE_TYPE_STATIC = 1;
+  // 动态码
+  QR_CODE_TYPE_DYNAMIC = 2;
+}

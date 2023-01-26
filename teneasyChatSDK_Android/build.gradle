@@ -3,15 +3,15 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'maven-publish'
     id 'signing'
+    id 'com.google.protobuf'
 }
 
+//sourceSets{
+//    main.java.srcDirs += "${protobuf.generatedFilesBaseDir}/main/javalite"
+//}
 
 
 
-/*java {
-    withJavadocJar()
-    withSourcesJar()
-}*/
 
 android {
     namespace 'com.teneasy.sdk'
@@ -42,125 +42,59 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/ASL2.0'
     }
-}
 
-/*
-java {
-    withJavadocJar()
-    withSourcesJar()
-}*/
-/*task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
-    archiveClassifier = "sources"
-}*/
-/*
-tasks.register("sourcesJar", Jar) {
-    from android.sourceSets.main.java.srcDirs
-    archiveClassifier.set('sources')
-}
-
-artifacts {
-    archives sourcesJar
-}*/
-/*
-subprojects {
-    publishing {
-        publications {
-            myPublicationName(MavenPublication) {
-                artifactId = 'teneasy-chatsdk'
-                group = 'tianxuefeng'
-                version = '1.0.6'
-                from components.java
+    sourceSets {
+        main {
+            proto {
+                srcDir 'src/main/proto'
+                srcDir 'src/main/include'
             }
-        }
-    }*/
-/*
-subprojects {
-    publishing {
-        publications {
-            singleVariant('release') {
-                withSourcesJar()
-                withJavadocJar()
-            }
-            mavenJava(MavenPublication) {
-                artifactId = 'teneasy-chatsdk'
-                group = 'tianxuefeng'
-                version = '1.0.5'
-                from components.java
-                versionMapping {
-                    usage('java-api') {
-                        fromResolutionOf('runtimeClasspath')
-                    }
-                    usage('java-runtime') {
-                        fromResolutionResult()
-                    }
-                }
-                pom {
-                    name = 'teneasy-chatsdk'
-                    description = 'This is a chat sdk for teneasy'
-                    url = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo'
-                    properties = [
-                            myProp          : "value",
-                            "prop.with.dots": "anotherValue"
-                    ]
-                    licenses {
-                        license {
-                            name = 'The Apache License, Version 2.0'
-                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = 'tianxuefeng'
-                            name = 'tianxuefeng'
-                            email = 'tianxuefeng2010@gmail.com'
-                        }
-                    }
-                    scm {
-                        connection = 'scm:git:git://github.com/tianxuefeng/TeneasyChatSdkDemo.git'
-                        developerConnection = 'scm:git:ssh://github.com/tianxuefeng/TeneasyChatSdkDemo.git'
-                        url = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo'
-                    }
-                }
-            }
-        }
-        repositories {
-            maven {
-                // change URLs to point to your repos, e.g. http://my.org/repo
-                //def releasesRepoUrl = layout.buildDirectory.dir('repos/releases')
-                //def snapshotsRepoUrl = layout.buildDirectory.dir('repos/snapshots')
-                def releasesRepoUrl = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo.git'
-                def snapshotsRepoUrl = 'https://github.com/tianxuefeng/TeneasyChatSdkDemo.git'
-                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            }
-        }
-   }*/
+            java {
 
-/*
-    signing {
-        sign publishing.publications.mavenJava
-    }
-
-
-    javadoc {
-        if(JavaVersion.current().isJava9Compatible()) {
-            options.addBooleanOption('html5', true)
+            }
         }
     }
-}*/
+   // main.java.srcDirs += "${protobuf.generatedFilesBaseDir}/main/javalite"
+}
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.0'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'com.google.android.material:material:1.8.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
         implementation 'io.crossbar.autobahn:autobahn-android:21.7.1'
     implementation 'org.java-websocket:Java-WebSocket:1.5.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1'
+    implementation 'com.google.protobuf:protobuf-lite:3.0.0'
 
+}
+
+protobuf {
+    protoc {
+        // You still need protoc like in the non-Android case
+        artifact = 'com.google.protobuf:protoc:3.21.12'
+    }
+    plugins {
+        javalite {
+            // The codegen for lite comes as a separate artifact
+            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+        }
+    }
+    generateProtoTasks {
+        all().configureEach { task ->
+            task.builtins {
+                // In most cases you don't need the full Java output
+                // if you use the lite output.
+                remove java
+            }
+            task.plugins {
+                javalite { }
+            }
+        }
+    }
 }
 
 afterEvaluate {

@@ -1,0 +1,22 @@
+syntax = "proto3";
+package api.common;
+
+import "api/common/c_device.proto";
+import "google/protobuf/timestamp.proto";
+option go_package = "wcs/api/common;common";
+
+enum TransportType {
+  TRANSPORT_HTTP = 0;
+  TRANSPORT_HTTPS = 3;
+  TRANSPORT_H2C = 5;
+  TRANSPORT_HTTP3 = 30;
+}
+
+enum AddressType {
+  // 域名
+  ADDRES_DOMAIN = 0;
+  // ip4
+  ADDRES_IPV4 = 1;
+  // ip6
+  addres_ipv6 = 2;
+}

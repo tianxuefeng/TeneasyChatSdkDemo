@@ -1,0 +1,48 @@
+syntax = "proto3";
+package api.core;
+
+option go_package = "wcs/api/core;core";
+import "api/option.proto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+
+option(api.info) = {
+  authors: ["jeff"],
+  date: "2023-01-14",
+};
+
+// 客服指标
+message WorkerMetric {
+  // 3分钟回复率, 万分比
+  // 即: 9950 = 99.50%
+  int32 reply_percent_3_min = 1;
+  // 今日咨询人数
+  int32 today_service = 2;
+  // 平均响应时长
+  int32 avg_reply_interval = 3;
+  // 转任务数
+  int32 transfer_to = 4;
+  // 接任务数
+  int32 transfer_from = 5;
+}
+
+message QuerySelfResponse {
+  WorkerMetric metric = 1;
+}
+
+// 入口处咨询类型内容
+service Metric {
+  option (api.service) = {
+    path: "tenant/metric",
+    tags: ["metric"],
+    auth: [AUTH_ROLE_TENANT, AUTH_ROLE_SERVICE],
+  };
+
+  // 查自己统计信息
+  rpc QuerySelf(google.protobuf.Empty) returns (QuerySelfResponse) {
+    option (api.method) = {
+      id: 1200,
+      path:"query-self",
+    };
+  }
+}

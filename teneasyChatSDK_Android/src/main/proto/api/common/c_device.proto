@@ -1,0 +1,16 @@
+syntax = "proto3";
+package api.common;
+
+option go_package = "wcs/api/common;common";
+option swift_prefix = "Common";
+
+enum DeviceType {
+  // 系统平台
+  System = 0;
+  // 桌面设备
+  Desktop = 1;
+  // IOS
+  Ios = 2;
+  // Android
+  Android = 3;
+}

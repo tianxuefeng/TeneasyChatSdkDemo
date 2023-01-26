@@ -1,0 +1,80 @@
+syntax = "proto3";
+package api.common;
+
+option go_package = "wcs/api/common;common";
+
+import "api/common/c_base.proto";
+
+// 老用户分配机制
+enum DistributionType {
+  // 空闲
+  DISTRIBUTION_LEISURE = 0;
+  // 繁忙
+  DISTRIBUTION_BUSY = 1;
+  // 离线
+  DISTRIBUTION_OFFLINE = 2;
+  // 未登录
+  DISTRIBUTION_NOT_LOGIN = 3;
+}
+
+// 客服权限
+enum WorkerPermission {
+  WORKER_PERM_NONE = 0;
+  // 商户顶级账户, 创建商户时设置, 只读
+  WORKER_PERM_TOP = 1;
+  // 管理员
+  WORKER_PERM_ADMIN = 2;
+  // 主管
+  WORKER_PERM_LEADER = 4;
+  // 一线客服
+  WORKER_PERM_FRONTER = 8;
+  // 转接客服
+  WORKER_PERM_TRANSFER = 16;
+  // 可搜索
+  WORKER_PERM_SEARCHER = 32;
+  // 可拉黑名单
+  WORKER_PERM_BLACKER = 64;
+}
+
+enum ConnectState {
+  CONNECT_STATE_OFFLINE = 0;
+  CONNECT_STATE_ONLINE = 1;
+}
+
+enum OnlineState {
+  // 空闲
+  ONLINE_STATE_IDLE = 0;
+  // 忙碌
+  ONLINE_STATE_BUSY = 1;
+  // away from keyboard
+  ONLINE_STATE_AFK = 2;
+}
+
+message Worker {
+  int32 worker_id = 1;
+  string account = 2;
+  // 所在的组
+  repeated WorkerGroup group = 3;
+  // 权限掩码, 前端理解有困难的话 随时可调
+  int32 perm_mask = 4;
+  // 客服名
+  string name = 5;
+  // 头像url
+  string avatar = 6;
+  // 在线状态
+  common.OnlineState online_state = 7;
+  // 密码
+  string password = 8;
+}
+
+message WorkerGroup {
+  int64 id = 1;
+  string name = 2;
+  int32 priority = 3;
+}
+
+message Distribution {
+  int64 id = 1;
+  string name = 2;
+  int32 priority = 3;
+}

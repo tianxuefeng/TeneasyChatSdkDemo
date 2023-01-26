@@ -1,0 +1,16 @@
+syntax = "proto3";
+package api.common;
+
+option go_package = "wcs/api/common;common";
+option swift_prefix = "Common";
+
+message PhoneNumber {
+  // 默认中国区号 86
+  int32 country_code = 1;
+  // International Telecommunication Union (ITU) Recommendation E.164,
+  int64 national_number = 2;
+  // 隐去手机号码部分数字后的表现形式, 如:
+  // 133*****123
+  // 通常用作前端表现, 或消费方不应知道完整手机号码的场景
+  string masked_national_number = 3;
+}
