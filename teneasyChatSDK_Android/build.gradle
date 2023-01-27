@@ -46,15 +46,15 @@ android {
     sourceSets {
         main {
             proto {
-                srcDir 'src/main/proto'
                 srcDir 'src/main/include'
+                srcDir 'src/main/proto'
             }
             java {
 
             }
         }
     }
-   // main.java.srcDirs += "${protobuf.generatedFilesBaseDir}/main/javalite"
+    // main.java.srcDirs += "${protobuf.generatedFilesBaseDir}/main/javalite"
 }
 
 dependencies {
@@ -65,18 +65,18 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-        implementation 'io.crossbar.autobahn:autobahn-android:21.7.1'
+    implementation 'io.crossbar.autobahn:autobahn-android:21.7.1'
     implementation 'org.java-websocket:Java-WebSocket:1.5.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1'
     //implementation 'com.google.protobuf:protobuf-kotlin:3.21.12'
-    //implementation 'com.google.protobuf:protobuf-lite:3.0.0'
-    implementation 'com.google.protobuf:protobuf-javalite:3.8.0'
-    //implementation 'com.google.protobuf:protobuf-java:3.21.12'
+//    implementation 'com.google.protobuf:protobuf-lite:3.0.0'
+//    implementation 'com.google.protobuf:protobuf-javalite:3.21.12'
+    implementation 'com.google.protobuf:protobuf-java:3.21.12'
 }
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.8.0'
+        artifact = 'com.google.protobuf:protoc:3.21.12'
     }
     generateProtoTasks {
         all().configureEach { task ->

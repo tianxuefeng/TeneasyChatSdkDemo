@@ -2,6 +2,9 @@ package com.teneasy.sdk
 
 import android.content.Context
 import android.widget.Toast
+import gateway.GPayload
+import gateway.GPayload.Payload
+import gateway.GPayload.PayloadOrBuilder
 import io.crossbar.autobahn.websocket.WebSocketConnection
 import io.crossbar.autobahn.websocket.WebSocketConnectionHandler
 import io.crossbar.autobahn.websocket.types.ConnectionResponse
