@@ -69,20 +69,20 @@ dependencies {
     implementation 'org.java-websocket:Java-WebSocket:1.5.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1'
     //implementation 'com.google.protobuf:protobuf-kotlin:3.21.12'
-    //implementation 'com.google.protobuf:protobuf-lite:3.0.0'
-    implementation 'com.google.protobuf:protobuf-javalite:3.8.0'
+    implementation 'com.google.protobuf:protobuf-lite:3.0.0'
+    //implementation 'com.google.protobuf:protobuf-javalite:3.8.0'
     //implementation 'com.google.protobuf:protobuf-java:3.21.12'
 }
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.8.0'
+        artifact = 'com.google.protobuf:protoc:3.15.0'
     }
     generateProtoTasks {
         all().configureEach { task ->
             task.builtins {
                 java {
-                    option "lite"
+                   // option "lite"
                 }
             }
         }
