@@ -5,7 +5,7 @@
 
 
     从 maven 仓库里面得到
-        implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:1.0.8'
+        implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:x.x.x' //x.x.x这里输入最新版本的tag 版本号
        （需要在settings.gradle里面添加：  maven { url 'https://jitpack.io' }）
        
     或者
