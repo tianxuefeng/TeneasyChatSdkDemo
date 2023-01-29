@@ -6,8 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import com.example.teneasychatsdkdemo.R
-import com.teneasy.sdk.MyTest
+import com.teneasy.sdk.ChatLib
 
 class MainFragment : Fragment() {
 
@@ -17,16 +18,26 @@ class MainFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
 
+    private lateinit var myTest:ChatLib
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        val myTest = MyTest()
+        myTest = ChatLib()
         myTest.sayHello(requireContext())
         myTest.makeConnect(requireContext())
 
-        myTest.makeConnect2()
+//        myTest.makeConnect2()
         //myTest.m
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val btnSend: Button = view.findViewById(R.id.btn_send)
+        btnSend.setOnClickListener(View.OnClickListener { v:View ->
+            myTest.sendMsg("android 测试")
+        })
     }
 
     override fun onCreateView(

@@ -2,40 +2,50 @@ package com.teneasy.sdk
 
 import android.content.Context
 import android.widget.Toast
-import gateway.GPayload
+import api.common.CMessage
+import com.google.protobuf.Timestamp
+import gateway.GAction
+import gateway.GGateway
 import gateway.GPayload.Payload
-import gateway.GPayload.PayloadOrBuilder
 import io.crossbar.autobahn.websocket.WebSocketConnection
 import io.crossbar.autobahn.websocket.WebSocketConnectionHandler
 import io.crossbar.autobahn.websocket.types.ConnectionResponse
 import org.java_websocket.client.WebSocketClient
-import org.java_websocket.drafts.Draft
 import org.java_websocket.drafts.Draft_6455
 import org.java_websocket.handshake.ServerHandshake
 import org.json.JSONObject
 import java.net.URI
 
 
-class MyTest {
-    //val url = "wss://127.0.0.1:8013/v1/gateway/h5?token=CAsQAxgBIAwojeyt6tQw.NcnU2L85lR8ImA3rTbHl5f8UCTueNQ8oyj7Kb4w2EEazoywQAHDoh5sxTOflvfUkgvWBuE3llWNvH5rDSLHCAQ"
-   val url = "wss://csapi.xdev.stream/v1/gateway/h5?token="
+class ChatLib {
+    val url = "wss://csapi.xdev.stream/v1/gateway/h5?token=" +
+            "CCcQARgIIBwoj_2e7d8w.pKN3z40LA4_RfxMynQCKFDYbUJksGGGu_IMsuY4YlPf3CJmulUeSKe6_77YGYOYZQLM1F--eAZioSN7ITzJOAQ"
     fun sayHello(context: Context){
         Toast.makeText(context, "Good sdk! Good!", Toast.LENGTH_LONG).show()
     }
 
-    fun makeConnect(context: Context){
-//         Ws ws = new Ws.Builder().from( "ws://server_address");
-//        ws.connect();
+    fun isConnection() : Boolean {
+        socket?: return false
+        return socket.isConnected
+    }
 
-        val connection = WebSocketConnection()
-        connection.connect(url, object : WebSocketConnectionHandler() {
+    var context: Context? = null
+    var payloadId: Long = 0
+    private lateinit var socket: WebSocketConnection;
+
+    fun makeConnect(context: Context){
+        this.context = context
+        socket = WebSocketConnection()
+        socket.connect(url, object : WebSocketConnectionHandler() {
             override fun onConnect(response: ConnectionResponse) {
                 println("Connected to server")
                 Toast.makeText(context, "Connected to server", Toast.LENGTH_LONG).show()
             }
 
             override fun onOpen() {
-                connection.sendMessage("Echo with Autobahn")
+                Toast.makeText(context, "open", Toast.LENGTH_LONG).show()
+                //sendMsg("android 123")
+//                connection.sendMessage("Echo with Autobahn")
             }
 
             override fun onClose(code: Int, reason: String) {
@@ -45,9 +55,47 @@ class MyTest {
 
             override fun onMessage(payload: String) {
                 println("Received message: $payload")
-                connection.sendMessage(payload)
+            }
+
+            override fun onMessage(payload: ByteArray?, isBinary: Boolean) {
+                super.onMessage(payload, isBinary)
+                //Toast.makeText(context, "Received", Toast.LENGTH_LONG).show()
             }
         })
+    }
+
+    fun sendMsg(msg: String) {
+        socket?: throw IllegalStateException("connection is close!")
+        if(!isConnection()) {
+            Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        //第一层
+        val content = CMessage.MessageContent.newBuilder()
+        content.data = msg
+
+        //第二层
+        val msg = CMessage.Message.newBuilder()
+        msg.content = content.build()
+        msg.sender = 0
+        msg.chatId = 2692944494600
+        msg.worker = 3
+        msg.msgTime = Timestamp.getDefaultInstance()
+
+        // 第三层
+        val cSendMsg = GGateway.CSSendMessage.newBuilder()
+        cSendMsg.msg = msg.build()
+        val cSendMsgData = cSendMsg.build().toByteString()
+
+        //第四层
+        val payload = Payload.newBuilder()
+        payload.data = cSendMsgData
+        payload.act = GAction.Action.ActionCSSendMsg
+        payloadId += 1
+        payload.id = payloadId
+
+        socket.sendMessage(payload.build().toByteArray(), true)
     }
 
     fun makeConnect2(){
