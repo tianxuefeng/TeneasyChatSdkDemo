@@ -106,8 +106,6 @@ class ChatLib {
         val message = obj.toString()
         //send message
         //send message
-
-
         val mWs: WebSocketClient =
             object : WebSocketClient(URI(url), Draft_6455()) {
                 override fun onMessage(message: String) {
@@ -127,9 +125,6 @@ class ChatLib {
                     ex.printStackTrace()
                 }
             }
-        //open websocket
-        //open websocket
         mWs.connect()
-
     }
 }
