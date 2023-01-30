@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.example.teneasychatsdkdemo.R
 import com.teneasy.sdk.CallbackMsg
 import com.teneasy.sdk.ChatLib
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -45,6 +46,10 @@ class MainFragment : Fragment() {
         btnSend.setOnClickListener(View.OnClickListener { v:View ->
             myTest.sendMsg("android 测试")
         })
+
+        if(!EventBus.getDefault().isRegistered(MainFragment@this)) {
+            EventBus.getDefault().register(MainFragment@this)
+        }
     }
 
 
@@ -60,4 +65,10 @@ class MainFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if(!EventBus.getDefault().isRegistered(MainFragment@this)) {
+            EventBus.getDefault().unregister(MainFragment@this)
+        }
+    }
 }

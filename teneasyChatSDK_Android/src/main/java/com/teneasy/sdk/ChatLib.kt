@@ -17,6 +17,10 @@ import org.java_websocket.protocols.Protocol
 import org.json.JSONObject
 import java.net.URI
 import java.nio.charset.Charset
+import org.greenrobot.eventbus.EventBus
+
+
+
 
 
 class ChatLib {
@@ -77,9 +81,11 @@ class ChatLib {
 
             println("act: ${payLoad.act.number}")
             if(payLoad.act == GAction.Action.ActionSCRecvMsg) {
-                val msg = GGateway.CSRecvMessage.parseFrom(msgData)
+                val msg = GGateway.SCRecvMessage.parseFrom(msgData)
+//                val msg = GGateway.CSSendMessage.parseFrom(msgData)
 //                val content = String(msg.toByteArray())
-                println("recv: $msg")
+                println("recv: ${msg.msg.content.data}")
+                EventBus.getDefault().post(CallbackMsg(msg.msg.content.data))
             } else if(payLoad.act == GAction.Action.ActionSCHi) {
                 val msg = GGateway.SCHi.parseFrom(msgData)
                 payloadId = msg.id
@@ -89,10 +95,9 @@ class ChatLib {
 
                 println("forward: $msg.data")
             } else if(payLoad.act == GAction.Action.ActionSCSendMsgACK) {
-                val msg = GGateway.CSSendMessage.parseFrom(msgData)
-
+                val msg = GGateway.SCSendMessage.parseFrom(msgData)
                 print("消息回执")
-                print(msg)
+                println(msg)
             } else
                 print("received data: $data")
         }

@@ -7,8 +7,9 @@ class CallbackMsg : Serializable {
     var msg: String? = null
 
     constructor() {}
-    constructor(what: Int) {
-        this.what = what
+
+    constructor(msg: String) {
+        this.msg = msg
     }
 
     constructor(what: Int, msg: String?) {
