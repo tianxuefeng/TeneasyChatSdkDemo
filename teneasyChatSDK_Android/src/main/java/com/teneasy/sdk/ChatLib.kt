@@ -13,13 +13,15 @@ import io.crossbar.autobahn.websocket.types.ConnectionResponse
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.drafts.Draft_6455
 import org.java_websocket.handshake.ServerHandshake
+import org.java_websocket.protocols.Protocol
 import org.json.JSONObject
 import java.net.URI
+import java.nio.charset.Charset
 
 
 class ChatLib {
     val url = "wss://csapi.xdev.stream/v1/gateway/h5?token=" +
-            "CCcQARgIIBwoj_2e7d8w.pKN3z40LA4_RfxMynQCKFDYbUJksGGGu_IMsuY4YlPf3CJmulUeSKe6_77YGYOYZQLM1F--eAZioSN7ITzJOAQ"
+            "CCcQARgGIBwohOeGoN8w.MDFy6dFaTLFByZSuv9lP0fcYOaOGc_WgiTnTP8dFdE3prh7iiT37Ioe5FrelrDltQocQsGB3APz0WKUVUDdcDA"
     fun sayHello(context: Context){
         Toast.makeText(context, "Good sdk! Good!", Toast.LENGTH_LONG).show()
     }
@@ -57,11 +59,43 @@ class ChatLib {
                 println("Received message: $payload")
             }
 
-            override fun onMessage(payload: ByteArray?, isBinary: Boolean) {
+            override fun onMessage(payload: ByteArray, isBinary: Boolean) {
                 super.onMessage(payload, isBinary)
+                println("Received message: $payload")
+                receiveMsg(payload)
                 //Toast.makeText(context, "Received", Toast.LENGTH_LONG).show()
             }
         })
+    }
+
+    fun receiveMsg(data: ByteArray) {
+        if(data.size == 1)
+            print("在别处登录了")
+        else {
+            val payLoad = Payload.parseFrom(data)
+            val msgData = payLoad.data
+
+            println("act: ${payLoad.act.number}")
+            if(payLoad.act == GAction.Action.ActionSCRecvMsg) {
+                val msg = GGateway.CSRecvMessage.parseFrom(msgData)
+//                val content = String(msg.toByteArray())
+                println("recv: $msg")
+            } else if(payLoad.act == GAction.Action.ActionSCHi) {
+                val msg = GGateway.SCHi.parseFrom(msgData)
+                payloadId = msg.id
+                println("schi: $msg")
+            } else if(payLoad.act == GAction.Action.ActionForward) {
+                val msg = GGateway.CSForward.parseFrom(msgData)
+
+                println("forward: $msg.data")
+            } else if(payLoad.act == GAction.Action.ActionSCSendMsgACK) {
+                val msg = GGateway.CSSendMessage.parseFrom(msgData)
+
+                print("消息回执")
+                print(msg)
+            } else
+                print("received data: $data")
+        }
     }
 
     fun sendMsg(msg: String) {
@@ -79,7 +113,7 @@ class ChatLib {
         val msg = CMessage.Message.newBuilder()
         msg.content = content.build()
         msg.sender = 0
-        msg.chatId = 2692944494600
+        msg.chatId = 2692944494598
         msg.worker = 3
         msg.msgTime = Timestamp.getDefaultInstance()
 
