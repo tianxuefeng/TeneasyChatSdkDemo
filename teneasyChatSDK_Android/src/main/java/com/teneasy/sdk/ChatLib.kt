@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import api.common.CMessage
 import com.google.protobuf.Timestamp
+import com.teneasy.sdk.ui.MessageItem
 import gateway.GAction
 import gateway.GGateway
 import gateway.GPayload.Payload
@@ -18,9 +19,7 @@ import org.json.JSONObject
 import java.net.URI
 import java.nio.charset.Charset
 import org.greenrobot.eventbus.EventBus
-
-
-
+import java.util.*
 
 
 class ChatLib {
@@ -85,7 +84,10 @@ class ChatLib {
 //                val msg = GGateway.CSSendMessage.parseFrom(msgData)
 //                val content = String(msg.toByteArray())
                 println("recv: ${msg.msg.content.data}")
-                EventBus.getDefault().post(CallbackMsg(msg.msg.content.data))
+
+                EventBus.getDefault().post(MessageItem(false, msg.msg.content.data, payLoad.id, TimeUtil.getTimeStringAutoShort2(
+                    Date(), true
+                )))
             } else if(payLoad.act == GAction.Action.ActionSCHi) {
                 val msg = GGateway.SCHi.parseFrom(msgData)
                 payloadId = msg.id

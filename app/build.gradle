@@ -9,8 +9,8 @@ android {
     compileSdk 33
     defaultConfig {
         applicationId "com.example.teneasychatsdkdemo"
-        minSdk 24
-        targetSdk 33
+        minSdk 26
+        targetSdk 31
         versionCode 1
         versionName "1.0"
 

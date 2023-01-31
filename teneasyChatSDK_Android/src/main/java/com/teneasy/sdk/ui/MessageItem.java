@@ -1,4 +1,4 @@
-package com.example.teneasychatsdkdemo.ui.main;
+package com.teneasy.sdk.ui;
 
 import java.io.Serializable;
 
@@ -6,10 +6,10 @@ public class MessageItem implements Serializable {
 
     private boolean isSend;
     private String msg;
-    private int payLoadId;
+    private long payLoadId;
     private String time;
 
-    public MessageItem(boolean isSend, String msg, int payLoadId, String time) {
+    public MessageItem(boolean isSend, String msg, long payLoadId, String time) {
         this.isSend = isSend;
         this.msg = msg;
         this.payLoadId = payLoadId;
@@ -32,11 +32,11 @@ public class MessageItem implements Serializable {
         this.msg = msg;
     }
 
-    public int getPayLoadId() {
+    public long getPayLoadId() {
         return payLoadId;
     }
 
-    public void setPayLoadId(int payLoadId) {
+    public void setPayLoadId(long payLoadId) {
         this.payLoadId = payLoadId;
     }
 

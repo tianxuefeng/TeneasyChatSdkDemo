@@ -15,11 +15,11 @@ plugins {
 
 android {
     namespace 'com.teneasy.sdk'
-    compileSdk 33
+    compileSdk 31
 
     defaultConfig {
-        minSdk 23
-        targetSdk 32
+        minSdk 26
+        targetSdk 31
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -58,7 +58,6 @@ android {
 }
 
 dependencies {
-
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'com.google.android.material:material:1.8.0'
