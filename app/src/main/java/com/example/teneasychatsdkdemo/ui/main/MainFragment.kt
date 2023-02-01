@@ -12,6 +12,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import api.common.CMessage
+import api.common.CMessage.MessageContent
 import com.example.teneasychatsdkdemo.R
 import com.teneasy.sdk.ChatLib
 import com.teneasy.sdk.TimeUtil
@@ -20,8 +22,6 @@ import com.teneasy.sdk.ui.MessageListAdapter
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -79,8 +79,15 @@ class MainFragment : Fragment() {
 
                 etMsg.text.clear()
 
+                val cMsg = CMessage.Message.newBuilder()
+                var cMContent = MessageContent.newBuilder()
+                cMContent.setData("OK!!!")
+                cMsg.setContent(cMContent)
+
+                print(cMsg.content.data)
+
                 val item = MessageItem(true, msg, 0, TimeUtil.getTimeStringAutoShort2(Date(), true))
-                addMsgItem(item)
+                addMsgItem(cMsg.build())
             } else {
                 Toast.makeText(context, "Please enter the sending content", Toast.LENGTH_LONG).show()
             }
@@ -108,12 +115,14 @@ class MainFragment : Fragment() {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun updateMsg(data: MessageItem) {
+    fun updateMsg(data: CMessage.Message) {
         addMsgItem(data)
     }
 
-    fun addMsgItem(data: MessageItem) {
-        msgList.add(data)
+    fun addMsgItem(data: CMessage.Message) {
+        //需要像iOS那有判断消息类型
+        //msgList.add(data)
+        //if  data.payloadCase == CMessage.Message.PayloadCase.CONTENT
         msgAdapter.setList(msgList)
 
         listView.smoothScrollToPosition(msgAdapter.itemCount)

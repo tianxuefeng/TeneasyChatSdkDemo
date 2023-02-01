@@ -85,9 +85,11 @@ class ChatLib {
 //                val content = String(msg.toByteArray())
                 println("recv: ${msg.msg.content.data}")
 
-                EventBus.getDefault().post(MessageItem(false, msg.msg.content.data, payLoad.id, TimeUtil.getTimeStringAutoShort2(
+                EventBus.getDefault().post(msg.msg)
+
+                /*EventBus.getDefault().post(MessageItem(false, msg.msg.content.data, payLoad.id, TimeUtil.getTimeStringAutoShort2(
                     Date(), true
-                )))
+                )))*/
             } else if(payLoad.act == GAction.Action.ActionSCHi) {
                 val msg = GGateway.SCHi.parseFrom(msgData)
                 payloadId = msg.id
@@ -171,7 +173,7 @@ class ChatLib {
         socket.sendMessage(payload.build().toByteArray(), true)
     }
 
-    fun makeConnect2(){
+   /* fun makeConnect2(){
 
         val obj = JSONObject()
         obj.put("event", "addChannel")
@@ -199,5 +201,5 @@ class ChatLib {
                 }
             }
         mWs.connect()
-    }
+    }*/
 }
