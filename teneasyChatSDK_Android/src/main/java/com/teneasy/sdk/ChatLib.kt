@@ -139,6 +139,38 @@ class ChatLib {
         socket.sendMessage(payload.build().toByteArray(), true)
     }
 
+    fun sendMessageImage(url: String) {
+        if(!isConnection()) {
+            Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
+            return
+        }
+        //第一层
+        val content = CMessage.MessageImage.newBuilder()
+        content.setUri(url)
+
+        //第二层
+        val msg = CMessage.Message.newBuilder()
+        msg.setImage(content)
+        msg.sender = 0
+        msg.chatId = 2692944494598
+        msg.worker = 3
+        msg.msgTime = Timestamp.getDefaultInstance()
+
+        // 第三层
+        val cSendMsg = GGateway.CSSendMessage.newBuilder()
+        cSendMsg.msg = msg.build()
+        val cSendMsgData = cSendMsg.build().toByteString()
+
+        //第四层
+        val payload = Payload.newBuilder()
+        payload.data = cSendMsgData
+        payload.act = GAction.Action.ActionCSSendMsg
+        payloadId += 1
+        payload.id = payloadId
+
+        socket.sendMessage(payload.build().toByteArray(), true)
+    }
+
     fun makeConnect2(){
 
         val obj = JSONObject()
