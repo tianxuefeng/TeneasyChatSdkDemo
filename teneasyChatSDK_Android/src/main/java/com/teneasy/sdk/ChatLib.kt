@@ -1,6 +1,7 @@
 package com.teneasy.sdk
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import api.common.CMessage
 import com.google.protobuf.Timestamp
@@ -36,6 +37,9 @@ class ChatLib {
 
     var context: Context? = null
     var payloadId: Long = 0
+    var sendingMessage  = CMessage.Message.newBuilder()
+    var chatId: Long = 0
+    var token: String? = ""
     private lateinit var socket: WebSocketConnection;
 
     fun makeConnect(context: Context){
@@ -44,17 +48,17 @@ class ChatLib {
         socket.connect(url, object : WebSocketConnectionHandler() {
             override fun onConnect(response: ConnectionResponse) {
                 println("Connected to server")
-                Toast.makeText(context, "Connected to server", Toast.LENGTH_LONG).show()
+                //Toast.makeText(context, "Connected to server", Toast.LENGTH_LONG).show()
             }
 
             override fun onOpen() {
-                Toast.makeText(context, "open", Toast.LENGTH_LONG).show()
+                //Toast.makeText(context, "open", Toast.LENGTH_LONG).show()
                 //sendMsg("android 123")
 //                connection.sendMessage("Echo with Autobahn")
             }
 
             override fun onClose(code: Int, reason: String) {
-                println("Connection closed")
+                //println("Connection closed")
                 Toast.makeText(context, "Closed", Toast.LENGTH_LONG).show()
             }
 
@@ -93,13 +97,25 @@ class ChatLib {
             } else if(payLoad.act == GAction.Action.ActionSCHi) {
                 val msg = GGateway.SCHi.parseFrom(msgData)
                 payloadId = msg.id
+                token = msg.token
+                chatId = msg.id
                 println("schi: $msg")
+                val cMsg = CMessage.Message.newBuilder()
+                var cMContent = CMessage.MessageContent.newBuilder()
+                cMContent.setData("你好！我是客服小福")
+                cMsg.setContent(cMContent)
+                EventBus.getDefault().post(cMsg.build())
             } else if(payLoad.act == GAction.Action.ActionForward) {
                 val msg = GGateway.CSForward.parseFrom(msgData)
 
                 println("forward: $msg.data")
             } else if(payLoad.act == GAction.Action.ActionSCSendMsgACK) {
                 val msg = GGateway.SCSendMessage.parseFrom(msgData)
+                if (sendingMessage != null){
+                    sendingMessage.msgTime = msg.msgTime
+                    sendingMessage.msgId = msg.msgId
+                    EventBus.getDefault().post(sendingMessage.build())
+                }
                 print("消息回执")
                 println(msg)
             } else
@@ -110,7 +126,8 @@ class ChatLib {
     fun sendMsg(msg: String) {
         socket?: throw IllegalStateException("connection is close!")
         if(!isConnection()) {
-            Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
+            //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
+            context?.apply {   makeConnect(this)  }
             return
         }
 
@@ -122,7 +139,7 @@ class ChatLib {
         val msg = CMessage.Message.newBuilder()
         msg.content = content.build()
         msg.sender = 0
-        msg.chatId = 2692944494598
+        msg.chatId = chatId
         msg.worker = 3
         msg.msgTime = Timestamp.getDefaultInstance()
 
@@ -154,7 +171,7 @@ class ChatLib {
         val msg = CMessage.Message.newBuilder()
         msg.setImage(content)
         msg.sender = 0
-        msg.chatId = 2692944494598
+        msg.chatId = chatId
         msg.worker = 3
         msg.msgTime = Timestamp.getDefaultInstance()
 

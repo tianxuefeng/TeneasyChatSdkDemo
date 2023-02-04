@@ -48,7 +48,7 @@ class MainFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         myTest = ChatLib()
-        myTest.sayHello(requireContext())
+        //myTest.sayHello(requireContext())
         myTest.makeConnect(requireContext())
 
         msgList = ArrayList()
@@ -81,12 +81,12 @@ class MainFragment : Fragment() {
 
                 val cMsg = CMessage.Message.newBuilder()
                 var cMContent = MessageContent.newBuilder()
-                cMContent.setData("OK!!!")
+                cMContent.setData("测试消息")
                 cMsg.setContent(cMContent)
 
                 print(cMsg.content.data)
 
-                val item = MessageItem(true, msg, 0, TimeUtil.getTimeStringAutoShort2(Date(), true))
+                //val item = MessageItem(true, msg, 0, TimeUtil.getTimeStringAutoShort2(Date(), true))
                 addMsgItem(cMsg.build())
             } else {
                 Toast.makeText(context, "Please enter the sending content", Toast.LENGTH_LONG).show()
@@ -123,6 +123,13 @@ class MainFragment : Fragment() {
         //需要像iOS那有判断消息类型
         //msgList.add(data)
         //if  data.payloadCase == CMessage.Message.PayloadCase.CONTENT
+
+        /* 这是服务器时间转换为本地时间的办法
+          val msgDate =  Date(msg.msgTime.seconds * 1000L)
+                    val localTime = TimeUtil.getTimeStringAutoShort2(msgDate, true)
+                    Log.i("ChatLib", localTime)
+         */
+        Toast.makeText(context, data.content.data, Toast.LENGTH_LONG).show()
         msgAdapter.setList(msgList)
 
         listView.smoothScrollToPosition(msgAdapter.itemCount)

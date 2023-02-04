@@ -23,6 +23,13 @@ object TimeUtil {
         }
     }
 
+    fun serverTimeToLocal(){
+        val calendar = Calendar.getInstance()
+        val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+        val dateTime = simpleDateFormat.format(calendar.time).toString()
+
+    }
+
     /**
      * 1）7天之内的日期显示逻辑是：今天、昨天(-1d)、前天(-2d)、星期？（只显示总计7天之内的星期数，即<=-4d）；<br></br>
      * 2）7天之外（即>7天）的逻辑：直接显示完整日期时间。
