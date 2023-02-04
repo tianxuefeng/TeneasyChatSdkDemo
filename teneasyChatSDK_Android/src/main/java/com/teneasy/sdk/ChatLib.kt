@@ -124,7 +124,6 @@ class ChatLib {
     }
 
     fun sendMsg(msg: String) {
-        socket?: throw IllegalStateException("connection is close!")
         if(!isConnection()) {
             //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
             context?.apply {   makeConnect(this)  }
@@ -160,7 +159,8 @@ class ChatLib {
 
     fun sendMessageImage(url: String) {
         if(!isConnection()) {
-            Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
+            //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
+            context?.apply {   makeConnect(this)  }
             return
         }
         //第一层
@@ -188,6 +188,14 @@ class ChatLib {
         payload.id = payloadId
 
         socket.sendMessage(payload.build().toByteArray(), true)
+    }
+
+    fun sendHeartBeat(){
+        //let value: Int32 = -1333
+        //var zero  = 0
+        //val beat = zero.toByte()
+        val buffer = ByteArray(0)
+        socket.sendMessage(buffer, true)
     }
 
    /* fun makeConnect2(){

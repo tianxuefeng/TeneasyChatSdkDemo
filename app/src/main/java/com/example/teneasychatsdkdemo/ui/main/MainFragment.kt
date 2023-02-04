@@ -16,13 +16,11 @@ import api.common.CMessage
 import api.common.CMessage.MessageContent
 import com.example.teneasychatsdkdemo.R
 import com.teneasy.sdk.ChatLib
-import com.teneasy.sdk.TimeUtil
 import com.teneasy.sdk.ui.MessageItem
 import com.teneasy.sdk.ui.MessageListAdapter
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.*
 import kotlin.collections.ArrayList
 
 class MainFragment : Fragment() {
@@ -33,7 +31,7 @@ class MainFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
 
-    private lateinit var myTest:ChatLib
+    private lateinit var chatLib:ChatLib
 
     private lateinit var etMsg: EditText
 
@@ -47,9 +45,9 @@ class MainFragment : Fragment() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        myTest = ChatLib()
+        chatLib = ChatLib()
         //myTest.sayHello(requireContext())
-        myTest.makeConnect(requireContext())
+        chatLib.makeConnect(requireContext())
 
         msgList = ArrayList()
 
@@ -75,7 +73,7 @@ class MainFragment : Fragment() {
             if(etMsg.text != null && etMsg.text.isNotEmpty()) {
                 closeSoftKeyboard(etMsg)
                 val msg = etMsg.text.toString()
-                myTest.sendMsg(msg)
+                chatLib.sendMsg(msg)
 
                 etMsg.text.clear()
 
@@ -133,6 +131,11 @@ class MainFragment : Fragment() {
         msgAdapter.setList(msgList)
 
         listView.smoothScrollToPosition(msgAdapter.itemCount)
+    }
+
+    //需要每60秒调用一次这个函数，确保socket的活动状态。
+    fun sendHeartBeat(){
+        chatLib.sendHeartBeat()
     }
 
     override fun onCreateView(
