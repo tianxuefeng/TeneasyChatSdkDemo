@@ -1,7 +1,6 @@
 package com.teneasy.sdk
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import api.common.CMessage
 import com.google.protobuf.Timestamp
@@ -12,20 +11,12 @@ import gateway.GPayload.Payload
 import io.crossbar.autobahn.websocket.WebSocketConnection
 import io.crossbar.autobahn.websocket.WebSocketConnectionHandler
 import io.crossbar.autobahn.websocket.types.ConnectionResponse
-import org.java_websocket.client.WebSocketClient
-import org.java_websocket.drafts.Draft_6455
-import org.java_websocket.handshake.ServerHandshake
-import org.java_websocket.protocols.Protocol
-import org.json.JSONObject
-import java.net.URI
-import java.nio.charset.Charset
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 
 class ChatLib {
-    val url = "wss://csapi.xdev.stream/v1/gateway/h5?token=" +
-            "CCcQARgGIBwohOeGoN8w.MDFy6dFaTLFByZSuv9lP0fcYOaOGc_WgiTnTP8dFdE3prh7iiT37Ioe5FrelrDltQocQsGB3APz0WKUVUDdcDA"
+    val baseUrl = "wss://csapi.xdev.stream/v1/gateway/h5?token="
     fun sayHello(context: Context){
         Toast.makeText(context, "Good sdk! Good!", Toast.LENGTH_LONG).show()
     }
@@ -37,14 +28,15 @@ class ChatLib {
 
     var context: Context? = null
     var payloadId: Long = 0
-    var sendingMessage  = CMessage.Message.newBuilder()
+    var sendingMessageItem  = MessageItem()
     var chatId: Long = 0
-    var token: String? = ""
+    var token: String? = "CCcQARgGIBwohOeGoN8w.MDFy6dFaTLFByZSuv9lP0fcYOaOGc_WgiTnTP8dFdE3prh7iiT37Ioe5FrelrDltQocQsGB3APz0WKUVUDdcDA"
     private lateinit var socket: WebSocketConnection;
 
     fun makeConnect(context: Context){
         this.context = context
         socket = WebSocketConnection()
+        val url = baseUrl + token
         socket.connect(url, object : WebSocketConnectionHandler() {
             override fun onConnect(response: ConnectionResponse) {
                 println("Connected to server")
@@ -81,13 +73,15 @@ class ChatLib {
         else {
             val payLoad = Payload.parseFrom(data)
             val msgData = payLoad.data
-
+            payloadId = payLoad.id
             println("act: ${payLoad.act.number}")
             if(payLoad.act == GAction.Action.ActionSCRecvMsg) {
                 val msg = GGateway.SCRecvMessage.parseFrom(msgData)
 //                val msg = GGateway.CSSendMessage.parseFrom(msgData)
 //                val content = String(msg.toByteArray())
                 println("recv: ${msg.msg.content.data}")
+                var msgItem = MessageItem()
+                msgItem.cMsg = msg.msg
 
                 EventBus.getDefault().post(msg.msg)
 
@@ -96,25 +90,41 @@ class ChatLib {
                 )))*/
             } else if(payLoad.act == GAction.Action.ActionSCHi) {
                 val msg = GGateway.SCHi.parseFrom(msgData)
-                payloadId = msg.id
                 token = msg.token
                 chatId = msg.id
                 println("schi: $msg")
-                val cMsg = CMessage.Message.newBuilder()
+                var cMsg = CMessage.Message.newBuilder()
                 var cMContent = CMessage.MessageContent.newBuilder()
+
+
+                var d = Timestamp.newBuilder()
+                val cal = Calendar.getInstance()
+                cal.time = Date()
+                val millis = cal.timeInMillis
+                d.seconds = (millis * 0.001).toLong()
+
+                //d.t = msgDate.time
+                cMsg.msgTime = d.build()
                 cMContent.setData("你好！我是客服小福")
                 cMsg.setContent(cMContent)
-                EventBus.getDefault().post(cMsg.build())
+
+                var chatModel = MessageItem()
+                chatModel.cMsg = cMsg.build()
+                chatModel.payLoadId = payloadId
+                chatModel.isSend = false
+                EventBus.getDefault().post(chatModel)
+
             } else if(payLoad.act == GAction.Action.ActionForward) {
                 val msg = GGateway.CSForward.parseFrom(msgData)
 
                 println("forward: $msg.data")
             } else if(payLoad.act == GAction.Action.ActionSCSendMsgACK) {
                 val msg = GGateway.SCSendMessage.parseFrom(msgData)
-                if (sendingMessage != null){
-                    sendingMessage.msgTime = msg.msgTime
-                    sendingMessage.msgId = msg.msgId
-                    EventBus.getDefault().post(sendingMessage.build())
+
+                if (sendingMessageItem != null){
+                    sendingMessageItem.payLoadId = payloadId
+                    sendingMessageItem.cMsg!!.msgTime = msg.msgTime
+                    EventBus.getDefault().post(sendingMessageItem)
                 }
                 print("消息回执")
                 println(msg)
@@ -123,9 +133,10 @@ class ChatLib {
         }
     }
 
+    //发送文字消息
     fun sendMsg(msg: String) {
         if(!isConnection()) {
-            //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
+            Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
             context?.apply {   makeConnect(this)  }
             return
         }
@@ -142,6 +153,17 @@ class ChatLib {
         msg.worker = 3
         msg.msgTime = Timestamp.getDefaultInstance()
 
+        var d = Timestamp.newBuilder()
+        val cal = Calendar.getInstance()
+        cal.time = Date()
+        val millis = cal.timeInMillis
+        d.seconds = (millis * 0.001).toLong()
+        sendingMessageItem.cMsg.msgTime = d.build()
+        sendingMessageItem.isSend = true
+        sendingMessageItem.cMsg = msg.build()
+
+
+
         // 第三层
         val cSendMsg = GGateway.CSSendMessage.newBuilder()
         cSendMsg.msg = msg.build()
@@ -157,6 +179,7 @@ class ChatLib {
         socket.sendMessage(payload.build().toByteArray(), true)
     }
 
+    //发送图片类型的消息
     fun sendMessageImage(url: String) {
         if(!isConnection()) {
             //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
@@ -174,6 +197,8 @@ class ChatLib {
         msg.chatId = chatId
         msg.worker = 3
         msg.msgTime = Timestamp.getDefaultInstance()
+        sendingMessageItem.cMsg = msg.build()
+        sendingMessageItem.isSend = true
 
         // 第三层
         val cSendMsg = GGateway.CSSendMessage.newBuilder()
@@ -190,12 +215,18 @@ class ChatLib {
         socket.sendMessage(payload.build().toByteArray(), true)
     }
 
+    //目前每隔150秒，通信就好自动断掉，建议每隔60秒调用它
     fun sendHeartBeat(){
         //let value: Int32 = -1333
         //var zero  = 0
         //val beat = zero.toByte()
         val buffer = ByteArray(0)
         socket.sendMessage(buffer, true)
+    }
+
+    //断开连接需要调用
+    fun disConnect(){
+        socket.sendClose()
     }
 
    /* fun makeConnect2(){

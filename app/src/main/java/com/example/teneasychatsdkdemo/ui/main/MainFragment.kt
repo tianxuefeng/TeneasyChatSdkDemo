@@ -12,8 +12,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import api.common.CMessage
-import api.common.CMessage.MessageContent
 import com.example.teneasychatsdkdemo.R
 import com.teneasy.sdk.ChatLib
 import com.teneasy.sdk.ui.MessageItem
@@ -77,15 +75,17 @@ class MainFragment : Fragment() {
 
                 etMsg.text.clear()
 
-                val cMsg = CMessage.Message.newBuilder()
+                /*val cMsg = CMessage.Message.newBuilder()
                 var cMContent = MessageContent.newBuilder()
                 cMContent.setData("测试消息")
                 cMsg.setContent(cMContent)
-
-                print(cMsg.content.data)
+                print(cMsg.content.data)*/
 
                 //val item = MessageItem(true, msg, 0, TimeUtil.getTimeStringAutoShort2(Date(), true))
-                addMsgItem(cMsg.build())
+
+                if (chatLib.sendingMessageItem.cMsg != null) {
+                    addMsgItem(chatLib.sendingMessageItem)
+                }
             } else {
                 Toast.makeText(context, "Please enter the sending content", Toast.LENGTH_LONG).show()
             }
@@ -113,13 +113,12 @@ class MainFragment : Fragment() {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun updateMsg(data: CMessage.Message) {
+    fun updateMsg(data: MessageItem) {
         addMsgItem(data)
     }
 
-    fun addMsgItem(data: CMessage.Message) {
-        //需要像iOS那有判断消息类型
-        //msgList.add(data)
+    fun addMsgItem(data: MessageItem) {
+        msgList.add(data)
         //if  data.payloadCase == CMessage.Message.PayloadCase.CONTENT
 
         /* 这是服务器时间转换为本地时间的办法
@@ -127,7 +126,7 @@ class MainFragment : Fragment() {
                     val localTime = TimeUtil.getTimeStringAutoShort2(msgDate, true)
                     Log.i("ChatLib", localTime)
          */
-        Toast.makeText(context, data.content.data, Toast.LENGTH_LONG).show()
+        //Toast.makeText(context, data.cMsg.content.data, Toast.LENGTH_LONG).show()
         msgAdapter.setList(msgList)
 
         listView.smoothScrollToPosition(msgAdapter.itemCount)

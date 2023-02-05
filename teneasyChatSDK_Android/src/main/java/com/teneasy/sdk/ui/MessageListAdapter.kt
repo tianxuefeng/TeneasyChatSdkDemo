@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.teneasy.sdk.R
+import com.teneasy.sdk.TimeUtil
 import com.teneasy.sdk.ui.MessageListAdapter.MsgViewHolder
-import com.teneasy.sdk.ui.MessageItem
-import java.util.ArrayList
+import java.util.*
 
 class MessageListAdapter : RecyclerView.Adapter<MsgViewHolder>() {
     private var list: ArrayList<MessageItem>? = null
@@ -31,16 +31,19 @@ class MessageListAdapter : RecyclerView.Adapter<MsgViewHolder>() {
             return
         }
         val item = list!![position]
+        val msgDate =  Date(item.cMsg!!.msgTime.seconds * 1000L)
+        val localTime = TimeUtil.getTimeStringAutoShort2(msgDate, true)
         if (item.isSend) {
-            holder.tvLeftTime.text = item.time
-            holder.tvLeftMsg.text = item.msg
+
+            holder.tvLeftTime.text = localTime
+            holder.tvLeftMsg.text = item.cMsg!!.content.data
             holder.tvLeftTime.visibility = View.VISIBLE
             holder.tvLeftMsg.visibility = View.VISIBLE
             holder.tvRightTime.visibility = View.GONE
             holder.tvRightMsg.visibility = View.GONE
         } else {
-            holder.tvRightTime.text = item.time
-            holder.tvRightMsg.text = item.msg
+            holder.tvRightTime.text = localTime
+            holder.tvRightMsg.text = item.cMsg!!.content.data
             holder.tvRightTime.visibility = View.VISIBLE
             holder.tvRightMsg.visibility = View.VISIBLE
             holder.tvLeftTime.visibility = View.GONE
