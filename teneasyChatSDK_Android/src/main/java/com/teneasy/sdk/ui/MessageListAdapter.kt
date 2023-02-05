@@ -34,20 +34,21 @@ class MessageListAdapter : RecyclerView.Adapter<MsgViewHolder>() {
         val msgDate =  Date(item.cMsg!!.msgTime.seconds * 1000L)
         val localTime = TimeUtil.getTimeStringAutoShort2(msgDate, true)
         if (item.isSend) {
-
-            holder.tvLeftTime.text = localTime
-            holder.tvLeftMsg.text = item.cMsg!!.content.data
-            holder.tvLeftTime.visibility = View.VISIBLE
-            holder.tvLeftMsg.visibility = View.VISIBLE
-            holder.tvRightTime.visibility = View.GONE
-            holder.tvRightMsg.visibility = View.GONE
-        } else {
             holder.tvRightTime.text = localTime
             holder.tvRightMsg.text = item.cMsg!!.content.data
             holder.tvRightTime.visibility = View.VISIBLE
             holder.tvRightMsg.visibility = View.VISIBLE
             holder.tvLeftTime.visibility = View.GONE
             holder.tvLeftMsg.visibility = View.GONE
+
+
+        } else {
+            holder.tvLeftTime.text = localTime
+            holder.tvLeftMsg.text = item.cMsg!!.content.data
+            holder.tvLeftTime.visibility = View.VISIBLE
+            holder.tvLeftMsg.visibility = View.VISIBLE
+            holder.tvRightTime.visibility = View.GONE
+            holder.tvRightMsg.visibility = View.GONE
         }
     }
 

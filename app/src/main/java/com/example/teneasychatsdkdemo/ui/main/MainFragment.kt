@@ -83,8 +83,8 @@ class MainFragment : Fragment() {
 
                 //val item = MessageItem(true, msg, 0, TimeUtil.getTimeStringAutoShort2(Date(), true))
 
-                if (chatLib.sendingMessageItem.cMsg != null) {
-                    addMsgItem(chatLib.sendingMessageItem)
+                if (chatLib.sendingMessageItem != null) {
+                    addMsgItem(chatLib.sendingMessageItem!!)
                 }
             } else {
                 Toast.makeText(context, "Please enter the sending content", Toast.LENGTH_LONG).show()

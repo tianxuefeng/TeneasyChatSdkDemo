@@ -28,7 +28,7 @@ class ChatLib {
 
     var context: Context? = null
     var payloadId: Long = 0
-    var sendingMessageItem  = MessageItem()
+    var sendingMessageItem: MessageItem? = null
     var chatId: Long = 0
     var token: String? = "CCcQARgGIBwohOeGoN8w.MDFy6dFaTLFByZSuv9lP0fcYOaOGc_WgiTnTP8dFdE3prh7iiT37Ioe5FrelrDltQocQsGB3APz0WKUVUDdcDA"
     private lateinit var socket: WebSocketConnection;
@@ -121,13 +121,14 @@ class ChatLib {
             } else if(payLoad.act == GAction.Action.ActionSCSendMsgACK) {
                 val msg = GGateway.SCSendMessage.parseFrom(msgData)
 
-                if (sendingMessageItem != null){
-                    sendingMessageItem.payLoadId = payloadId
-                    sendingMessageItem.cMsg!!.msgTime = msg.msgTime
-                    EventBus.getDefault().post(sendingMessageItem)
-                }
+               sendingMessageItem?.apply {
+                   this.payLoadId = payloadId
+                   //sendingMessageItem.cMsg!!.msgId = msg.msgId
+                   //sendingMessageItem.cMsg!!.msgTime = TimeUtil.msgTime()
+                   //EventBus.getDefault().post(sendingMessageItem)
+               }
+
                 print("消息回执")
-                println(msg)
             } else
                 print("received data: $data")
         }
@@ -151,18 +152,10 @@ class ChatLib {
         msg.sender = 0
         msg.chatId = chatId
         msg.worker = 3
-        msg.msgTime = Timestamp.getDefaultInstance()
-
-        var d = Timestamp.newBuilder()
-        val cal = Calendar.getInstance()
-        cal.time = Date()
-        val millis = cal.timeInMillis
-        d.seconds = (millis * 0.001).toLong()
-        msg.msgTime = d.build()
-        sendingMessageItem.isSend = true
-        sendingMessageItem.cMsg = msg.build()
-
-
+        msg.msgTime = TimeUtil.msgTime()
+        sendingMessageItem = MessageItem()
+        sendingMessageItem!!.isSend = true
+        sendingMessageItem!!.cMsg = msg.build()
 
         // 第三层
         val cSendMsg = GGateway.CSSendMessage.newBuilder()
@@ -196,9 +189,10 @@ class ChatLib {
         msg.sender = 0
         msg.chatId = chatId
         msg.worker = 3
-        msg.msgTime = Timestamp.getDefaultInstance()
-        sendingMessageItem.cMsg = msg.build()
-        sendingMessageItem.isSend = true
+        msg.msgTime = TimeUtil.msgTime()
+        sendingMessageItem = MessageItem()
+        sendingMessageItem!!.isSend = true
+        sendingMessageItem!!.cMsg = msg.build()
 
         // 第三层
         val cSendMsg = GGateway.CSSendMessage.newBuilder()

@@ -1,5 +1,6 @@
 package com.teneasy.sdk
 
+import com.google.protobuf.Timestamp
 import com.teneasy.sdk.TimeUtil
 import java.lang.Exception
 import java.text.SimpleDateFormat
@@ -28,6 +29,15 @@ object TimeUtil {
         val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
         val dateTime = simpleDateFormat.format(calendar.time).toString()
 
+    }
+
+    fun msgTime() : Timestamp{
+        var d = Timestamp.newBuilder()
+        val cal = Calendar.getInstance()
+        cal.time = Date()
+        val millis = cal.timeInMillis
+        d.seconds = (millis * 0.001).toLong()
+        return d.build()
     }
 
     /**
