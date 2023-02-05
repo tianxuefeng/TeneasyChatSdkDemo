@@ -48,8 +48,6 @@ class MainFragment : Fragment() {
         chatLib.makeConnect(requireContext())
 
         msgList = ArrayList()
-
-
 //        myTest.makeConnect2()
         //myTest.m
     }
@@ -94,6 +92,8 @@ class MainFragment : Fragment() {
         if(!EventBus.getDefault().isRegistered(MainFragment@this)) {
             EventBus.getDefault().register(MainFragment@this)
         }
+        requireActivity().title = "客服小福"
+       // requireActivity().titleColor = R.color.black
     }
 
     /**

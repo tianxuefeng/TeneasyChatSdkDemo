@@ -18,6 +18,7 @@
         tools:replace="android:allowBackup"
         tools:targetApi="31">
         <activity
+            android:label="dd"
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
