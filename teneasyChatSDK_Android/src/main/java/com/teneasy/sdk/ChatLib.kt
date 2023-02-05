@@ -158,7 +158,7 @@ class ChatLib {
         cal.time = Date()
         val millis = cal.timeInMillis
         d.seconds = (millis * 0.001).toLong()
-        sendingMessageItem.cMsg.msgTime = d.build()
+        msg.msgTime = d.build()
         sendingMessageItem.isSend = true
         sendingMessageItem.cMsg = msg.build()
 
