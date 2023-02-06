@@ -61,7 +61,7 @@ class MainFragment : Fragment() {
             }
         }
         listView = view.findViewById(R.id.list_view)
-        msgAdapter = MessageListAdapter()
+        msgAdapter = MessageListAdapter(requireContext())
         listView.adapter = msgAdapter
 
         val btnSend: Button = view.findViewById(R.id.btn_send)

@@ -80,10 +80,12 @@ class ChatLib {
 //                val msg = GGateway.CSSendMessage.parseFrom(msgData)
 //                val content = String(msg.toByteArray())
                 println("recv: ${msg.msg.content.data}")
-                var msgItem = MessageItem()
-                msgItem.cMsg = msg.msg
 
-                EventBus.getDefault().post(msg.msg)
+                var chatModel = MessageItem()
+                chatModel.cMsg =  msg.msg
+                chatModel.payLoadId = payloadId
+                chatModel.isSend = false
+                EventBus.getDefault().post(chatModel)
 
                 /*EventBus.getDefault().post(MessageItem(false, msg.msg.content.data, payLoad.id, TimeUtil.getTimeStringAutoShort2(
                     Date(), true
