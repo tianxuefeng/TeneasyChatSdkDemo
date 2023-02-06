@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
@@ -45,10 +46,16 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MsgViewHold
             holder.tvRightTime.text = localTime
             holder.tvRightTime.visibility = View.VISIBLE
             holder.tvRightMsg.visibility = View.VISIBLE
+            holder.lySend.visibility = View.VISIBLE
 
             holder.tvLeftTime.visibility = View.GONE
             holder.ivLeftImg.visibility = View.GONE
             holder.tvLeftMsg.visibility = View.GONE
+
+            if(item.sendError) {
+                holder.ivSendError.visibility = View.VISIBLE
+            } else
+                holder.ivSendError.visibility = View.GONE
 
             if (getItemViewType(position) == TYPE_Text){
                 holder.tvRightMsg.visibility = View.VISIBLE
@@ -70,6 +77,7 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MsgViewHold
             holder.tvRightMsg.visibility = View.GONE
             holder.ivRightImg.visibility = View.GONE
             holder.tvRightMsg.visibility = View.GONE
+            holder.lySend.visibility = View.GONE
 
             if (getItemViewType(position) == TYPE_Text){
                 holder.tvLeftMsg.visibility = View.VISIBLE
@@ -114,6 +122,8 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MsgViewHold
         var tvRightTime: TextView
         var tvRightMsg: TextView
         var ivRightImg: AppCompatImageView
+        var ivSendError: ImageView
+        var lySend: View
 
         init {
             tvLeftTime = itemView.findViewById(R.id.tv_left_time)
@@ -123,6 +133,8 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MsgViewHold
             ivRightImg = itemView.findViewById(R.id.iv_right_image)
             tvRightTime = itemView.findViewById(R.id.tv_right_time)
             tvRightMsg = itemView.findViewById(R.id.tv_right_msg)
+            ivSendError = itemView.findViewById(R.id.iv_send_error)
+            lySend = itemView.findViewById(R.id.layout_send)
         }
     }
 }

@@ -30,7 +30,8 @@ class ChatLib {
     var payloadId: Long = 0
     var sendingMessageItem: MessageItem? = null
     var chatId: Long = 0
-    var token: String? = "CCcQARgGIBwohOeGoN8w.MDFy6dFaTLFByZSuv9lP0fcYOaOGc_WgiTnTP8dFdE3prh7iiT37Ioe5FrelrDltQocQsGB3APz0WKUVUDdcDA"
+//    var token: String? = "CCcQARgGIBwohOeGoN8w.MDFy6dFaTLFByZSuv9lP0fcYOaOGc_WgiTnTP8dFdE3prh7iiT37Ioe5FrelrDltQocQsGB3APz0WKUVUDdcDA"
+    var token: String? = "CCcQARgQIBwovJGxtOIw.lR-zq_odVn0qtS1hCPh4jT4U4k86Ge7lNYQmJiIPYFf8IuhulyatNGoeAu8h4rGkUpskCRuDtRnbYljZEooMCw"
     private lateinit var socket: WebSocketConnection;
 
     fun makeConnect(context: Context){
@@ -40,6 +41,11 @@ class ChatLib {
         socket.connect(url, object : WebSocketConnectionHandler() {
             override fun onConnect(response: ConnectionResponse) {
                 println("Connected to server")
+                EventBus.getDefault().post(200)
+
+                var eventBus = MessageEventBus<MessageItem>()
+                eventBus.arg = 200
+                EventBus.getDefault().post(eventBus)
                 //Toast.makeText(context, "Connected to server", Toast.LENGTH_LONG).show()
             }
 
@@ -50,6 +56,9 @@ class ChatLib {
             }
 
             override fun onClose(code: Int, reason: String) {
+                var eventBus = MessageEventBus<MessageItem>()
+                eventBus.arg = -200
+                EventBus.getDefault().post(eventBus)
                 //println("Connection closed")
                 Toast.makeText(context, "Closed", Toast.LENGTH_LONG).show()
             }
@@ -86,9 +95,7 @@ class ChatLib {
         msg.chatId = chatId
         msg.worker = 3
         msg.msgTime = TimeUtil.msgTime()
-        sendingMessageItem = MessageItem()
-        sendingMessageItem!!.isSend = true
-        sendingMessageItem!!.cMsg = msg.build()
+
 
         // 第三层
         val cSendMsg = GGateway.CSSendMessage.newBuilder()
@@ -101,6 +108,11 @@ class ChatLib {
         payload.act = GAction.Action.ActionCSSendMsg
         payloadId += 1
         payload.id = payloadId
+
+        sendingMessageItem = MessageItem()
+        sendingMessageItem!!.id = payloadId
+        sendingMessageItem!!.isSend = true
+        sendingMessageItem!!.cMsg = msg.build()
 
         socket.sendMessage(payload.build().toByteArray(), true)
     }
@@ -168,8 +180,12 @@ class ChatLib {
                 var chatModel = MessageItem()
                 chatModel.cMsg =  msg.msg
                 chatModel.payLoadId = payloadId
+                chatModel.id = payloadId
                 chatModel.isSend = false
-                EventBus.getDefault().post(chatModel)
+
+                var eventBus = MessageEventBus<MessageItem>()
+                eventBus.setData(chatModel)
+                EventBus.getDefault().post(eventBus)
 
                 /*EventBus.getDefault().post(MessageItem(false, msg.msg.content.data, payLoad.id, TimeUtil.getTimeStringAutoShort2(
                     Date(), true
@@ -198,7 +214,11 @@ class ChatLib {
                 chatModel.cMsg = cMsg.build()
                 chatModel.payLoadId = payloadId
                 chatModel.isSend = false
-                EventBus.getDefault().post(chatModel)
+
+                // 采用封装好的自定义事件类，来实现多类型传递
+                var eventBus = MessageEventBus<MessageItem>()
+                eventBus.setData(chatModel)
+                EventBus.getDefault().post(eventBus)
 
             } else if(payLoad.act == GAction.Action.ActionForward) {
                 val msg = GGateway.CSForward.parseFrom(msgData)
@@ -209,12 +229,18 @@ class ChatLib {
 
                 sendingMessageItem?.apply {
                     this.payLoadId = payloadId
+                    this.msgId = msgId
+                    this.sendError = false
+
+                    var eventBus = MessageEventBus<MessageItem>()
+                    eventBus.setData(sendingMessageItem!!)
+                    EventBus.getDefault().post(eventBus)
                     //sendingMessageItem.cMsg!!.msgId = msg.msgId
                     //sendingMessageItem.cMsg!!.msgTime = TimeUtil.msgTime()
                     //EventBus.getDefault().post(sendingMessageItem)
                 }
 
-                print("消息回执")
+                print("消息回执: ${msg.msgId}")
             } else
                 print("received data: $data")
         }

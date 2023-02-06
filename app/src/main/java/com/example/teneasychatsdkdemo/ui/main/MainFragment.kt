@@ -14,11 +14,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.teneasychatsdkdemo.R
 import com.teneasy.sdk.ChatLib
+import com.teneasy.sdk.MessageEventBus
 import com.teneasy.sdk.ui.MessageItem
 import com.teneasy.sdk.ui.MessageListAdapter
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.*
 import kotlin.collections.ArrayList
 
 class MainFragment : Fragment() {
@@ -39,6 +41,8 @@ class MainFragment : Fragment() {
 
     private lateinit var listView: RecyclerView
 
+    private lateinit var timer: Timer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
@@ -46,7 +50,7 @@ class MainFragment : Fragment() {
         chatLib = ChatLib()
         //myTest.sayHello(requireContext())
         chatLib.makeConnect(requireContext())
-
+        timer = Timer()
         msgList = ArrayList()
 //        myTest.makeConnect2()
         //myTest.m
@@ -66,7 +70,7 @@ class MainFragment : Fragment() {
 
         val btnSend: Button = view.findViewById(R.id.btn_send)
         btnSend.setOnClickListener(View.OnClickListener { v:View ->
-            chatLib.sendHeartBeat()
+//            chatLib.sendHeartBeat()
             if(etMsg.text != null && etMsg.text.isNotEmpty()) {
                 closeSoftKeyboard(etMsg)
                 val msg = etMsg.text.toString()
@@ -111,14 +115,58 @@ class MainFragment : Fragment() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun updateMsg(data: MessageItem) {
-        addMsgItem(data)
+    private fun startTimer() {
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                //需要执行的任务
+                sendHeartBeat()
+            }
+        }, 0,30000)     // 便于测试，暂时设定为30秒
     }
 
-    fun addMsgItem(data: MessageItem) {
+    private fun closeTimer() {
+        if(timer != null) {
+            timer.cancel()
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun updateMsg(event: MessageEventBus<MessageItem>) {
+        if(event.what == 0) {
+            // 解析状态
+            if(event.arg == 200) {
+                startTimer()
+            } else {
+                closeTimer()
+            }
+        } else if(event.what == 1 && event.data != null) {
+            // 解析数据
+            val data = event.data
+            if(!data!!.isSend)
+                addMsgItem(data)
+            else {
+                if(data.payLoadId == null || data.payLoadId <= 0) {
+                    // 初始添加
+                    addMsgItem(data)
+                } else {
+                    // 修改状态
+                    for (item in msgList) {
+                        if(item.id == data.id && item.cMsg!!.content.data.equals(data.cMsg!!.content.data)) {
+                            item.payLoadId = data.payLoadId
+                            item.sendError = data.sendError
+
+                            msgAdapter.setList(msgList)
+                            msgAdapter.notifyDataSetChanged()
+                            return
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    private fun addMsgItem(data: MessageItem) {
         msgList.add(data)
         //if  data.payloadCase == CMessage.Message.PayloadCase.CONTENT
 
@@ -136,6 +184,7 @@ class MainFragment : Fragment() {
     //需要每60秒调用一次这个函数，确保socket的活动状态。
     fun sendHeartBeat(){
         chatLib.sendHeartBeat()
+        println("刷新连接")
     }
 
     override fun onCreateView(
@@ -147,6 +196,7 @@ class MainFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        closeTimer()
         if(!EventBus.getDefault().isRegistered(MainFragment@this)) {
             EventBus.getDefault().unregister(MainFragment@this)
         }
