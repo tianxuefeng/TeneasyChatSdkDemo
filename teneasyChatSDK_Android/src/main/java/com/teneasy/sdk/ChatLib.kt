@@ -159,7 +159,8 @@ class ChatLib {
         //let value: Int32 = -1333
         //var zero  = 0
         //val beat = zero.toByte()
-        val buffer = ByteArray(0)
+        val buffer = ByteArray(1)
+        buffer[0] = 0
         socket.sendMessage(buffer, true)
     }
 
@@ -229,9 +230,10 @@ class ChatLib {
 
                 sendingMessageItem?.apply {
                     this.payLoadId = payloadId
-                    this.msgId = msgId
-                    this.sendError = false
-
+                    if (msg.msgId != 0.toLong()) {
+                        //this.msgId = msg.msgId
+                        this.sendError = false
+                    }
                     var eventBus = MessageEventBus<MessageItem>()
                     eventBus.setData(sendingMessageItem!!)
                     EventBus.getDefault().post(eventBus)

@@ -16,7 +16,6 @@ import com.example.teneasychatsdkdemo.R
 import com.teneasy.sdk.ChatLib
 import com.teneasy.sdk.MessageEventBus
 import com.teneasy.sdk.ui.MessageItem
-import com.teneasy.sdk.ui.MessageListAdapter
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

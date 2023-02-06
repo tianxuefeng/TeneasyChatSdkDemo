@@ -1,6 +1,5 @@
-package com.teneasy.sdk.ui
+package com.example.teneasychatsdkdemo.ui.main
 
-import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +10,11 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+
 import com.teneasy.sdk.R
 import com.teneasy.sdk.TimeUtil
-import com.teneasy.sdk.ui.MessageListAdapter.MsgViewHolder
+import com.example.teneasychatsdkdemo.ui.main.MessageListAdapter.MsgViewHolder
+import com.teneasy.sdk.ui.MessageItem
 import java.util.*
 
 class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MsgViewHolder>() {
@@ -31,7 +32,7 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MsgViewHold
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MsgViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_message, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(com.example.teneasychatsdkdemo.R.layout.item_message, parent, false)
         return MsgViewHolder(view)
     }
 
