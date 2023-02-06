@@ -8,7 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="chatHeader">#333333</color>
+    <color name="chatHeader">#4E4E49</color>
     <color name="statusBar">#4E4E49</color>
     <color name="chatBody">#f7f7f7</color>
     <color name="yellow">#fbe659</color>

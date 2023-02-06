@@ -67,75 +67,6 @@ class ChatLib {
         })
     }
 
-    fun receiveMsg(data: ByteArray) {
-        if(data.size == 1)
-            print("在别处登录了")
-        else {
-            val payLoad = Payload.parseFrom(data)
-            val msgData = payLoad.data
-            payloadId = payLoad.id
-            println("act: ${payLoad.act.number}")
-            if(payLoad.act == GAction.Action.ActionSCRecvMsg) {
-                val msg = GGateway.SCRecvMessage.parseFrom(msgData)
-//                val msg = GGateway.CSSendMessage.parseFrom(msgData)
-//                val content = String(msg.toByteArray())
-                println("recv: ${msg.msg.content.data}")
-
-                var chatModel = MessageItem()
-                chatModel.cMsg =  msg.msg
-                chatModel.payLoadId = payloadId
-                chatModel.isSend = false
-                EventBus.getDefault().post(chatModel)
-
-                /*EventBus.getDefault().post(MessageItem(false, msg.msg.content.data, payLoad.id, TimeUtil.getTimeStringAutoShort2(
-                    Date(), true
-                )))*/
-            } else if(payLoad.act == GAction.Action.ActionSCHi) {
-                val msg = GGateway.SCHi.parseFrom(msgData)
-                token = msg.token
-                chatId = msg.id
-                println("schi: $msg")
-                var cMsg = CMessage.Message.newBuilder()
-                var cMContent = CMessage.MessageContent.newBuilder()
-
-
-                var d = Timestamp.newBuilder()
-                val cal = Calendar.getInstance()
-                cal.time = Date()
-                val millis = cal.timeInMillis
-                d.seconds = (millis * 0.001).toLong()
-
-                //d.t = msgDate.time
-                cMsg.msgTime = d.build()
-                cMContent.setData("你好！我是客服小福")
-                cMsg.setContent(cMContent)
-
-                var chatModel = MessageItem()
-                chatModel.cMsg = cMsg.build()
-                chatModel.payLoadId = payloadId
-                chatModel.isSend = false
-                EventBus.getDefault().post(chatModel)
-
-            } else if(payLoad.act == GAction.Action.ActionForward) {
-                val msg = GGateway.CSForward.parseFrom(msgData)
-
-                println("forward: $msg.data")
-            } else if(payLoad.act == GAction.Action.ActionSCSendMsgACK) {
-                val msg = GGateway.SCSendMessage.parseFrom(msgData)
-
-               sendingMessageItem?.apply {
-                   this.payLoadId = payloadId
-                   //sendingMessageItem.cMsg!!.msgId = msg.msgId
-                   //sendingMessageItem.cMsg!!.msgTime = TimeUtil.msgTime()
-                   //EventBus.getDefault().post(sendingMessageItem)
-               }
-
-                print("消息回执")
-            } else
-                print("received data: $data")
-        }
-    }
-
     //发送文字消息
     fun sendMsg(msg: String) {
         if(!isConnection()) {
@@ -220,9 +151,80 @@ class ChatLib {
         socket.sendMessage(buffer, true)
     }
 
+    fun receiveMsg(data: ByteArray) {
+        if(data.size == 1)
+            print("在别处登录了")
+        else {
+            val payLoad = Payload.parseFrom(data)
+            val msgData = payLoad.data
+            payloadId = payLoad.id
+            println("act: ${payLoad.act.number}")
+            if(payLoad.act == GAction.Action.ActionSCRecvMsg) {
+                val msg = GGateway.SCRecvMessage.parseFrom(msgData)
+//                val msg = GGateway.CSSendMessage.parseFrom(msgData)
+//                val content = String(msg.toByteArray())
+                println("recv: ${msg.msg.content.data}")
+
+                var chatModel = MessageItem()
+                chatModel.cMsg =  msg.msg
+                chatModel.payLoadId = payloadId
+                chatModel.isSend = false
+                EventBus.getDefault().post(chatModel)
+
+                /*EventBus.getDefault().post(MessageItem(false, msg.msg.content.data, payLoad.id, TimeUtil.getTimeStringAutoShort2(
+                    Date(), true
+                )))*/
+            } else if(payLoad.act == GAction.Action.ActionSCHi) {
+                val msg = GGateway.SCHi.parseFrom(msgData)
+                token = msg.token
+                chatId = msg.id
+                println("schi: $msg")
+                var cMsg = CMessage.Message.newBuilder()
+                var cMContent = CMessage.MessageContent.newBuilder()
+
+
+                var d = Timestamp.newBuilder()
+                val cal = Calendar.getInstance()
+                cal.time = Date()
+                val millis = cal.timeInMillis
+                d.seconds = (millis * 0.001).toLong()
+
+                //d.t = msgDate.time
+                cMsg.msgTime = d.build()
+                cMContent.setData("你好！我是客服小福")
+                cMsg.setContent(cMContent)
+
+                var chatModel = MessageItem()
+                chatModel.cMsg = cMsg.build()
+                chatModel.payLoadId = payloadId
+                chatModel.isSend = false
+                EventBus.getDefault().post(chatModel)
+
+            } else if(payLoad.act == GAction.Action.ActionForward) {
+                val msg = GGateway.CSForward.parseFrom(msgData)
+
+                println("forward: $msg.data")
+            } else if(payLoad.act == GAction.Action.ActionSCSendMsgACK) {
+                val msg = GGateway.SCSendMessage.parseFrom(msgData)
+
+                sendingMessageItem?.apply {
+                    this.payLoadId = payloadId
+                    //sendingMessageItem.cMsg!!.msgId = msg.msgId
+                    //sendingMessageItem.cMsg!!.msgTime = TimeUtil.msgTime()
+                    //EventBus.getDefault().post(sendingMessageItem)
+                }
+
+                print("消息回执")
+            } else
+                print("received data: $data")
+        }
+    }
+
     //断开连接需要调用
     fun disConnect(){
-        socket.sendClose()
+        if (socket != null) {
+            socket.sendClose()
+        }
     }
 
    /* fun makeConnect2(){

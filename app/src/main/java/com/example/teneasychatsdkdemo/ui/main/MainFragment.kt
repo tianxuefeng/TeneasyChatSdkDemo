@@ -66,6 +66,7 @@ class MainFragment : Fragment() {
 
         val btnSend: Button = view.findViewById(R.id.btn_send)
         btnSend.setOnClickListener(View.OnClickListener { v:View ->
+            chatLib.sendHeartBeat()
             if(etMsg.text != null && etMsg.text.isNotEmpty()) {
                 closeSoftKeyboard(etMsg)
                 val msg = etMsg.text.toString()
