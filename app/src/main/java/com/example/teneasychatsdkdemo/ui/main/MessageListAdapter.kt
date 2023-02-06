@@ -11,13 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 
-import com.teneasy.sdk.R
 import com.teneasy.sdk.TimeUtil
-import com.example.teneasychatsdkdemo.ui.main.MessageListAdapter.MsgViewHolder
 import com.teneasy.sdk.ui.MessageItem
 import java.util.*
+import com.example.teneasychatsdkdemo.R
 
-class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MsgViewHolder>() {
+class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageListAdapter.MsgViewHolder>() {
     private var list: ArrayList<MessageItem>? = null
     var TYPE_Text : Int = 0
     val TYPE_Image : Int = 1
