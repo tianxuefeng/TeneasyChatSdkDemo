@@ -7,6 +7,7 @@ import com.google.protobuf.Timestamp
 import com.teneasy.sdk.ui.MessageItem
 import gateway.GAction
 import gateway.GGateway
+import gateway.GGateway.SCHi
 import gateway.GPayload.Payload
 import io.crossbar.autobahn.websocket.WebSocketConnection
 import io.crossbar.autobahn.websocket.WebSocketConnectionHandler
@@ -196,29 +197,14 @@ class ChatLib {
                 //chatId = msg.id
                 print("worker id"  + msg.workerId)
                 //println("schi: $msg")
-                var cMsg = CMessage.Message.newBuilder()
-                var cMContent = CMessage.MessageContent.newBuilder()
 
 
-                var d = Timestamp.newBuilder()
-                val cal = Calendar.getInstance()
-                cal.time = Date()
-                val millis = cal.timeInMillis
-                d.seconds = (millis * 0.001).toLong()
 
-                //d.t = msgDate.time
-                cMsg.msgTime = d.build()
-                cMContent.setData("你好！我是客服小福")
-                cMsg.setContent(cMContent)
-
-                var chatModel = MessageItem()
-                chatModel.cMsg = cMsg.build()
-                chatModel.payLoadId = payloadId
-                chatModel.isSend = false
+           //Compose chat model
 
                 // 采用封装好的自定义事件类，来实现多类型传递
-                var eventBus = MessageEventBus<MessageItem>()
-                eventBus.setData(chatModel)
+                var eventBus = MessageEventBus<SCHi>()
+                eventBus.setData(msg)
                 EventBus.getDefault().post(eventBus)
 
             } else if(payLoad.act == GAction.Action.ActionForward) {
@@ -246,6 +232,28 @@ class ChatLib {
             } else
                 print("received data: $data")
         }
+    }
+
+    fun composeAChatmodel(textMsg: String) : MessageItem{
+        var cMsg = CMessage.Message.newBuilder()
+        var cMContent = CMessage.MessageContent.newBuilder()
+
+        var d = Timestamp.newBuilder()
+        val cal = Calendar.getInstance()
+        cal.time = Date()
+        val millis = cal.timeInMillis
+        d.seconds = (millis * 0.001).toLong()
+
+        //d.t = msgDate.time
+        cMsg.msgTime = d.build()
+        cMContent.setData(textMsg)
+        cMsg.setContent(cMContent)
+
+        var chatModel = MessageItem()
+        chatModel.cMsg = cMsg.build()
+        chatModel.payLoadId = payloadId
+        chatModel.isSend = false
+        return chatModel
     }
 
     //断开连接需要调用

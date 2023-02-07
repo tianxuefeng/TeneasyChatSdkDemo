@@ -16,6 +16,7 @@ import com.example.teneasychatsdkdemo.R
 import com.teneasy.sdk.ChatLib
 import com.teneasy.sdk.MessageEventBus
 import com.teneasy.sdk.ui.MessageItem
+import gateway.GGateway.SCHi
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -129,7 +130,7 @@ class MainFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun updateMsg(event: MessageEventBus<MessageItem>) {
+    fun updateMsg(event: MessageEventBus<Any>) {
         if(event.what == 0) {
             // 解析状态
             if(event.arg == 200) {
@@ -138,27 +139,42 @@ class MainFragment : Fragment() {
                 closeTimer()
             }
         } else if(event.what == 1 && event.data != null) {
-            // 解析数据
-            val data = event.data
-            if(!data!!.isSend)
-                addMsgItem(data)
-            else {
-                if(data.payLoadId == null || data.payLoadId <= 0) {
-                    // 初始添加
-                    addMsgItem(data)
-                } else {
-                    // 修改状态
-                    for (item in msgList) {
-                        if(item.id == data.id && item.cMsg!!.content.data.equals(data.cMsg!!.content.data)) {
-                            item.payLoadId = data.payLoadId
-                            item.sendError = data.sendError
 
-                            msgAdapter.setList(msgList)
-                            msgAdapter.notifyDataSetChanged()
-                            return
+            if (event.data is MessageItem) {
+                // 解析数据
+                val data = event.data as MessageItem
+                if (!data!!.isSend)
+                    addMsgItem(data)
+                else {
+                    if (data.payLoadId == null || data.payLoadId <= 0) {
+                        // 初始添加
+                        addMsgItem(data)
+                    } else {
+                        // 修改状态
+                        for (item in msgList) {
+                            if (item.id == data.id && item.cMsg!!.content.data.equals(data.cMsg!!.content.data)) {
+                                item.payLoadId = data.payLoadId
+                                item.sendError = data.sendError
+
+                                msgAdapter.setList(msgList)
+                                msgAdapter.notifyDataSetChanged()
+                                return
+                            }
                         }
                     }
                 }
+            } else if (event.data is SCHi) {
+                val data = event.data as SCHi
+                val workId = data.workerId
+                /* 此处需要调用Api来获取客服的名字，并显示在头部
+                https://csapi.hfxg.xyz/v1/api/query-worker
+{
+"workerId": 1
+}
+
+header:
+X-Token ="token"
+                 */
 
             }
         }
