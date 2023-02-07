@@ -3,7 +3,7 @@
     <style name="Theme.TeneasyChatSdkDemo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/chatHeader</item>
-        <item name="colorPrimaryVariant">@color/chatHeader</item>
+        <item name="colorPrimaryVariant">@color/chatBody</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -11,6 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
 
 
+        <item name="android:windowLightStatusBar">true</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
