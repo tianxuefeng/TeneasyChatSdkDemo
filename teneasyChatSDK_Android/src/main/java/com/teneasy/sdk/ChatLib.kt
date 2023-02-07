@@ -29,7 +29,7 @@ class ChatLib {
     var context: Context? = null
     var payloadId: Long = 0
     var sendingMessageItem: MessageItem? = null
-    var chatId: Long = 0
+    var chatId: Long = 2692944494608
 //    var token: String? = "CCcQARgGIBwohOeGoN8w.MDFy6dFaTLFByZSuv9lP0fcYOaOGc_WgiTnTP8dFdE3prh7iiT37Ioe5FrelrDltQocQsGB3APz0WKUVUDdcDA"
     var token: String? = "CCcQARgQIBwovJGxtOIw.lR-zq_odVn0qtS1hCPh4jT4U4k86Ge7lNYQmJiIPYFf8IuhulyatNGoeAu8h4rGkUpskCRuDtRnbYljZEooMCw"
     private lateinit var socket: WebSocketConnection;
@@ -79,7 +79,7 @@ class ChatLib {
     //发送文字消息
     fun sendMsg(msg: String) {
         if(!isConnection()) {
-            Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
+            //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
             context?.apply {   makeConnect(this)  }
             return
         }
@@ -93,9 +93,13 @@ class ChatLib {
         msg.content = content.build()
         msg.sender = 0
         msg.chatId = chatId
-        msg.worker = 3
+        msg.worker = 5
         msg.msgTime = TimeUtil.msgTime()
 
+        sendingMessageItem = MessageItem()
+        sendingMessageItem!!.id = payloadId
+        sendingMessageItem!!.isSend = true
+        sendingMessageItem!!.cMsg = msg.build()
 
         // 第三层
         val cSendMsg = GGateway.CSSendMessage.newBuilder()
@@ -108,11 +112,6 @@ class ChatLib {
         payload.act = GAction.Action.ActionCSSendMsg
         payloadId += 1
         payload.id = payloadId
-
-        sendingMessageItem = MessageItem()
-        sendingMessageItem!!.id = payloadId
-        sendingMessageItem!!.isSend = true
-        sendingMessageItem!!.cMsg = msg.build()
 
         socket.sendMessage(payload.build().toByteArray(), true)
     }
@@ -133,7 +132,7 @@ class ChatLib {
         msg.setImage(content)
         msg.sender = 0
         msg.chatId = chatId
-        msg.worker = 3
+        msg.worker = 5
         msg.msgTime = TimeUtil.msgTime()
         sendingMessageItem = MessageItem()
         sendingMessageItem!!.isSend = true
@@ -225,7 +224,7 @@ class ChatLib {
                 val msg = GGateway.CSForward.parseFrom(msgData)
 
                 println("forward: $msg.data")
-            } else if(payLoad.act == GAction.Action.ActionSCSendMsgACK) {
+            } else if(payLoad.act == GAction.Action.ActionSCSendMsgACK) {//消息回执
                 val msg = GGateway.SCSendMessage.parseFrom(msgData)
 
                 sendingMessageItem?.apply {
