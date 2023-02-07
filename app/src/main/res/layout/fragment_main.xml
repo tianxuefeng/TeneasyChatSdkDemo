@@ -56,7 +56,6 @@
         android:id="@+id/et_msg"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:lines="1"
         android:maxLines="5"
         android:background="@drawable/bg_edit_01"
         android:padding="5dp"

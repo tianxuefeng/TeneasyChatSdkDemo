@@ -29,9 +29,9 @@ class ChatLib {
     var context: Context? = null
     var payloadId: Long = 0
     var sendingMessageItem: MessageItem? = null
-    var chatId: Long = 2692944494608
-//    var token: String? = "CCcQARgGIBwohOeGoN8w.MDFy6dFaTLFByZSuv9lP0fcYOaOGc_WgiTnTP8dFdE3prh7iiT37Ioe5FrelrDltQocQsGB3APz0WKUVUDdcDA"
-    var token: String? = "CCcQARgQIBwovJGxtOIw.lR-zq_odVn0qtS1hCPh4jT4U4k86Ge7lNYQmJiIPYFf8IuhulyatNGoeAu8h4rGkUpskCRuDtRnbYljZEooMCw"
+    //var chatId: Long = 2692944494602 //2692944494608客服下线了
+//    var token: String? = "CCcQARgGIBwohOeGoN8w.MDFy6dFaTLFByZSuv9lP0fcYOaOGc_WgiTnTP8dFdE3prh7iiT37Ioe5FrelrDltQocQsGB3APz0WKUVUDdcDA"//这个token失效了
+    var token: String? = "CCcQARgKIBwotaa8vuAw.TM241ffJsCLGVTPSv-G65MuEKXuOcPqUKzpVtiDoAnOCORwC0AbAQoATJ1z_tZaWDil9iz2dE4q5TyIwNcIVCQ"
     private lateinit var socket: WebSocketConnection;
 
     fun makeConnect(context: Context){
@@ -92,8 +92,8 @@ class ChatLib {
         val msg = CMessage.Message.newBuilder()
         msg.content = content.build()
         msg.sender = 0
-        msg.chatId = chatId
-        msg.worker = 5
+        msg.chatId = 0
+        msg.worker = 0
         msg.msgTime = TimeUtil.msgTime()
 
         sendingMessageItem = MessageItem()
@@ -131,8 +131,8 @@ class ChatLib {
         val msg = CMessage.Message.newBuilder()
         msg.setImage(content)
         msg.sender = 0
-        msg.chatId = chatId
-        msg.worker = 5
+        msg.chatId = 0
+        msg.worker = 0
         msg.msgTime = TimeUtil.msgTime()
         sendingMessageItem = MessageItem()
         sendingMessageItem!!.isSend = true
@@ -193,7 +193,7 @@ class ChatLib {
             } else if(payLoad.act == GAction.Action.ActionSCHi) {
                 val msg = GGateway.SCHi.parseFrom(msgData)
                 token = msg.token
-                chatId = msg.id
+                //chatId = msg.id
                 println("schi: $msg")
                 var cMsg = CMessage.Message.newBuilder()
                 var cMContent = CMessage.MessageContent.newBuilder()
