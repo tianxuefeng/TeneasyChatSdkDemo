@@ -69,7 +69,6 @@ class MainFragment : Fragment() {
 
         val btnSend: Button = view.findViewById(R.id.btn_send)
         btnSend.setOnClickListener(View.OnClickListener { v:View ->
-//            chatLib.sendHeartBeat()
             if(etMsg.text != null && etMsg.text.isNotEmpty()) {
                 closeSoftKeyboard(etMsg)
                 val msg = etMsg.text.toString()
@@ -183,7 +182,7 @@ class MainFragment : Fragment() {
     //需要每60秒调用一次这个函数，确保socket的活动状态。
     fun sendHeartBeat(){
         chatLib.sendHeartBeat()
-        println("刷新连接")
+        println("确保通信在活跃状态")
     }
 
     override fun onCreateView(
