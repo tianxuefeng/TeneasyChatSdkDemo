@@ -175,7 +175,7 @@ class MainFragment : Fragment() {
 header:
 X-Token ="token"
                  */
-
+                addMsgItem(chatLib.composeAChatmodel("你好，我是客服小福"))
             }
         }
     }
