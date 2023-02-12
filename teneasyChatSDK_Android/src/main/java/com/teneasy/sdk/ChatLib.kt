@@ -32,7 +32,7 @@ class ChatLib {
     var sendingMessageItem: MessageItem? = null
     //var chatId: Long = 2692944494602 //2692944494608客服下线了
 //    var token: String? = "CCcQARgGIBwohOeGoN8w.MDFy6dFaTLFByZSuv9lP0fcYOaOGc_WgiTnTP8dFdE3prh7iiT37Ioe5FrelrDltQocQsGB3APz0WKUVUDdcDA"//客服下线了
-    var token: String? = "CCcQARgKIBwotaa8vuAw.TM241ffJsCLGVTPSv-G65MuEKXuOcPqUKzpVtiDoAnOCORwC0AbAQoATJ1z_tZaWDil9iz2dE4q5TyIwNcIVCQ"
+    var token: String? = "CCcQARgRIBwoxtTNgeQw.BL9S_YLEWQmWzD1NjYHaDM3dUa6UOqgwOORaC9l8WyWuEVgCbxgd67GXmlQJsm1R2aQUgFDDrvpDsq3CmWqVAA"
     private lateinit var socket: WebSocketConnection;
 
     fun makeConnect(context: Context){
@@ -253,6 +253,28 @@ class ChatLib {
         chatModel.cMsg = cMsg.build()
         chatModel.payLoadId = payloadId
         chatModel.isSend = false
+        return chatModel
+    }
+
+    fun composeAChatmodelImg(imgPath: String, isSend: Boolean) : MessageItem{
+        var cMsg = CMessage.Message.newBuilder()
+        var cMContent = CMessage.MessageImage.newBuilder()
+
+        var d = Timestamp.newBuilder()
+        val cal = Calendar.getInstance()
+        cal.time = Date()
+        val millis = cal.timeInMillis
+        d.seconds = (millis * 0.001).toLong()
+
+        //d.t = msgDate.time
+        cMsg.msgTime = d.build()
+        cMContent.uri = imgPath
+        cMsg.setImage(cMContent)
+
+        var chatModel = MessageItem()
+        chatModel.cMsg = cMsg.build()
+//        chatModel.payLoadId = payloadId
+        chatModel.isSend = isSend
         return chatModel
     }
 

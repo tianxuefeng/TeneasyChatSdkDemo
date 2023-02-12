@@ -1,12 +1,14 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+//    id 'org.jetbrains.kotlin.kapt'
+    id 'kotlin-kapt'
     //id 'com.google.protobuf'
 }
 
 android {
     namespace 'com.example.teneasychatsdkdemo'
-    compileSdk 33
+    compileSdk 31
     defaultConfig {
         applicationId "com.example.teneasychatsdkdemo"
         minSdk 26
@@ -30,19 +32,25 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures {
-        viewBinding true
+//    buildFeatures {
+//        viewBinding true
+//    }
+//    viewBinding {
+//        true
+//    }
+    dataBinding {
+        enabled = true
     }
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.6.0'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.core:core-ktx:1.7.0-alpha01'
+    implementation 'androidx.appcompat:appcompat:1.4.0-alpha03'
+    implementation 'com.google.android.material:material:1.5.0-alpha01'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0-alpha02'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0-alpha02'
    //implementation 'com.github.tianxuefeng:teneasy-chatsdk:1.0.4'
    // commonMainApi("dev.icerock.moko:socket-io:0.3.0")
     //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:ef69b5cad857254dcfb6e0f2fdecd25b4ff73f19 '
@@ -63,4 +71,7 @@ dependencies {
     // 图片加载
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+    // PictureSelector图片选择
+    implementation 'io.github.lucksiege:pictureselector:v3.10.5'
 }

@@ -100,13 +100,20 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
             return TYPE_Text
         }
         val obj = list!![position]
-        obj.cMsg?.apply {
-            return if (this.hasImage()){
-                return TYPE_Image
-            } else {
-                return TYPE_Text
+        // 因为要处理接收和自己发送的消息，所以单纯的判断msg是不够的。需要直接判断imgPath是否为空
+//        if(obj.isSend) {
+//            if(obj.imgPath != null && obj.imgPath.isNotEmpty()) {
+//                return TYPE_Image
+//            }
+//        } else {
+            obj.cMsg?.apply {
+                return if (this.hasImage()){
+                    return TYPE_Image
+                } else {
+                    return TYPE_Text
+                }
             }
-        }
+//        }
         return TYPE_Text
     }
 

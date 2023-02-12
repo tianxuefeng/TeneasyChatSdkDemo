@@ -11,5 +11,6 @@ class MessageItem {//:Serializable
         //使用payLoadId来进行发送消息，消息回执的匹配
         var payLoadId: Long = 0
         var msgId: Long = 0
+        var imgPath: String = ""
         var status : Int = 0
     }
