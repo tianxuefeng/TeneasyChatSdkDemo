@@ -1,0 +1,67 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
+
+android {
+    namespace 'com.teneasy.chatuisdk'
+    compileSdk 32
+
+    defaultConfig {
+        minSdk 24
+        targetSdk 32
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.7.0-alpha01'
+    implementation 'androidx.appcompat:appcompat:1.4.0-alpha03'
+    implementation 'com.google.android.material:material:1.5.0-alpha01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0-alpha02'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0-alpha02'
+    //implementation 'com.github.tianxuefeng:teneasy-chatsdk:1.0.4'
+    // commonMainApi("dev.icerock.moko:socket-io:0.3.0")
+    //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:ef69b5cad857254dcfb6e0f2fdecd25b4ff73f19 '
+
+    //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:master-SNAPSHOT'
+    //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:1.0.8'
+    implementation project(path: ':teneasyChatSDK_Android')
+    //implementation project(path: ':teneasyChatSDK_Android')
+    // implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+    //TeneasyChatSdkDemo
+    //implementation project(path: ':teneasyChatSDK_Android')
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation 'com.google.protobuf:protobuf-java:3.21.12'
+    implementation 'de.hdodenhof:circleimageview:3.0.1'
+    implementation("org.greenrobot:eventbus:3.3.1")
+    // 图片加载
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+    // PictureSelector图片选择
+    implementation 'io.github.lucksiege:pictureselector:v3.10.5'
+}

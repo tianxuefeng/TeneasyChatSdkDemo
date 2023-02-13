@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 rootProject.name = "TeneasyChatSdkDemo"
 include ':app'
 include ':teneasyChatSDK_Android'
+include ':TeneasyChatSDKUI_Android'
