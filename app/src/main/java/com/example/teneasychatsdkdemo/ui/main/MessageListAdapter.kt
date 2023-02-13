@@ -15,6 +15,7 @@ import com.teneasy.sdk.TimeUtil
 import com.teneasy.sdk.ui.MessageItem
 import java.util.*
 import com.example.teneasychatsdkdemo.R
+import com.teneasy.sdk.ui.MessageSendState
 
 class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageListAdapter.MsgViewHolder>() {
     private var list: ArrayList<MessageItem>? = null
@@ -52,10 +53,10 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
             holder.ivLeftImg.visibility = View.GONE
             holder.tvLeftMsg.visibility = View.GONE
 
-            if(item.sendError) {
-                holder.ivSendError.visibility = View.VISIBLE
+            if(item.sendStatus != MessageSendState.发送成功) {
+                holder.ivSendStatus.visibility = View.VISIBLE
             } else
-                holder.ivSendError.visibility = View.GONE
+                holder.ivSendStatus.visibility = View.GONE
 
             if (getItemViewType(position) == TYPE_Text){
                 holder.tvRightMsg.visibility = View.VISIBLE
@@ -129,7 +130,7 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
         var tvRightTime: TextView
         var tvRightMsg: TextView
         var ivRightImg: AppCompatImageView
-        var ivSendError: ImageView
+        var ivSendStatus: ImageView
         var lySend: View
 
         init {
@@ -140,7 +141,7 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
             ivRightImg = itemView.findViewById(R.id.iv_right_image)
             tvRightTime = itemView.findViewById(R.id.tv_right_time)
             tvRightMsg = itemView.findViewById(R.id.tv_right_msg)
-            ivSendError = itemView.findViewById(R.id.iv_send_error)
+            ivSendStatus = itemView.findViewById(R.id.iv_send_status)
             lySend = itemView.findViewById(R.id.layout_send)
         }
     }

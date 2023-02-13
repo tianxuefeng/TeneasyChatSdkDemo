@@ -67,15 +67,17 @@
             android:gravity="center_horizontal|center_vertical"
             >
             <ImageView
-                android:id="@+id/iv_send_error"
+                android:id="@+id/iv_send_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/h5_shibai"
+                android:src="@drawable/h5_fszhong"
                 android:visibility="visible"
                 />
+
             <ProgressBar
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:visibility="gone"
                 style="@style/Widget.AppCompat.ProgressBar"
                 android:scrollbarStyle="outsideOverlay"
                 />

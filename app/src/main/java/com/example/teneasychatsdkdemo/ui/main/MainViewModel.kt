@@ -189,7 +189,7 @@ class MainViewModel(fragment: Fragment) : ViewModel() {
                     addMsgItem(chatLib.sendingMessageItem!!)
                 }
             } else {
-                Toast.makeText(fragment.requireContext(), "Please enter the sending content", Toast.LENGTH_LONG).show()
+                Toast.makeText(fragment.requireContext(), "请输入信息内容", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -245,7 +245,7 @@ class MainViewModel(fragment: Fragment) : ViewModel() {
                 for (item in msgList) {
                     if (item.id == data.id && item.cMsg!!.content.data.equals(data.cMsg!!.content.data)) {
                         item.payLoadId = data.payLoadId
-                        item.sendError = data.sendError
+                        item.sendStatus = data.sendStatus
 
                         msgAdapter.setList(msgList)
                         msgAdapter.notifyDataSetChanged()

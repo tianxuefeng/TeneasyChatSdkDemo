@@ -5,6 +5,7 @@ import android.widget.Toast
 import api.common.CMessage
 import com.google.protobuf.Timestamp
 import com.teneasy.sdk.ui.MessageItem
+import com.teneasy.sdk.ui.MessageSendState
 import gateway.GAction
 import gateway.GGateway
 import gateway.GGateway.SCHi
@@ -218,7 +219,7 @@ class ChatLib {
                     this.payLoadId = payloadId
                     if (msg.msgId != 0.toLong()) {
                         //this.msgId = msg.msgId
-                        this.sendError = false
+                        this.sendStatus = MessageSendState.发送成功
                     }
                     var eventBus = MessageEventBus<MessageItem>()
                     eventBus.setData(sendingMessageItem!!)
