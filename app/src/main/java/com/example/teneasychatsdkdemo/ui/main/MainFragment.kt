@@ -42,6 +42,8 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
         timer = Timer()
 //        myTest.makeConnect2()
         //myTest.m
+
+        val keFuAct =
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
