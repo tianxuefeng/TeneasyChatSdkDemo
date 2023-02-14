@@ -234,7 +234,7 @@ class MainViewModel(fragment: Fragment) : ViewModel() {
     }
 
     fun updateMsgStatus(data: MessageItem) {
-        if (!data!!.isSend)
+        if (!data!!.isLeft)
             addMsgItem(data)
         else {
             if (data.payLoadId == null || data.payLoadId <= 0) {

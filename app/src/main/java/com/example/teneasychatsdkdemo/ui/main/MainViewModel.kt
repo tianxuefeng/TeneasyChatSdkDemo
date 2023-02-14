@@ -234,7 +234,7 @@ class MainViewModel(fragment: Fragment) : ViewModel() {
     }
 
     fun updateMsgStatus(data: MessageItem) {
-        if (!data!!.isSend)
+        if (!data!!.isLeft)
             addMsgItem(data)
         else {
             if (data.payLoadId == null || data.payLoadId <= 0) {
@@ -256,8 +256,8 @@ class MainViewModel(fragment: Fragment) : ViewModel() {
         }
     }
 
-    fun composeAChatmodel(msg: String) {
-        addMsgItem(chatLib.composeAChatmodel(msg))
+    fun composeAChatmodel(msg: String, isLeft: Boolean) {
+        addMsgItem(chatLib.composeAChatmodel(msg, isLeft))
     }
 
     //==========图片选择===========//

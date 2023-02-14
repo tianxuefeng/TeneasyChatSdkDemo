@@ -79,16 +79,18 @@ class ChatLib {
     }
 
     //发送文字消息
-    fun sendMsg(msg: String) {
+    fun sendMsg(textMsg: String) {
+        sendingMessageItem = composeAChatmodel(textMsg, false)
         if(!isConnection()) {
             //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
             context?.apply {   makeConnect(this)  }
+            failedToSend()
             return
         }
 
-        //第一层
+       /* //第一层
         val content = CMessage.MessageContent.newBuilder()
-        content.data = msg
+        content.data = textMsg
 
         //第二层
         val msg = CMessage.Message.newBuilder()
@@ -101,11 +103,13 @@ class ChatLib {
         sendingMessageItem = MessageItem()
         sendingMessageItem!!.id = payloadId
         sendingMessageItem!!.isSend = true
-        sendingMessageItem!!.cMsg = msg.build()
+        sendingMessageItem!!.cMsg = msg.build()*/
+
+
 
         // 第三层
         val cSendMsg = GGateway.CSSendMessage.newBuilder()
-        cSendMsg.msg = msg.build()
+        cSendMsg.msg = sendingMessageItem!!.cMsg
         val cSendMsgData = cSendMsg.build().toByteString()
 
         //第四层
@@ -137,7 +141,7 @@ class ChatLib {
         msg.worker = 0
         msg.msgTime = TimeUtil.msgTime()
         sendingMessageItem = MessageItem()
-        sendingMessageItem!!.isSend = true
+        sendingMessageItem!!.isLeft = true
         sendingMessageItem!!.cMsg = msg.build()
 
         // 第三层
@@ -183,7 +187,7 @@ class ChatLib {
                 chatModel.cMsg =  msg.msg
                 chatModel.payLoadId = payloadId
                 chatModel.id = payloadId
-                chatModel.isSend = false
+                chatModel.isLeft = false
 
                 var eventBus = MessageEventBus<MessageItem>()
                 eventBus.setData(chatModel)
@@ -235,8 +239,11 @@ class ChatLib {
         }
     }
 
-    fun composeAChatmodel(textMsg: String) : MessageItem{
+    //撰写一条信息
+    fun composeAChatmodel(textMsg: String, isLeft: Boolean) : MessageItem{
+        //第一层
         var cMsg = CMessage.Message.newBuilder()
+        //第二层
         var cMContent = CMessage.MessageContent.newBuilder()
 
         var d = Timestamp.newBuilder()
@@ -253,11 +260,12 @@ class ChatLib {
         var chatModel = MessageItem()
         chatModel.cMsg = cMsg.build()
         chatModel.payLoadId = payloadId
-        chatModel.isSend = false
+        chatModel.isLeft = isLeft
         return chatModel
     }
 
-    fun composeAChatmodelImg(imgPath: String, isSend: Boolean) : MessageItem{
+    //撰写一条图片信息
+    fun composeAChatmodelImg(imgPath: String, isLeft: Boolean) : MessageItem{
         var cMsg = CMessage.Message.newBuilder()
         var cMContent = CMessage.MessageImage.newBuilder()
 
@@ -275,15 +283,22 @@ class ChatLib {
         var chatModel = MessageItem()
         chatModel.cMsg = cMsg.build()
 //        chatModel.payLoadId = payloadId
-        chatModel.isSend = isSend
+        chatModel.isLeft = isLeft
         return chatModel
+    }
+
+    private fun failedToSend(){
+        sendingMessageItem?.let {
+            var eventBus = MessageEventBus<MessageItem>()
+            it.sendStatus = MessageSendState.发送失败
+            eventBus.setData(it)
+            EventBus.getDefault().post(eventBus)
+        }
     }
 
     //断开连接需要调用
     fun disConnect(){
-        if (socket != null) {
-            socket.sendClose()
-        }
+        socket.sendClose()
     }
 
    /* fun makeConnect2(){

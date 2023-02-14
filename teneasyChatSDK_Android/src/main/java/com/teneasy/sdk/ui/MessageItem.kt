@@ -1,7 +1,6 @@
 package com.teneasy.sdk.ui
 
 import api.common.CMessage
-import java.io.Serializable
 
 //enum MessageSendState: String { case 发送中="0", 发送成功="1", 发送失败="2", 未知="-1" }
 enum class MessageSendState {
@@ -10,7 +9,7 @@ enum class MessageSendState {
 
 class MessageItem {//:Serializable
         var id: Long = 0
-        var isSend : Boolean = false
+        var isLeft : Boolean = false
         //var sendError: Boolean = false
         var cMsg: CMessage.Message? = null
         var sendStatus: MessageSendState = MessageSendState.发送中

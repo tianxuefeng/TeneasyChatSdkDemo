@@ -115,7 +115,7 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 header:
 X-Token ="token"
                  */
-                viewModel.composeAChatmodel("你好，我是客服小福 " + workId)
+                viewModel.composeAChatmodel("你好，我是客服小福 " + workId, true)
             }
         }
     }
