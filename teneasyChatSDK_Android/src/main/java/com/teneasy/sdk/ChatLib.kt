@@ -124,11 +124,6 @@ class ChatLib {
 
     //发送图片类型的消息
     fun sendMessageImage(url: String) {
-        if(!isConnection()) {
-            //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
-            context?.apply {   makeConnect(this)  }
-            return
-        }
         //第一层
         val content = CMessage.MessageImage.newBuilder()
         content.setUri(url)
@@ -157,6 +152,13 @@ class ChatLib {
         payload.id = payloadId
 
         socket.sendMessage(payload.build().toByteArray(), true)
+
+        if(!isConnection()) {
+            //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
+            failedToSend()
+            context?.apply {   makeConnect(this)  }
+            return
+        }
     }
 
     //目前每隔150秒，通信就好自动断掉，建议每隔60秒调用它
