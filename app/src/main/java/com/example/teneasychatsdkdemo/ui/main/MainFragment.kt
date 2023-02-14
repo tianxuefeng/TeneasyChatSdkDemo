@@ -35,12 +35,13 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 //        myTest.makeConnect2()
         //myTest.m
 
-        binding!!.btnSend!!.setOnClickListener {
-            val myIntent = Intent(requireActivity(), KeFuActivity::class.java)
-            //myIntent.putExtra("key", value) //Optional parameters
+//        binding!!.btnSend!!.setOnClickListener {
+//            val myIntent = Intent(requireActivity(), KeFuActivity::class.java)
+//
+//            this.startActivity(myIntent)
+//        }
 
-            this.startActivity(myIntent)
-        }
+
 
 
     }
@@ -53,6 +54,15 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
         requireActivity().title = "客服小福"
 //        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
        // requireActivity().titleColor = R.color.black
+
+        binding?.btnSend?.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                val myIntent = Intent(requireActivity(), KeFuActivity::class.java)
+
+                requireActivity().startActivity(myIntent)
+            }
+
+        })
     }
 
     override fun initView() {

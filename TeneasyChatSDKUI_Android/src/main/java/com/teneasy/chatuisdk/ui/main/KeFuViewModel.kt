@@ -19,7 +19,7 @@ import com.teneasy.chatuisdk.ui.base.GlideEngine
 import com.teneasy.sdk.ChatLib
 import com.teneasy.sdk.ui.MessageItem
 
-class MainViewModel(fragment: Fragment) : ViewModel() {
+class KeFuViewModel(fragment: Fragment) : ViewModel() {
     // TODO: Implement the ViewModel
     var msgAdapter: MessageListAdapter
 

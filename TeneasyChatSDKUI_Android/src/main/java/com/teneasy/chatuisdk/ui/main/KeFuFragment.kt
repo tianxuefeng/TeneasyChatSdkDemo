@@ -1,14 +1,11 @@
 package com.teneasy.chatuisdk.ui.main;
 
-import android.content.Context
 import android.os.Bundle
-import android.system.Os.bind
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.teneasy.chatuisdk.BR
-import com.teneasy.chatuisdk.databinding.FragmentMainBinding
-import com.teneasy.sdk.ChatLib
+import com.teneasy.chatuisdk.databinding.FragmentKefuBinding
 import com.teneasy.sdk.MessageEventBus
 import com.teneasy.sdk.ui.MessageItem
 import gateway.GGateway.SCHi
@@ -16,21 +13,20 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
-import kotlin.collections.ArrayList
 
-class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
+class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
 
     companion object {
-        fun newInstance() = MainFragment()
+        fun newInstance() = KeFuFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: KeFuViewModel
 
     private lateinit var timer: Timer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = MainViewModel(MainFragment@this)
+        viewModel = KeFuViewModel(MainFragment@this)
         timer = Timer()
 //        myTest.makeConnect2()
         //myTest.m
@@ -38,8 +34,8 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(!EventBus.getDefault().isRegistered(MainFragment@this)) {
-            EventBus.getDefault().register(MainFragment@this)
+        if(!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
         }
         requireActivity().title = "客服小福"
 //        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
@@ -129,15 +125,15 @@ X-Token ="token"
     override fun onDestroy() {
         super.onDestroy()
         closeTimer()
-        if(!EventBus.getDefault().isRegistered(MainFragment@this)) {
-            EventBus.getDefault().unregister(MainFragment@this)
+        if(!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
         }
     }
 
     override fun onCreateViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
-    ): FragmentMainBinding {
-        return FragmentMainBinding.inflate(layoutInflater, parent, false)
+    ): FragmentKefuBinding {
+        return FragmentKefuBinding.inflate(layoutInflater, parent, false)
     }
 }

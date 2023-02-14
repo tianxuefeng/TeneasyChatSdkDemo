@@ -7,7 +7,7 @@
     <data>
         <variable
             name="vm"
-            type="com.teneasy.chatuisdk.ui.main.MainViewModel" />
+            type="com.teneasy.chatuisdk.ui.main.KeFuViewModel" />
         <import type="android.view.View" />
     </data>
 
@@ -15,7 +15,7 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.main.MainFragment">
+        tools:context=".ui.main.KeFuFragment">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/llTop"
