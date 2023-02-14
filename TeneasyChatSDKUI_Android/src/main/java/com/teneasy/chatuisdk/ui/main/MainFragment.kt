@@ -6,14 +6,7 @@ import android.system.Os.bind
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
-import com.teneasy.chatuisdk.R
+import com.teneasy.chatuisdk.BR
 import com.teneasy.chatuisdk.databinding.FragmentMainBinding
 import com.teneasy.sdk.ChatLib
 import com.teneasy.sdk.MessageEventBus

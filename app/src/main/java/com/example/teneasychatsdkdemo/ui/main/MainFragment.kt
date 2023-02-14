@@ -1,22 +1,15 @@
 package com.example.teneasychatsdkdemo.ui.main
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.example.teneasychatsdkdemo.BR
-import com.example.teneasychatsdkdemo.R
 import com.example.teneasychatsdkdemo.databinding.FragmentMainBinding
 import com.example.teneasychatsdkdemo.ui.bind.BaseBindingFragment
-import com.teneasy.sdk.ChatLib
+import com.teneasy.chatuisdk.*
+import com.teneasy.chatuisdk.ui.main.KeFuActivity
 import com.teneasy.sdk.MessageEventBus
 import com.teneasy.sdk.ui.MessageItem
 import gateway.GGateway.SCHi
@@ -24,7 +17,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
@@ -43,7 +35,14 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 //        myTest.makeConnect2()
         //myTest.m
 
-        val keFuAct =
+        binding!!.btnSend!!.setOnClickListener {
+            val myIntent = Intent(requireActivity(), KeFuActivity::class.java)
+            //myIntent.putExtra("key", value) //Optional parameters
+
+            this.startActivity(myIntent)
+        }
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

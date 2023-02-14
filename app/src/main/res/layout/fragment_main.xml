@@ -111,9 +111,10 @@
             android:layout_marginEnd="5dp"
             android:text="Send"
             android:visibility="@{vm.mlBtnSendVis ? View.VISIBLE : View.GONE}"
-            bind:clickListener="@{vm.clickSendListener}"
+
             app:layout_constraintBottom_toBottomOf="@+id/et_msg"
             app:layout_constraintRight_toRightOf="parent"
             />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- bind:clickListener="@{vm.clickSendListener}" -->
+</androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -58,7 +58,7 @@ dependencies {
     //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:master-SNAPSHOT'
     //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:1.0.8'
     implementation project(path: ':teneasyChatSDK_Android')
-    //implementation project(path: ':teneasyChatSDKUI_Android')
+    implementation project(path: ':TeneasyChatSDKUI_Android')
     //implementation project(path: ':teneasyChatSDK_Android')
     // implementation 'com.github.ybq:Android-SpinKit:1.4.0'
     //TeneasyChatSdkDemo
@@ -75,4 +75,6 @@ dependencies {
 
     // PictureSelector图片选择
     implementation 'io.github.lucksiege:pictureselector:v3.10.5'
+
+    //implementation project(path: ':teneasyChatSDKUI_Android', configuration: 'default')
 }

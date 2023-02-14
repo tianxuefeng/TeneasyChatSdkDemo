@@ -7,7 +7,7 @@
     <data>
         <variable
             name="vm"
-            type="com.example.teneasychatsdkdemo.ui.main.MainViewModel" />
+            type="com.teneasy.chatuisdk.ui.main.MainViewModel" />
         <import type="android.view.View" />
     </data>
 
