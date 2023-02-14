@@ -43,7 +43,7 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
         val item = list!![position]
         val msgDate =  Date(item.cMsg!!.msgTime.seconds * 1000L)
         val localTime = TimeUtil.getTimeStringAutoShort2(msgDate, true)
-        if (item.isLeft) {
+        if (!item.isLeft) {
             holder.tvRightTime.text = localTime
             holder.tvRightTime.visibility = View.VISIBLE
             holder.tvRightMsg.visibility = View.VISIBLE
@@ -55,6 +55,9 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
 
             if(item.sendStatus != MessageSendState.发送成功) {
                 holder.ivSendStatus.visibility = View.VISIBLE
+                if (item.sendStatus == MessageSendState.发送失败){
+                    holder.ivSendStatus.setImageResource(R.drawable.h5_shibai)
+                }
             } else
                 holder.ivSendStatus.visibility = View.GONE
 
