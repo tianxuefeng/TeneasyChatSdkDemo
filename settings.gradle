@@ -3,7 +3,10 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
+        maven {
+            url "https://jitpack.io"
+            credentials { username authToken }
+        }
     }
 }
 dependencyResolutionManagement {
@@ -11,7 +14,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
+        maven {
+            url "https://jitpack.io"
+            credentials { username authToken }
+        }
     }
 }
 rootProject.name = "TeneasyChatSdkDemo"
