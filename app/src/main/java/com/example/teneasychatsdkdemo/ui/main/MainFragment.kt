@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.constraintlayout.utils.widget.MotionButton
 import androidx.fragment.app.Fragment
 import com.example.teneasychatsdkdemo.BR
+import com.example.teneasychatsdkdemo.R
 import com.teneasy.chatuisdk.*
-import com.teneasy.chatuisdk.ui.main.KeFuActivity
 import com.teneasy.sdk.MessageEventBus
 import com.teneasy.sdk.ui.MessageItem
 import gateway.GGateway.SCHi
@@ -34,19 +34,6 @@ class MainFragment : Fragment(){
 //
 //
 //    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if(!EventBus.getDefault().isRegistered(MainFragment@this)) {
-            EventBus.getDefault().register(MainFragment@this)
-        }
-
-        val btnKeFu = view.findViewById<MotionButton>(R.id.btn_send)
-        btnKeFu.setOnClickListener({
-            val keFuIntent = Intent(requireActivity(), KeFuActivity :: class.java)
-            this.startActivity(keFuIntent)
-        })
-    }
 
      //fun initView() {
 
