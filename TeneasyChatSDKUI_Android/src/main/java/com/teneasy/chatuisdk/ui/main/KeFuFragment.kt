@@ -103,7 +103,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
 header:
 X-Token ="token"
                  */
-                viewModel.composeAChatmodel("你好，我是客服小福 " + workId, true)
+                viewModel.composeAChatmodel("你好，我是客服小福 ", true)
             }
         }
     }
