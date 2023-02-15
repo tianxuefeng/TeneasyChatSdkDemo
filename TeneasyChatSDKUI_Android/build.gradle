@@ -2,6 +2,8 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'maven-publish'
+    id 'signing'
 }
 
 android {
@@ -64,4 +66,19 @@ dependencies {
 
     // PictureSelector图片选择
     implementation 'io.github.lucksiege:pictureselector:v3.10.5'
+}
+
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.tianxuefeng'
+                artifactId = 'teneasy-chatsdkui'
+                version = '1.1.0'
+            }
+        }
+    }
 }
