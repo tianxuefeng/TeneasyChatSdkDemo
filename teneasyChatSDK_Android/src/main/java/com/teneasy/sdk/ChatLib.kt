@@ -10,10 +10,16 @@ import gateway.GAction
 import gateway.GGateway
 import gateway.GGateway.SCHi
 import gateway.GPayload.Payload
-import io.crossbar.autobahn.websocket.WebSocketConnection
-import io.crossbar.autobahn.websocket.WebSocketConnectionHandler
-import io.crossbar.autobahn.websocket.types.ConnectionResponse
+//import io.crossbar.autobahn.websocket.WebSocketConnection
+//import io.crossbar.autobahn.websocket.WebSocketConnectionHandler
+//import io.crossbar.autobahn.websocket.types.ConnectionResponse
 import org.greenrobot.eventbus.EventBus
+import org.java_websocket.client.WebSocketClient
+import org.java_websocket.drafts.Draft_6455
+import org.java_websocket.handshake.ServerHandshake
+import org.json.JSONObject
+import java.net.URI
+import java.nio.ByteBuffer
 import java.util.*
 
 
@@ -25,7 +31,7 @@ class ChatLib {
 
     fun isConnection() : Boolean {
         socket?: return false
-        return socket.isConnected
+        return socket.isOpen
     }
 
     var context: Context? = null
@@ -34,9 +40,11 @@ class ChatLib {
     //var chatId: Long = 2692944494602 //2692944494608客服下线了
 //    var token: String? = "CCcQARgGIBwohOeGoN8w.MDFy6dFaTLFByZSuv9lP0fcYOaOGc_WgiTnTP8dFdE3prh7iiT37Ioe5FrelrDltQocQsGB3APz0WKUVUDdcDA"//客服下线了
     var token: String? = "CCcQARgRIBwoxtTNgeQw.BL9S_YLEWQmWzD1NjYHaDM3dUa6UOqgwOORaC9l8WyWuEVgCbxgd67GXmlQJsm1R2aQUgFDDrvpDsq3CmWqVAA"
-    private lateinit var socket: WebSocketConnection;
+    //private lateinit var socket: WebSocketConnection;
+    private lateinit var socket: WebSocketClient;
 
-    fun makeConnect(context: Context){
+    //这个方式也很好，只是需要安卓SDK>24
+    /*fun makeConnect2(context: Context){
         this.context = context
         socket = WebSocketConnection()
         val url = baseUrl + token
@@ -76,6 +84,54 @@ class ChatLib {
                 //Toast.makeText(context, "Received", Toast.LENGTH_LONG).show()
             }
         })
+    }*/
+
+    fun makeConnect(context: Context){
+        val obj = JSONObject()
+        obj.put("event", "addChannel")
+        obj.put("channel", "ok_btccny_ticker")
+        val message = obj.toString()
+        //send message
+        //send message
+        val url = baseUrl + token
+        socket =
+            object : WebSocketClient(URI(url), Draft_6455()) {
+                override fun onMessage(message: String) {
+                    val obj = JSONObject(message)
+                    val channel = obj.getString("channel")
+                }
+
+                override fun onMessage(bytes: ByteBuffer?) {
+                    super.onMessage(bytes)
+                    if (bytes != null)
+                        receiveMsg(bytes.array())
+                }
+
+                override fun onOpen(handshake: ServerHandshake?) {
+                    println("opened connection")
+
+                    EventBus.getDefault().post(200)
+
+                    var eventBus = MessageEventBus<MessageItem>()
+                    eventBus.arg = 200
+                    EventBus.getDefault().post(eventBus)
+                }
+
+
+
+                override fun onClose(code: Int, reason: String, remote: Boolean) {
+                    var eventBus = MessageEventBus<MessageItem>()
+                    eventBus.arg = -200
+                    EventBus.getDefault().post(eventBus)
+                    //println("Connection closed")
+                    Toast.makeText(context, "Closed", Toast.LENGTH_LONG).show()
+                }
+
+                override fun onError(ex: Exception) {
+                    ex.printStackTrace()
+                }
+            }
+        socket.connect()
     }
 
     //发送文字消息
@@ -119,7 +175,8 @@ class ChatLib {
         payloadId += 1
         payload.id = payloadId
 
-        socket.sendMessage(payload.build().toByteArray(), true)
+        //socket.sendMessage(payload.build().toByteArray(), true)
+        socket.send(payload.build().toByteArray())
     }
 
     //发送图片类型的消息
@@ -151,8 +208,8 @@ class ChatLib {
         payloadId += 1
         payload.id = payloadId
 
-        socket.sendMessage(payload.build().toByteArray(), true)
-
+        //socket.sendMessage(payload.build().toByteArray(), true)
+        socket.send(payload.build().toByteArray())
         if(!isConnection()) {
             //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
             failedToSend()
@@ -168,7 +225,8 @@ class ChatLib {
         //val beat = zero.toByte()
         val buffer = ByteArray(1)
         buffer[0] = 0
-        socket.sendMessage(buffer, true)
+       // socket.sendMessage(buffer, true)
+        socket.send(buffer)
     }
 
     fun receiveMsg(data: ByteArray) {
@@ -189,7 +247,7 @@ class ChatLib {
                 chatModel.cMsg =  msg.msg
                 chatModel.payLoadId = payloadId
                 chatModel.id = payloadId
-                chatModel.isLeft = false
+                chatModel.isLeft = true
 
                 var eventBus = MessageEventBus<MessageItem>()
                 eventBus.setData(chatModel)
@@ -300,36 +358,6 @@ class ChatLib {
 
     //断开连接需要调用
     fun disConnect(){
-        socket.sendClose()
+        socket.close()
     }
-
-   /* fun makeConnect2(){
-
-        val obj = JSONObject()
-        obj.put("event", "addChannel")
-        obj.put("channel", "ok_btccny_ticker")
-        val message = obj.toString()
-        //send message
-        //send message
-        val mWs: WebSocketClient =
-            object : WebSocketClient(URI(url), Draft_6455()) {
-                override fun onMessage(message: String) {
-                    val obj = JSONObject(message)
-                    val channel = obj.getString("channel")
-                }
-
-                override fun onOpen(handshake: ServerHandshake?) {
-                    println("opened connection")
-                }
-
-                override fun onClose(code: Int, reason: String, remote: Boolean) {
-                    println("closed connection")
-                }
-
-                override fun onError(ex: Exception) {
-                    ex.printStackTrace()
-                }
-            }
-        mWs.connect()
-    }*/
 }
