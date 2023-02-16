@@ -1,6 +1,9 @@
 package com.teneasy.chatuisdk.ui.main;
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +12,13 @@ import com.teneasy.chatuisdk.databinding.FragmentKefuBinding
 import com.teneasy.sdk.MessageEventBus
 import com.teneasy.sdk.ui.MessageItem
 import gateway.GGateway.SCHi
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.json.JSONObject
+import java.io.IOException
 import java.util.*
 
 class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
@@ -37,7 +44,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         if(!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
         }
-        requireActivity().title = "客服小福"
+        requireActivity().title = "客服"
 //        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
        // requireActivity().titleColor = R.color.black
     }
@@ -94,6 +101,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
             } else if (event.data is SCHi) {
                 val data = event.data as SCHi
                 val workId = data.workerId
+                loadWorker(workId)
                 /* 此处需要调用Api来获取客服的名字，并显示在头部
                 https://csapi.hfxg.xyz/v1/api/query-worker
 {
@@ -103,7 +111,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
 header:
 X-Token ="token"
                  */
-                viewModel.composeAChatmodel("你好，我是客服小福 ", true)
+//                viewModel.composeAChatmodel("你好，我是客服小福 ", true)
             }
         }
     }
@@ -122,6 +130,51 @@ X-Token ="token"
 //
 //        bin.smoothScrollToPosition(msgAdapter.itemCount)
 //    }
+
+
+    fun loadWorker(workerId: Int) {
+        val param = JSONObject()
+        param.put("workerId", workerId)
+        //创建一个OkHttpClient对象
+        val okHttpClient = OkHttpClient()
+        val requestBody: RequestBody = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), param.toString())
+        val request: Request = Request.Builder()
+            .url("https://csapi.hfxg.xyz/v1/api/query-worker")
+            .addHeader("X-Token", "CCcQARgRIBwoxtTNgeQw.BL9S_YLEWQmWzD1NjYHaDM3dUa6UOqgwOORaC9l8WyWuEVgCbxgd67GXmlQJsm1R2aQUgFDDrvpDsq3CmWqVAA") //添加header
+            .post(requestBody)
+            .build()
+        //发送请求获取响应
+        okHttpClient.newCall(request).enqueue(object : Callback {
+            @Throws(IOException::class)
+            override fun onResponse(arg0: Call, response: Response) {
+                val body = response.body
+                if(body != null) {
+                    val json = JSONObject(body.string())
+                    if(json.getString("msg").equals("ok", ignoreCase = true)) {
+                        val workerInfo = json.getJSONObject("data")
+                        val name = workerInfo.getString("workerName")
+
+                        val msg = Message.obtain(handler, 200, name)
+                        handler.sendMessage(msg)
+                    }
+                }
+            }
+
+            override fun onFailure(arg0: Call, arg1: IOException) {}
+        })
+    }
+
+    // 主线程更新UI
+    private val handler: Handler = object : Handler(Looper.myLooper()!!) {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            if(msg.what == 200) {
+                binding!!.tvTitle.text = "客服${msg.obj}"
+                viewModel.composeAChatmodel("你好，我是客服${msg.obj}", true)
+            }
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         closeTimer()
