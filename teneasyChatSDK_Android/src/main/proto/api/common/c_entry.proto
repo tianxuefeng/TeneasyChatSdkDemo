@@ -4,6 +4,7 @@ package api.common;
 import "api/common/c_device.proto";
 import "google/protobuf/timestamp.proto";
 option go_package = "wcs/api/common;common";
+option java_package = "com.teneasyChat.api.common";
 
 enum TransportType {
   TRANSPORT_HTTP = 0;

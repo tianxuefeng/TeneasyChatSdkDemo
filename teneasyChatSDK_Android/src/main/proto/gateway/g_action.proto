@@ -2,6 +2,7 @@ syntax = "proto3";
 package gateway;
 
 option go_package = "wcs/service/gateway/protocol;protocol";
+option java_package = "com.teneasyChat.gateway";
 
 // SC: service -> client
 // CS: client -> service
@@ -53,4 +54,8 @@ enum Action {
   ActionSCWorkerChanged = 17;
   // 用户链接状态发生改变
   ActionSCUserConnectionChanged = 18;
+
+  // [客服]以其身份模拟发送给用户的消息
+  // 如: 自动回复的 答案
+  ActionSCSimSend = 19;
 }

@@ -2,57 +2,86 @@ syntax = "proto3";
 package api.core;
 
 option go_package = "wcs/api/core;core";
+option java_package = "com.teneasyChat.api.core";
 import "api/option.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 import "validate/validate.proto";
-import "api/common/c_note.proto";
+import "api/common/c_base.proto";
+import "api/common/c_message.proto";
 
 option(api.info) = {
-  authors: ["mango"],
-  date: "2022-12-15",
+  authors: ["jeff"],
+  date: "2023-02-07",
 };
 
-message CustomerNote{
-  common.NoteStore note = 1;
-  uint32 customerId = 2;
+// 面向前端友好的交互结构
+message NoteItem {
+  int32 worker_id = 1;
+  string worker_name = 2;
+  google.protobuf.Timestamp create_at = 3;
+  // 客服备注的消息
+  api.common.Message note_msg = 4;
 }
 
-message NoteQueryResponse{
-    repeated CustomerNote note = 1;
+message Note {
+  int64 chat_note_msg_id = 1;
+  api.common.Message src = 2;
+  repeated NoteItem notes = 3;
+}
+
+message QueryNoteRequest{
+  int64 chat_id = 1[(validate.rules).int64.gt = 0];
+  common.Batch batch = 2[(validate.rules).message.required = true];
+}
+
+message QueryNoteResponse{
+  int64 chat_id = 1;
+  common.Batch batch = 2;
+  repeated Note notes = 3;
 }
 
 message CreateNoteRequest {
-  common.NoteEntity note = 1;
-  uint32 customerId = 2;
+  int64 chat_id = 1[(validate.rules).int64.gt = 0];
+  api.common.Message src = 2[(validate.rules).message.required = true];
+  api.common.Message note_msg = 3[(validate.rules).message.required = true];
 }
 
 message CreateNoteResponse {
-  int64 id = 1;
+  // 创建后的 note
+  Note note = 1;
 }
 
 message UpdateNoteRequest {
-  common.NoteEntity note = 1;
-  uint32 customerId = 2;
-  int64 noteId = 3;
+  int64 chat_id = 1[(validate.rules).int64.gt = 0];
+  int64 chat_note_msg_id = 2[(validate.rules).int64.gt = 0];
+  google.protobuf.Timestamp create_at = 3[(validate.rules).timestamp.required = true];
+  api.common.Message note_msg = 4[(validate.rules).message.required = true];
+}
+
+message UpdateNoteResponse {
+  // 修改后的 note
+  Note note = 1;
 }
 
 message DeleteNoteRequest {
-  int64 noteId = 1;
-  uint32 customerId = 2;
+  int64 chat_id = 1[(validate.rules).int64.gt = 0];
+  int64 chat_note_msg_id = 2[(validate.rules).int64.gt = 0];
+  google.protobuf.Timestamp create_at = 3[(validate.rules).timestamp.required = true];
 }
 
-service Note {
+service NoteSrv {
   option (api.service) = {
     path: "tenant/note",
     tags: ["note"],
-    auth: [AUTH_ROLE_TENANT],
+    auth: [AUTH_ROLE_TENANT, AUTH_ROLE_SERVICE],
   };
 
   // 查询
-  rpc QueryNote(google.protobuf.Empty) returns (NoteQueryResponse) {
+  rpc QueryNote(QueryNoteRequest) returns (QueryNoteResponse) {
     option (api.method) = {
       id: 700,
-      path:"query-note",
+      path:"query",
       ready: true
     };
   }
@@ -61,16 +90,16 @@ service Note {
   rpc CreateNote(CreateNoteRequest) returns (CreateNoteResponse) {
     option (api.method) = {
       id: 701,
-      path:"create-note",
+      path:"create",
       ready: true
     };
   }
 
   // 更新
-  rpc UpdateNote(UpdateNoteRequest) returns (google.protobuf.Empty) {
+  rpc UpdateNote(UpdateNoteRequest) returns (UpdateNoteResponse) {
     option (api.method) = {
       id: 702,
-      path:"update-note",
+      path:"update",
       ready: true
     };
   }
@@ -79,7 +108,7 @@ service Note {
   rpc DeleteNote(DeleteNoteRequest) returns (google.protobuf.Empty) {
     option (api.method) = {
       id: 703,
-      path:"delete-note",
+      path:"delete",
       ready: true
     };
   }

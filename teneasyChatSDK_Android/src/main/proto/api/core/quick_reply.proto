@@ -2,6 +2,7 @@ syntax = "proto3";
 package api.core;
 
 option go_package = "wcs/api/core;core";
+option java_package = "com.teneasyChat.api.core";
 import "api/option.proto";
 import "google/protobuf/empty.proto";
 import "validate/validate.proto";
@@ -18,7 +19,7 @@ option(api.info) = {
 // 避免前端摸不透结构
 message QuickReplyGroupItem {
   string name = 1 [(validate.rules).string.min_bytes = 1];
-  int32 priority = 2 [(validate.rules).int32 = {gt:0}];
+  int32 priority = 2 [(validate.rules).int32 = {gt:-2}];
 }
 
 // 查询便签组
@@ -29,7 +30,7 @@ message QuickReplyGroupQueryResponse {
 // 创建便签组
 message QuickReplyGroupCreateRequest {
   string name = 1 [(validate.rules).string.min_bytes = 1];
-  int32 priority = 2 [(validate.rules).int32 = {gt:0}];
+  int32 priority = 2 [(validate.rules).int32 = {gt:-2}];
 }
 
 // 更新便签组(全量更新)
@@ -38,7 +39,7 @@ message QuickReplyGroupUpdateRequest {
   string old_name = 1 [(validate.rules).string.min_bytes = 1];
   // 新群名 如未调整 则与旧群名一致
   string new_name = 2 [(validate.rules).string.min_bytes = 1];
-  int32 priority = 3 [(validate.rules).int32 = {gt:0}];
+  int32 priority = 3 [(validate.rules).int32 = {gt:-2}];
 }
 
 // 删除便签组
@@ -58,11 +59,19 @@ message QuickReplyItem {
   // 便签分组名称
   string group_name = 3 [(validate.rules).string.min_bytes = 1];
   // 便签 展示优先级
-  int32 priority = 4 [(validate.rules).int32 = {gt:0}];
+  int32 priority = 4 [(validate.rules).int32 = {gt:-2}];
   // 便签内容
   string content = 5;
   // 回复消息 图片 + 文字
   repeated common.Message items = 6;
+  // 客服添加到 **常用** 组的便签
+  // 如果为true:
+  // 在 常用组 时: 显示 **X** 按钮, 可以从常用组移除
+  // 在 非常用组 时: 显示 **取消** 按钮, 可以从常用组移除
+  // 如果为false:
+  // 在 常用组 时: 不显示 删除 按钮
+  // 在 非常用组 时: 显示 **常用** 按钮, 可以加入到常用组
+  bool is_custom = 7;
 }
 
 // 查询便签

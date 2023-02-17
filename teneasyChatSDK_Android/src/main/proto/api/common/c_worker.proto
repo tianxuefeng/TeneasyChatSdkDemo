@@ -2,6 +2,7 @@ syntax = "proto3";
 package api.common;
 
 option go_package = "wcs/api/common;common";
+option java_package = "com.teneasyChat.api.common";
 
 import "api/common/c_base.proto";
 
@@ -65,12 +66,15 @@ message Worker {
   common.OnlineState online_state = 7;
   // 密码
   string password = 8;
+  // 登录/未登录
+  common.ConnectState connect_state = 9;
 }
 
 message WorkerGroup {
   int64 id = 1;
   string name = 2;
   int32 priority = 3;
+  int32 count = 4;
 }
 
 message Distribution {

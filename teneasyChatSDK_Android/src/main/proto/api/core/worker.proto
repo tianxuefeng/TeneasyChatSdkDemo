@@ -2,6 +2,7 @@ syntax = "proto3";
 package api.core;
 
 option go_package = "wcs/api/core;core";
+option java_package = "com.teneasyChat.api.core";
 import "google/protobuf/empty.proto";
 import "validate/validate.proto";
 import "api/option.proto";
@@ -16,8 +17,9 @@ option(api.info) = {
 
 // 查询客服
 message WorkerQueryRequest {
-  common.Batch batch = 1;
-  optional string name = 2;
+  common.Batch batch = 1[(validate.rules).message.required = true];
+  optional string name = 2[(validate.rules).string = {min_len:1, max_len:10}];
+  optional int32 queryType = 3;
 }
 
 message WorkerQueryResponse {
@@ -29,8 +31,8 @@ message WorkerQueryResponse {
 // 创建客服
 message WorkerCreateRequest {
   // 客服账号
-  string account = 1[(validate.rules).string = {min_bytes:6, max_bytes:20}];
-  string password = 2 [(validate.rules).string = {min_bytes:6, max_bytes:20}];
+  string account = 1[(validate.rules).string = {min_bytes:3, max_bytes:24}];
+  string password = 2[(validate.rules).string = {min_bytes:6, max_bytes:20}];
 
   // 所在的组
   repeated int64 group_ids = 3[(validate.rules).repeated.unique = true];
@@ -39,56 +41,60 @@ message WorkerCreateRequest {
   int32 perm_mask = 4[(validate.rules).int32.gt = 0];
 
   // 客服名
-  string name = 6[(validate.rules).string = {min_len:2, max_len:20}];
+  string name = 6[(validate.rules).string = {min_len:2, max_len:10}];
 
   // 头像url, 预留
-  string avatar = 7;
+  string avatar = 7[(validate.rules).string.max_len = 4096];
 }
 
 // 更新客服
 // 为何不做全量修改:
 // 密码前端不知道, 修改后才能请求
 message WorkerUpdateRequest {
-  int32 worker_id = 1;
+  int32 worker_id = 1[(validate.rules).int32 = {gt:0, lte:32767}];
 
-  optional string password = 2;
+  optional string password = 2[(validate.rules).string = {min_bytes:6, max_bytes:20}];
   // 所在的组
   optional common.SetInt64 group_ids = 3;
   // 权限掩码, 前端理解有困难的话 随时可调
-  optional int32 perm_mask = 5;
+  optional int32 perm_mask = 5[(validate.rules).int32.gt = 0];
   // 客服名
-  optional string name = 6;
+  optional string name = 6[(validate.rules).string = {min_len:2, max_len:10}];
   // 头像url, 预留
-  optional string avatar = 7;
+  optional string avatar = 7[(validate.rules).string.max_len = 4096];
 }
 
 message WorkerSession {
-    int32 worker_id = 1;
-    int32 session_id = 2;
-    common.ConnectState connect_state = 3;
-    common.OnlineState online_state = 4;
+  int32 worker_id = 1;
+  int32 session_id = 2;
+  common.ConnectState connect_state = 3;
+  common.OnlineState online_state = 4;
 }
 
 // 删除客服
 message WorkerDeleteRequest {
-  // 指定分组id
-  int32 worker_id = 1;
+  // worker_id 1 = 商户账号, 不可操作
+  int32 worker_id = 1[(validate.rules).int32 = {gt:1, lte:32767}];
 }
 
 // 将指定聊天会话转给指定客服
 message WorkerTransferRequest {
-  int64 chat_id = 1;
-  int32 worker_id = 2;
+  int64 chat_id = 1[(validate.rules).int64.gt = 0];
+  int32 worker_id = 2[(validate.rules).int32 = {gt:0, lte:32767}];
 }
 
 message BlacklistApplyRequest {
-  int64 chat_id = 1;
+  int64 chat_id = 1[(validate.rules).int64.gt = 0];
   // 转给有权限的客服目标
-  int32 worker_id = 2;
+  int32 worker_id = 2[(validate.rules).int32 = {gt:0, lte:32767}];
 }
 
 message BlacklistConfirmRequest {
-  int64 chat_id = 1;
+  int64 chat_id = 1[(validate.rules).int64.gt = 0];
+}
+
+message BlacklistRecoverRequest {
+  int64 chat_id = 1[(validate.rules).int64.gt = 0];
 }
 
 message CheckWorkerStatusResponse {
@@ -97,14 +103,14 @@ message CheckWorkerStatusResponse {
 
 message CheckWorkerStatusRequest {
   // 咨询id
-  uint32 consult_id = 1 [(validate.rules).uint32 = {gt:0}];
+  uint32 consult_id = 1[(validate.rules).uint32 = {gt:0}];
 }
 
 
 message GetWorkerStatusRequest {
-  int32 worker_id = 1;
-  optional common.ConnectState connect_state = 2;
-  optional common.OnlineState online_state = 3;
+  int32 worker_id = 1[(validate.rules).int32 = {gt:0, lte:32767}];
+  optional common.ConnectState connect_state = 2[(validate.rules).enum.defined_only = true];
+  optional common.OnlineState online_state = 3[(validate.rules).enum.defined_only = true];
 }
 
 message GetWorkerStatusResponse {
@@ -112,7 +118,7 @@ message GetWorkerStatusResponse {
 }
 
 message SetWorkerStatusRequest {
-  common.OnlineState online_state = 1;
+  common.OnlineState online_state = 1[(validate.rules).enum.defined_only = true];
 }
 
 //message WorkerTransferResponse {
@@ -125,19 +131,19 @@ message WorkerTransferResponse {
 }
 
 message PasswordRequest {
-  string old_password = 1;
-  string new_password = 2;
+  string old_password = 1[(validate.rules).string = {min_bytes:6, max_bytes:20}];
+  string new_password = 2[(validate.rules).string = {min_bytes:6, max_bytes:20}];
 }
 
 message QueryFronterRequest {
   // 客服名称
-  optional string name = 1;
-  common.Batch batch = 2;
+  optional string name = 1[(validate.rules).string = {min_len:1, max_len:10}];
+  common.Batch batch = 2[(validate.rules).message.required = true];
 }
 
 message QueryFronterResponse {
-    repeated QueryFronterItem items = 1;
-    int32 total = 2;
+  repeated QueryFronterItem items = 1;
+  int32 total = 2;
 }
 
 message QueryFronterItem {
@@ -146,26 +152,29 @@ message QueryFronterItem {
   // 用户名
   string account = 2;
   // 客服组
-  repeated string group =3;
+  repeated string group = 3;
   // 是否是主管
   bool isManager = 4;
+  // 客服id
+  int32 worker_id = 5;
 }
 
 message DataQueryRequest {
   // 统计时间开始时间
-  optional string start_time = 1;
+  optional string start_time = 1[(validate.rules).string = {min_len:1, max_len:64}];
   // 统计时间结束时间
-  optional string end_time = 2;
+  optional string end_time = 2[(validate.rules).string = {min_len:1, max_len:64}];
   // 客服组
-  optional int32 group_id = 3;
+  repeated int32 group_id = 3;
   // 客服身份
-  optional common.WorkerPermission worker_identity = 4;
+  optional common.WorkerPermission worker_identity = 4[(validate.rules).enum = {not_in:[0]}];
   // 客服名称
-  common.Page page = 5;
+  common.Page page = 5[(validate.rules).message.required = true];
 }
 
 message DataQueryResponse {
   repeated DataQueryItem item = 1;
+
   int32 total = 2;
   // 统计人数
   int32 count_player = 3;
@@ -176,11 +185,15 @@ message DataQueryResponse {
   // 平均服务时长
   float server_time = 6;
   // 平均累计在线时长
-  int32 count_online_time = 7;
+  float count_online_time = 7;
   // 平均接任务数
-  int32 accepted_num = 8;
+  float accepted_num = 8;
   // 平均转任务数
-  int32 transfer_task = 9;
+  float transfer_task = 9;
+  // 客服上限人数
+  int32 workerLimit = 10;
+  // 现有客服人数
+  int32 currentWorkers = 11;
 }
 
 message DataQueryItem {
@@ -190,22 +203,40 @@ message DataQueryItem {
   int32 match_num = 2;
   // 3分钟回复率
   string three_response_rate = 3;
-  // 转任务书
+  // 转任务数
   int32 switching_task = 4;
   // 接受任务数
   int32 accept_assignment = 5;
-  // 平均相应时长
+  // 平均响应时长
   float corresponding_time = 6;
   // 所在组
   repeated string belong_group = 7;
   // 是否是一线客服
   bool first_line = 8;
   // 是否是主管
-  bool is_manager =9;
+  bool is_manager = 9;
   // 平均服务时长
   float average_time = 10;
   // 累计在线时长
   int32 accumulated_online_duration = 11;
+}
+
+// 查询指定权限客服, 目前只开发 查询 可转移权限, 可拉黑名单权限
+message QuerySpecPermWorkerRequest {
+  common.WorkerPermission perm = 1[(validate.rules).enum = {defined_only:true, in:[16, 64]}];
+}
+
+message WorkerListByGroup {
+  common.WorkerGroup group = 1;
+  repeated common.Worker worker = 2;
+}
+
+message QuerySpecPermWorkerResponse {
+  repeated WorkerListByGroup groups = 1;
+}
+
+message TryCleanupAssignedWorkerResponse {
+  bool cleaned = 1;
 }
 
 service Worker {
@@ -344,6 +375,39 @@ service Worker {
       ready: true,
       auth: [AUTH_ROLE_TENANT, AUTH_ROLE_SERVICE],
       date: "2023-01-10"
+    };
+  }
+
+  // 指定聊天会话从黑名单恢复到已接待
+  rpc BlacklistRecover(BlacklistRecoverRequest) returns (google.protobuf.Empty) {
+    option (api.method) = {
+      id: 511,
+      path: "black-list-recover",
+      ready: true,
+      auth: [AUTH_ROLE_TENANT, AUTH_ROLE_SERVICE],
+      date: "2023-01-28"
+    };
+  }
+
+  // 查询客服根据权限
+  rpc QueryByPerm(QuerySpecPermWorkerRequest) returns (QuerySpecPermWorkerResponse) {
+    option (api.method) = {
+      id: 512,
+      path: "query-by-perm",
+      ready: true,
+      auth: [AUTH_ROLE_TENANT, AUTH_ROLE_SERVICE],
+      date: "2023-01-10"
+    };
+  }
+
+  // 尝试清理之前分配的,不符合商户预设状态的客服
+  rpc TryCleanupAssignedWorker(google.protobuf.Empty) returns (TryCleanupAssignedWorkerResponse) {
+    option (api.method) = {
+      id: 513,
+      path: "try-cleanup-assigned-worker",
+      ready: true,
+      auth: [AUTH_ROLE_ACCOUNT, AUTH_ROLE_SERVICE],
+      date: "2023-02-09"
     };
   }
 }

@@ -7,6 +7,7 @@ import "api/common/c_device.proto";
 import "google/protobuf/wrappers.proto";
 
 option go_package = "wcs/api/common;common";
+option java_package = "com.teneasyChat.api.common";
 option swift_prefix = "Common";
 
 
@@ -22,10 +23,10 @@ enum ChatState {
   CHAT_STATE_TIMEOUT = 3;
   // 已接待
   CHAT_STATE_PROCESSED = 4;
-  // 黑名单待处理
-  CHAT_STATE_UNCONFIRMED = 5;
-  // 黑名单
-  CHAT_STATE_CONFIRMED = 6;
+  // 黑名单申请(任何非黑名单会话->黑名单待确定)
+  CHAT_STATE_BLACKLIST_APPLY = 5;
+  // 黑名单确定(黑名单待确定->黑名单)
+  CHAT_STATE_BLACKLIST_CONFIRMED = 6;
 }
 
 // 消息类型
@@ -113,6 +114,13 @@ message MessageKey {
   int64 msg_id = 2;
 }
 
+message MessageAutoReplyFlag {
+  // AutoReplyItem.id
+  int64 id = 1;
+  // 指定的问题序号id: QuestionAnswer.id
+  int32 qa_id = 2;
+}
+
 message Message {
   // 会话id(指此次聊天会话的id, 实际上是 终端用户 的 client id)
   // 此处避免与连接session混淆, 用chat id区分
@@ -133,6 +141,8 @@ message Message {
   MessageOperate msg_op = 6;
   // 分配客服id
   int32 worker = 7;
+  // 自动回复相关
+  MessageAutoReplyFlag auto_reply = 8;
 
   oneof payload {
     MessageContent content = 100;

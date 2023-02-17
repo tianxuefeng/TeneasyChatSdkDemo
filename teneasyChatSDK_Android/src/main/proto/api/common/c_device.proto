@@ -2,6 +2,7 @@ syntax = "proto3";
 package api.common;
 
 option go_package = "wcs/api/common;common";
+option java_package = "com.teneasyChat.api.common";
 option swift_prefix = "Common";
 
 enum DeviceType {

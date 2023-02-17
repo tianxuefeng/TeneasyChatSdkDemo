@@ -2,6 +2,8 @@ syntax = "proto3";
 package gateway;
 
 option go_package = "wcs/service/gateway/protocol;protocol";
+option java_package = "com.teneasyChat.gateway";
+
 import "validate/validate.proto";
 
 import "gateway/g_action.proto";

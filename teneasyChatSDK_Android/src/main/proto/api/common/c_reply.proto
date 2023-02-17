@@ -7,6 +7,7 @@ import "google/protobuf/wrappers.proto";
 import "validate/validate.proto";
 
 option go_package = "wcs/api/common;common";
+option java_package = "com.teneasyChat.api.common";
 option swift_prefix = "Common";
 
 message QuickReply {
@@ -49,7 +50,7 @@ message QuestionAnswer {
   // 问题回答
   string content = 3;
   // 回答&图片
-  repeated Message answer = 4 [(validate.rules).repeated = {min_items:1, max_items:2}];
+  repeated Message answer = 4 [(validate.rules).repeated = {max_items:10}];
 }
 
 // 自动回复
@@ -62,7 +63,7 @@ message AutoReplyItem {
   // 回复内容
   repeated QuestionAnswer qa = 4;
   // 延迟回复时间
-  double delay_sec = 5;
+  double delay_sec = 5 [(validate.rules).double = {gte:0, lte:900}];
   // 绑定客服id
   repeated int32 worker_id = 6;
   // 绑定客服名数组

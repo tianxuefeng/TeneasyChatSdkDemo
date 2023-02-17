@@ -2,6 +2,7 @@ syntax = "proto3";
 package api.core;
 
 option go_package = "wcs/api/core;core";
+option java_package = "com.teneasyChat.api.core";
 import "api/option.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
@@ -14,10 +15,10 @@ option(api.info) = {
   date: "2022-12-03",
 };
 
-// TODO: 加入 验证请求机制
 message LoginRequest {
-  string account = 1;
-  string password = 2;
+  // 用户名最多16个中文字符（字母、数字、特殊符号中包含两种）（必填）
+  string account = 1[(validate.rules).string = {min_len:3, max_len:16}];
+  string password = 2[(validate.rules).string = {min_bytes:6, max_bytes:20}];
 }
 
 message LoginResponse {
@@ -29,31 +30,35 @@ message LoginResponse {
 
 // 登录下级账号
 message ManagerLoginRequest {
-  string token = 1;
-  int32 worker_id = 2;
+  int32 worker_id = 1[(validate.rules).int32.gt = 0];
 }
 
 message ManagerLoginResponse {
   // 拿到 token 后, 在需要鉴权的请求中填入Header, Key为X-Token
   string token = 1;
+  // 客服信息, 此处字段名和 LoginResponse 保持一致
+  common.Worker items = 2;
 }
 
 message TenantCreateRequest {
-  // 商户名
-  string name = 1;
-  // 商户账号
-  string account = 2;
-  string password = 3;
-  int32 worker_capacity = 4;
-  int32 daily_service_capacity = 5;
+  // 商户名 商户名称最少1位，最多16个字符
+  string name = 1[(validate.rules).string = {min_len:1, max_len:16}];
+  // 商户账号 用户名最少3位，最多16个字符
+  string account = 2[(validate.rules).string = {min_len:3, max_len:16}];
+  // 密码最少6位最多20个字符，至少包括字母、数字、特殊符号其中两种。
+  string password = 3[(validate.rules).string = {min_bytes:6, max_bytes:16}];
+  // 客服数量最高9999
+  int32 worker_capacity = 4[(validate.rules).int32 = {gte:0, lte:9999}];
+  // 每日接待人数
+  int32 daily_service_capacity = 5[(validate.rules).int32 = {gte:0}];
 }
 
 message TenantQueryRequest {
-  common.Batch batch = 1;
+  common.Batch batch = 1[(validate.rules).message.required = true];
 }
 
 message DeleteTenantRequest {
-  uint32 tenant_id = 1;
+  uint32 tenant_id = 1[(validate.rules).uint32 = {gt:0, lte:32767}];
 }
 
 message TenantQueryResponse {
@@ -102,15 +107,15 @@ message AdminLoginResponse {
 // TODO: 修改商户登录账号和密码
 message UpdateTenantRequest {
   // 商户id
-  uint32 tenant_id = 1;
+  uint32 tenant_id = 1[(validate.rules).uint32 = {gt:0, lte:32767}];
   // 商户名称
-  string name = 2;
+  string name = 2[(validate.rules).string = {min_len:1, max_len:16}];
   // 客服数量
-  int32 worker_capacity = 3;
+  int32 worker_capacity = 3[(validate.rules).int32 = {gte:0, lte:9999}];
   // 每日服务数量
-  int32 daily_service_capacity = 4;
-  // 商户账号密码
-  string password = 5;
+  int32 daily_service_capacity = 4[(validate.rules).int32 = {gte:0}];
+  // 商户账号密码(密码调整)
+  string password = 5[(validate.rules).string = {min_bytes:5, max_bytes:100}];
 }
 
 service Tenant {

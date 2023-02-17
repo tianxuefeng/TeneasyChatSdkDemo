@@ -1,7 +1,10 @@
 syntax = "proto3";
 package api.common;
 
+import "validate/validate.proto";
+
 option go_package = "wcs/api/common;common";
+option java_package = "com.teneasyChat.api.common";
 option swift_prefix = "Common";
 
 message BaseResponse {
@@ -10,12 +13,12 @@ message BaseResponse {
 
 message Page {
   int32 page = 1;
-  int32 limit = 2;
+  int32 limit = 2[(validate.rules).int32 = {gt:0, lte:500}];
 }
 
 message Batch {
   int32 offset = 1;
-  int32 limit = 2;
+  int32 limit = 2[(validate.rules).int32 = {gt:0, lte:500}];
 }
 
 message ListInt32 {

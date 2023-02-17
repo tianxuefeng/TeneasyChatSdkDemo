@@ -5,6 +5,7 @@ import "google/protobuf/wrappers.proto";
 import "api/common/c_device.proto";
 import "api/option.proto";
 option go_package = "wcs/api/sentry;sentry";
+option java_package = "com.teneasyChat.api.sentry";
 
 option(api.info) = {
   app_id: "sentry",

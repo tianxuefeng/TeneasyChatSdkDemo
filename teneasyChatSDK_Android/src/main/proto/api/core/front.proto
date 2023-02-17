@@ -2,12 +2,14 @@ syntax = "proto3";
 package api.core;
 
 option go_package = "wcs/api/core;core";
+option java_package = "com.teneasyChat.api.core";
 import "api/option.proto";
 import "google/protobuf/empty.proto";
 import "validate/validate.proto";
-import "api/common/c_entrance.proto";
 import "google/protobuf/timestamp.proto";
+import "api/common/c_entrance.proto";
 import "api/common/c_reply.proto";
+import "api/common/c_chat.proto";
 
 option(api.info) = {
   authors: ["mango"],
@@ -116,40 +118,29 @@ message QueryWorkerResponse {
 }
 
 message QueryChatRequest {
-  repeated int64 chat_id = 1;
-}
-
-message ChatDetail {
-  int64 chat_id = 1;
-  // 入口id
-  uint32 entrance_id = 2;
-  // 入口名称
-  string entrance_name = 3;
-  // 用户来源
-  string platform = 4;
-  // IP
-  string ip = 5;
-  // 首次联系时间
-  google.protobuf.Timestamp create_at = 6;
-  // 最后联系时间
-  google.protobuf.Timestamp update_at = 7;
-  // 用户名
-  string name = 8;
-  // 用户头像
-  string avatar = 9;
-  // 用户称呼(备注)
-  string nick = 10;
-  // 用户诉求
-  string appeal = 11;
+  repeated int64 chat_id = 1[(validate.rules).repeated = {unique:true}];
 }
 
 message QueryChatResponse {
-  repeated ChatDetail chats = 1;
+  repeated common.ChatDetail chats = 1;
 }
 
 message UpdateUserAppealRequest {
-   string user_name = 1;
-   string user_appeal = 2;
+  int64  chat_id = 1;
+  string user_name = 2;
+  string user_appeal = 3;
+}
+
+message PingPongRequest {
+  int64 local = 1;
+}
+
+message PingPongResponse {
+  int64 local = 1;
+}
+
+message ReplyRequest {
+  int64 msg_id = 1[(validate.rules).int64.gt = 0];
 }
 
 // 客户调用接口
@@ -157,7 +148,7 @@ service Front {
   option (api.service) = {
     path: "api",
     tags: ["front"],
-    auth: [AUTH_ROLE_ACCOUNT,AUTH_ROLE_SERVICE],
+    auth: [AUTH_ROLE_ACCOUNT, AUTH_ROLE_SERVICE],
   };
 
   // 用户资料
@@ -246,6 +237,25 @@ service Front {
       path: "update-user-appeal",
       ready: true,
       date: "2023-01-05"
+    };
+  }
+
+  rpc PingPong(PingPongRequest) returns (PingPongResponse){
+    option (api.method) = {
+      id: 908,
+      auth: [AUTH_ROLE_DEVICE],
+      path: "ping-pong",
+      ready: true,
+      date: "2023-02-08"
+    };
+  }
+
+  rpc ReplyPls(ReplyRequest) returns (google.protobuf.Empty){
+    option (api.method) = {
+      id: 909,
+      path: "reply",
+      ready: true,
+      date: "2023-02-15"
     };
   }
 }

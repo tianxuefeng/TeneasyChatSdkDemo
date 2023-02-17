@@ -2,6 +2,7 @@ syntax = "proto3";
 package api.core;
 
 option go_package = "wcs/api/core;core";
+option java_package = "com.teneasyChat.api.core";
 import "api/option.proto";
 import "google/protobuf/empty.proto";
 import "validate/validate.proto";

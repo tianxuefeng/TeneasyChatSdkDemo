@@ -2,6 +2,7 @@ syntax = "proto3";
 package api.core;
 
 option go_package = "wcs/api/core;core";
+option java_package = "com.teneasyChat.api.core";
 import "api/option.proto";
 import "google/protobuf/empty.proto";
 import "validate/validate.proto";
@@ -23,11 +24,11 @@ message DomainItem {
 }
 
 message DownloadDomainResponse{
-    repeated DomainItem domain_item = 1;
+  repeated DomainItem domain_item = 1;
 }
 
 message CreateEntranceRequest {
-  common.Entrance entrances = 1;
+  common.Entrance entrances = 1[(validate.rules).message.required = true];
 }
 
 message CreateEntranceResponse {
@@ -35,11 +36,11 @@ message CreateEntranceResponse {
 }
 
 message UpdateEntranceRequest {
-  common.Entrance entrances = 1;
+  common.Entrance entrances = 1[(validate.rules).message.required = true];
 }
 
 message DeleteEntranceRequest {
-  uint32 id = 1;
+  uint32 id = 1[(validate.rules).uint32.gt = 0];
 }
 
 message GetDistributionResponse {
@@ -68,7 +69,7 @@ service Entrance {
     };
   }
 
-  // 保存新用户分配机制
+  // 保存老用户重连分配机制
   rpc SaveDistributionMechanism(SaveDistributionRequest) returns (DownloadDomainResponse) {
     option (api.method) = {
       id: 604,

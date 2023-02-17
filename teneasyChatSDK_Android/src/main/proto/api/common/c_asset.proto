@@ -5,6 +5,7 @@ import "validate/validate.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "wcs/api/common;common";
+option java_package = "com.teneasyChat.api.common";
 option swift_prefix = "Common";
 
 message Asset {

@@ -2,6 +2,7 @@ syntax = "proto3";
 package api.core;
 
 option go_package = "wcs/api/core;core";
+option java_package = "com.teneasyChat.api.core";
 import "api/option.proto";
 import "api/common/c_worker.proto";
 import "google/protobuf/empty.proto";
@@ -49,7 +50,7 @@ message WorkerGroupUpdateResponse {
 // 删除分组
 message WorkerGroupDeleteRequest {
   // 指定分组id
-  int64 id = 1;
+  int64 id = 1[(validate.rules).int64.gt = 0];
 }
 
 service WorkerGroup {
@@ -87,6 +88,14 @@ service WorkerGroup {
     option (api.method) = {
       id: 403,
       path: "delete",
+      ready:true
+    };
+  }
+
+  rpc QueryByPerm(google.protobuf.Empty) returns (WorkerGroupQueryResponse) {
+    option (api.method) = {
+      id: 404,
+      path: "query-by-perm",
       ready:true
     };
   }

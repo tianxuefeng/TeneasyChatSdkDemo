@@ -3,13 +3,25 @@ package api.common;
 
 import "api/common/c_device.proto";
 import "google/protobuf/timestamp.proto";
-option go_package = "wcs/api/common;common";
 import "validate/validate.proto";
 
-enum LinkType {
-  LINK_TYPE_UNKNOWN= 0;
-  LINK_TYPE_H5= 1;
-  LINK_TYPE_WEB= 2;
+option go_package = "wcs/api/common;common";
+option java_package = "com.teneasyChat.api.common";
+
+
+enum ClientType {
+  CLIENT_TYPE_UNKNOWN = 0;
+
+  CLIENT_TYPE_WORKER_BEGIN = 1;
+  CLIENT_TYPE_WORKER_PC = 2;
+  // 客服端在此加入新类型
+  CLIENT_TYPE_WORKER_END = 100;
+
+  CLIENT_TYPE_USER_BEGIN = 101;
+  CLIENT_TYPE_USER_H5 = 102;
+  CLIENT_TYPE_USER_WEB = 103;
+  // 用户端在此加入新类型
+  CLIENT_TYPE_USER_END = 200;
 }
 
 message Entrance {
@@ -55,7 +67,7 @@ message Consult {
   // 接待客服组
   repeated int64 worker_group_ids = 4;
   // 接待客服
-  repeated  int32 worker_ids = 5;
+  repeated int32 worker_ids = 5;
   // 接待客服组名称
   string worker_group_names = 6;
   // 接待客服

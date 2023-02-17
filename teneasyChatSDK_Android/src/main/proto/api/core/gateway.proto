@@ -2,9 +2,12 @@ syntax = "proto3";
 package api.core;
 
 option go_package = "wcs/api/core;core";
+option java_package = "com.teneasyChat.api.core";
 import "api/option.proto";
 import "google/protobuf/empty.proto";
 import "validate/validate.proto";
+
+import "api/common/c_entrance.proto";
 
 option(api.info) = {
   authors: ["calvin"],
@@ -14,6 +17,13 @@ option(api.info) = {
 message GatewayNodeRequest {
   // 网关节点id
   int32 gateway_id = 1;
+}
+
+message GatewayRegisterRequest {
+  // 网关节点id
+  int32 gateway_id = 1;
+  // 客户端来源
+  common.ClientType client_type = 2;
 }
 
 message GatewayRegisterResponse {
@@ -70,7 +80,7 @@ service GatewayManager {
   }
 
   // 链接注册
-  rpc Register(GatewayNodeRequest) returns (GatewayRegisterResponse) {
+  rpc Register(GatewayRegisterRequest) returns (GatewayRegisterResponse) {
     option (api.method) = {
       id: 801,
       path: "register"
