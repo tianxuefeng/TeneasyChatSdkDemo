@@ -1,0 +1,52 @@
+syntax = "proto3";
+package api.common;
+
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "api/common/c_worker.proto";
+import "api/common/c_message.proto";
+
+option go_package = "wcs/api/common;common";
+option java_package = "com.teneasyChat.api.common";
+option swift_prefix = "Common";
+
+message ChatDetail {
+  int64 chat_id = 1;
+  // 入口id
+  uint32 entrance_id = 2;
+  // 入口名称
+  string entrance_name = 3;
+  // 用户来源
+  string platform = 4;
+  // IP
+  string ip = 5;
+  // 分配客服时间
+  google.protobuf.Timestamp create_at = 6;
+  // 最后一次上线时间
+  google.protobuf.Timestamp update_at = 7;
+  // 用户名
+  string name = 8;
+  // 用户头像
+  string avatar = 9;
+  // 用户称呼(备注)
+  string nick = 10;
+  // 用户诉求
+  string appeal = 11;
+  // 重新打开会话时间
+  google.protobuf.Timestamp reset_at = 12;
+}
+
+message ChatItem {
+  int64 chat_id = 1;
+  common.ChatState state = 2;
+  int32 unread = 3;
+  common.Message latest_msg = 4;
+  // 分配客服时间
+  google.protobuf.Timestamp create_at = 5;
+  // 第一次服务时间
+  google.protobuf.Timestamp service_at = 6;
+  // 会话详情
+  ChatDetail detail = 7;
+  // 重新打开会话时间
+  google.protobuf.Timestamp reset_at = 8;
+}
