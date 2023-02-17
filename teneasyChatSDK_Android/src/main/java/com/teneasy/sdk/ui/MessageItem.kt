@@ -1,6 +1,7 @@
 package com.teneasy.sdk.ui
 
-import api.common.CMessage
+import com.teneasyChat.api.common.CMessage
+
 
 //enum MessageSendState: String { case 发送中="0", 发送成功="1", 发送失败="2", 未知="-1" }
 enum class MessageSendState {

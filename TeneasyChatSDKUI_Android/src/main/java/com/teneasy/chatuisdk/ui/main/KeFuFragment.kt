@@ -11,7 +11,7 @@ import com.teneasy.chatuisdk.BR
 import com.teneasy.chatuisdk.databinding.FragmentKefuBinding
 import com.teneasy.sdk.MessageEventBus
 import com.teneasy.sdk.ui.MessageItem
-import gateway.GGateway.SCHi
+import com.teneasyChat.gateway.GGateway
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.greenrobot.eventbus.EventBus
@@ -98,8 +98,8 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                 // 解析数据
                 val data = event.data as MessageItem
                 viewModel.updateMsgStatus(data)
-            } else if (event.data is SCHi) {
-                val data = event.data as SCHi
+            } else if (event.data is GGateway.SCHi) {
+                val data = event.data as GGateway.SCHi
                 val workId = data.workerId
                 loadWorker(workId)
                 /* 此处需要调用Api来获取客服的名字，并显示在头部

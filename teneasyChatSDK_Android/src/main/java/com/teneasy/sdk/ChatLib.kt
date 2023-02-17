@@ -2,14 +2,13 @@ package com.teneasy.sdk
 
 import android.content.Context
 import android.widget.Toast
-import api.common.CMessage
 import com.google.protobuf.Timestamp
 import com.teneasy.sdk.ui.MessageItem
 import com.teneasy.sdk.ui.MessageSendState
-import gateway.GAction
-import gateway.GGateway
-import gateway.GGateway.SCHi
-import gateway.GPayload.Payload
+import com.teneasyChat.api.common.CMessage
+import com.teneasyChat.gateway.GAction
+import com.teneasyChat.gateway.GGateway
+import com.teneasyChat.gateway.GPayload
 //import io.crossbar.autobahn.websocket.WebSocketConnection
 //import io.crossbar.autobahn.websocket.WebSocketConnectionHandler
 //import io.crossbar.autobahn.websocket.types.ConnectionResponse
@@ -169,7 +168,7 @@ class ChatLib {
         val cSendMsgData = cSendMsg.build().toByteString()
 
         //第四层
-        val payload = Payload.newBuilder()
+        val payload = GPayload.Payload.newBuilder()
         payload.data = cSendMsgData
         payload.act = GAction.Action.ActionCSSendMsg
         payloadId += 1
@@ -202,7 +201,7 @@ class ChatLib {
         val cSendMsgData = cSendMsg.build().toByteString()
 
         //第四层
-        val payload = Payload.newBuilder()
+        val payload = GPayload.Payload.newBuilder()
         payload.data = cSendMsgData
         payload.act = GAction.Action.ActionCSSendMsg
         payloadId += 1
@@ -233,7 +232,7 @@ class ChatLib {
         if(data.size == 1)
             print("在别处登录了")
         else {
-            val payLoad = Payload.parseFrom(data)
+            val payLoad = GPayload.Payload.parseFrom(data)
             val msgData = payLoad.data
             payloadId = payLoad.id
             println("act: ${payLoad.act.number}")
@@ -268,7 +267,7 @@ class ChatLib {
            //Compose chat model
 
                 // 采用封装好的自定义事件类，来实现多类型传递
-                var eventBus = MessageEventBus<SCHi>()
+                var eventBus = MessageEventBus<GGateway.SCHi>()
                 eventBus.setData(msg)
                 EventBus.getDefault().post(eventBus)
 
