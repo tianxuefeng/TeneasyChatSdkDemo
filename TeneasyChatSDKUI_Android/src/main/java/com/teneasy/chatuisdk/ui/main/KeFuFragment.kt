@@ -29,12 +29,12 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
 
     private lateinit var viewModel: KeFuViewModel
 
-    private lateinit var timer: Timer
+    private var timer: Timer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = KeFuViewModel(MainFragment@this)
-        timer = Timer()
+        //timer = Timer()
 //        myTest.makeConnect2()
         //myTest.m
     }
@@ -69,7 +69,8 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
 //    }
 
     private fun startTimer() {
-        timer.schedule(object : TimerTask() {
+        closeTimer()
+        timer?.schedule(object : TimerTask() {
             override fun run() {
                 //需要执行的任务
                 viewModel.sendHeartBeat()
@@ -79,7 +80,8 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
 
     private fun closeTimer() {
         if(timer != null) {
-            timer.cancel()
+            timer?.cancel()
+            timer = null
         }
     }
 
@@ -168,7 +170,7 @@ X-Token ="token"
     private val handler: Handler = object : Handler(Looper.myLooper()!!) {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-            if(msg.what == 200) {
+            if(binding != null && msg.what == 200) {
                 binding!!.tvTitle.text = "客服${msg.obj}"
                 viewModel.composeAChatmodel("你好，我是客服${msg.obj}", true)
             }
@@ -177,6 +179,10 @@ X-Token ="token"
 
     override fun onDestroy() {
         super.onDestroy()
+      exit()
+    }
+
+    fun exit(){
         closeTimer()
         if(!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this)

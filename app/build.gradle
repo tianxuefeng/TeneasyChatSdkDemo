@@ -56,7 +56,7 @@ dependencies {
     //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:ef69b5cad857254dcfb6e0f2fdecd25b4ff73f19 '
 
     //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:master-SNAPSHOT'
-    //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:1.1.1'
+    //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:1.1.7'
     implementation project(path: ':TeneasyChatSDKUI_Android')
     implementation project(path: ':teneasyChatSDK_Android')
     //implementation project(path: ':TeneasyChatSDKUI_Android')
