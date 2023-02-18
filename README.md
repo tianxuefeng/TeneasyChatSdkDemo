@@ -1,19 +1,21 @@
-# TeneasyChatSDK_Android
+集成步骤：
 
-## Example
-任何一个安卓App，调用这个SDK至少有两个办法
+1. implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:1.1.8' （版本号请替换为稳定版或最新版）
 
+2. AndroidManifest.xml
+ <activity android:name="com.teneasy.chatuisdk.ui.main.KeFuActivity"  android:exported="true">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
 
-    从 maven 仓库里面得到
-        implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:x.x.x' //x.x.x这里输入最新版本的tag 版本号
-       （需要在settings.gradle里面添加：  maven { url 'https://jitpack.io' }）
-       
-    或者
-       implementation project(path: ':teneasyChatSDK_Android')
-## Author
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
 
-XiaoFu
+3. 在页面添加一个按钮并触发事件：
+    R.id.btn_contactSupport -> {
+                val keFuIntent = Intent(this, KeFuActivity :: class.java)
+                this.startActivity(keFuIntent)
 
-## License
+完成。
 
-TeneasyChatSDK_Android is available under the MIT license. See the LICENSE file for more info.
+小福，2023-02-18
