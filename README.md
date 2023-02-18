@@ -4,8 +4,7 @@
 
 2. AndroidManifest.xml
 
- 
- <activity android:name="com.teneasy.chatuisdk.ui.main.KeFuActivity"  android:exported="true"> </activity>
+ 添加一个Activity: android:name="com.teneasy.chatuisdk.ui.main.KeFuActivity"
        
 
 3. 在页面添加一个按钮并触发事件：
