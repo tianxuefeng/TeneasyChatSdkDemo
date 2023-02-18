@@ -4,6 +4,7 @@
 
 2. AndroidManifest.xml
 
+ 
  <activity android:name="com.teneasy.chatuisdk.ui.main.KeFuActivity"  android:exported="true"> </activity>
        
 
