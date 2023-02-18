@@ -3,15 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'maven-publish'
     id 'signing'
-    id 'com.google.protobuf'
+    //id 'com.google.protobuf'
 }
-
-//sourceSets{
-//    main.java.srcDirs += "${protobuf.generatedFilesBaseDir}/main/javalite"
-//}
-
-
-
 
 android {
     namespace 'com.teneasy.sdk'
@@ -43,7 +36,7 @@ android {
         exclude 'META-INF/ASL2.0'
     }
 
-    sourceSets {
+   /* sourceSets {
         main {
             proto {
                 srcDir 'src/main/include'
@@ -53,7 +46,7 @@ android {
 
             }
         }
-    }
+    }*/
     // main.java.srcDirs += "${protobuf.generatedFilesBaseDir}/main/javalite"
 }
 
@@ -80,6 +73,7 @@ dependencies {
 
 }
 
+/*
 protobuf {
     protoc {
         artifact = 'com.google.protobuf:protoc:3.21.12'
@@ -93,7 +87,7 @@ protobuf {
             }
         }
     }
-}
+}*/
 
 afterEvaluate {
     publishing {
@@ -103,7 +97,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.tianxuefeng'
                 artifactId = 'teneasy-chatsdk'
-                version = '1.0.6'
+                version = '1.1.7'
             }
         }
     }
