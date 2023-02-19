@@ -6288,7 +6288,7 @@ com.teneasyChat.api.common.CChat.ChatDetail defaultValue) {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.teneasyChat.api.Option.getDescriptor(),
-          io.envoyproxy.pgv.validate.Validate.getDescriptor(),
+          com.teneasyChat.validate.Validate.getDescriptor(),
           com.google.protobuf.EmptyProto.getDescriptor(),
           com.google.protobuf.TimestampProto.getDescriptor(),
           com.teneasyChat.api.common.CMessage.getDescriptor(),
@@ -6342,11 +6342,11 @@ com.teneasyChat.api.common.CChat.ChatDetail defaultValue) {
     registry.add(com.teneasyChat.api.Option.info);
     registry.add(com.teneasyChat.api.Option.method);
     registry.add(com.teneasyChat.api.Option.service);
-    registry.add(io.envoyproxy.pgv.validate.Validate.rules);
+    registry.add(com.teneasyChat.validate.Validate.rules);
     com.google.protobuf.Descriptors.FileDescriptor
         .internalUpdateFileDescriptor(descriptor, registry);
     com.teneasyChat.api.Option.getDescriptor();
-    io.envoyproxy.pgv.validate.Validate.getDescriptor();
+    com.teneasyChat.validate.Validate.getDescriptor();
     com.google.protobuf.EmptyProto.getDescriptor();
     com.google.protobuf.TimestampProto.getDescriptor();
     com.teneasyChat.api.common.CMessage.getDescriptor();

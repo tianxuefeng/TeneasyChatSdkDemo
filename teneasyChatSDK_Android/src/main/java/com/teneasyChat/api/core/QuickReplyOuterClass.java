@@ -12630,7 +12630,7 @@ public final class QuickReplyOuterClass {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.teneasyChat.api.Option.getDescriptor(),
           com.google.protobuf.EmptyProto.getDescriptor(),
-          io.envoyproxy.pgv.validate.Validate.getDescriptor(),
+          com.teneasyChat.validate.Validate.getDescriptor(),
           com.teneasyChat.api.common.CMessage.getDescriptor(),
         });
     internal_static_api_core_QuickReplyGroupItem_descriptor =
@@ -12734,12 +12734,12 @@ public final class QuickReplyOuterClass {
     registry.add(com.teneasyChat.api.Option.info);
     registry.add(com.teneasyChat.api.Option.method);
     registry.add(com.teneasyChat.api.Option.service);
-    registry.add(io.envoyproxy.pgv.validate.Validate.rules);
+    registry.add(com.teneasyChat.validate.Validate.rules);
     com.google.protobuf.Descriptors.FileDescriptor
         .internalUpdateFileDescriptor(descriptor, registry);
     com.teneasyChat.api.Option.getDescriptor();
     com.google.protobuf.EmptyProto.getDescriptor();
-    io.envoyproxy.pgv.validate.Validate.getDescriptor();
+    com.teneasyChat.validate.Validate.getDescriptor();
     com.teneasyChat.api.common.CMessage.getDescriptor();
   }
 

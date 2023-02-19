@@ -4563,7 +4563,7 @@ public final class CChat {
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          io.envoyproxy.pgv.validate.Validate.getDescriptor(),
+          com.teneasyChat.validate.Validate.getDescriptor(),
           com.google.protobuf.TimestampProto.getDescriptor(),
           com.teneasyChat.api.common.CWorker.getDescriptor(),
           com.teneasyChat.api.common.CMessage.getDescriptor(),
@@ -4580,7 +4580,7 @@ public final class CChat {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_api_common_ChatItem_descriptor,
         new java.lang.String[] { "ChatId", "State", "Unread", "LatestMsg", "CreateAt", "ServiceAt", "Detail", "ResetAt", });
-    io.envoyproxy.pgv.validate.Validate.getDescriptor();
+    com.teneasyChat.validate.Validate.getDescriptor();
     com.google.protobuf.TimestampProto.getDescriptor();
     com.teneasyChat.api.common.CWorker.getDescriptor();
     com.teneasyChat.api.common.CMessage.getDescriptor();

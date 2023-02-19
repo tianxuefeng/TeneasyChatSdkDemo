@@ -716,7 +716,7 @@ public final class GPayload {
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          io.envoyproxy.pgv.validate.Validate.getDescriptor(),
+          com.teneasyChat.validate.Validate.getDescriptor(),
           com.teneasyChat.gateway.GAction.getDescriptor(),
         });
     internal_static_gateway_Payload_descriptor =
@@ -727,10 +727,10 @@ public final class GPayload {
         new java.lang.String[] { "Id", "Act", "Data", });
     com.google.protobuf.ExtensionRegistry registry =
         com.google.protobuf.ExtensionRegistry.newInstance();
-    registry.add(io.envoyproxy.pgv.validate.Validate.rules);
+    registry.add(com.teneasyChat.validate.Validate.rules);
     com.google.protobuf.Descriptors.FileDescriptor
         .internalUpdateFileDescriptor(descriptor, registry);
-    io.envoyproxy.pgv.validate.Validate.getDescriptor();
+    com.teneasyChat.validate.Validate.getDescriptor();
     com.teneasyChat.gateway.GAction.getDescriptor();
   }
 

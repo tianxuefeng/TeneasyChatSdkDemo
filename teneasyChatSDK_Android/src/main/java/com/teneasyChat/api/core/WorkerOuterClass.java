@@ -23718,7 +23718,7 @@ public final class WorkerOuterClass {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.EmptyProto.getDescriptor(),
-          io.envoyproxy.pgv.validate.Validate.getDescriptor(),
+          com.teneasyChat.validate.Validate.getDescriptor(),
           com.teneasyChat.api.Option.getDescriptor(),
           com.teneasyChat.api.common.CWorker.getDescriptor(),
           com.teneasyChat.api.common.CBase.getDescriptor(),
@@ -23891,11 +23891,11 @@ public final class WorkerOuterClass {
     registry.add(com.teneasyChat.api.Option.info);
     registry.add(com.teneasyChat.api.Option.method);
     registry.add(com.teneasyChat.api.Option.service);
-    registry.add(io.envoyproxy.pgv.validate.Validate.rules);
+    registry.add(com.teneasyChat.validate.Validate.rules);
     com.google.protobuf.Descriptors.FileDescriptor
         .internalUpdateFileDescriptor(descriptor, registry);
     com.google.protobuf.EmptyProto.getDescriptor();
-    io.envoyproxy.pgv.validate.Validate.getDescriptor();
+    com.teneasyChat.validate.Validate.getDescriptor();
     com.teneasyChat.api.Option.getDescriptor();
     com.teneasyChat.api.common.CWorker.getDescriptor();
     com.teneasyChat.api.common.CBase.getDescriptor();

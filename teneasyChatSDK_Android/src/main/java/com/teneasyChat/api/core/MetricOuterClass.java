@@ -1536,7 +1536,7 @@ public final class MetricOuterClass {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.teneasyChat.api.Option.getDescriptor(),
           com.google.protobuf.EmptyProto.getDescriptor(),
-          io.envoyproxy.pgv.validate.Validate.getDescriptor(),
+          com.teneasyChat.validate.Validate.getDescriptor(),
         });
     internal_static_api_core_WorkerMetric_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -1559,7 +1559,7 @@ public final class MetricOuterClass {
         .internalUpdateFileDescriptor(descriptor, registry);
     com.teneasyChat.api.Option.getDescriptor();
     com.google.protobuf.EmptyProto.getDescriptor();
-    io.envoyproxy.pgv.validate.Validate.getDescriptor();
+    com.teneasyChat.validate.Validate.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

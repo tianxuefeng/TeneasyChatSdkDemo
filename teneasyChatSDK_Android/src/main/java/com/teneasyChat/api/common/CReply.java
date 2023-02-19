@@ -7345,7 +7345,7 @@ com.teneasyChat.api.common.CReply.QuickReplyGroup defaultValue) {
           com.google.protobuf.TimestampProto.getDescriptor(),
           com.teneasyChat.api.common.CMessage.getDescriptor(),
           com.google.protobuf.WrappersProto.getDescriptor(),
-          io.envoyproxy.pgv.validate.Validate.getDescriptor(),
+          com.teneasyChat.validate.Validate.getDescriptor(),
         });
     internal_static_api_common_QuickReply_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -7403,13 +7403,13 @@ com.teneasyChat.api.common.CReply.QuickReplyGroup defaultValue) {
         new java.lang.String[] { "Id", "Name", "Title", "Qa", "DelaySec", "WorkerId", "WorkerNames", });
     com.google.protobuf.ExtensionRegistry registry =
         com.google.protobuf.ExtensionRegistry.newInstance();
-    registry.add(io.envoyproxy.pgv.validate.Validate.rules);
+    registry.add(com.teneasyChat.validate.Validate.rules);
     com.google.protobuf.Descriptors.FileDescriptor
         .internalUpdateFileDescriptor(descriptor, registry);
     com.google.protobuf.TimestampProto.getDescriptor();
     com.teneasyChat.api.common.CMessage.getDescriptor();
     com.google.protobuf.WrappersProto.getDescriptor();
-    io.envoyproxy.pgv.validate.Validate.getDescriptor();
+    com.teneasyChat.validate.Validate.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

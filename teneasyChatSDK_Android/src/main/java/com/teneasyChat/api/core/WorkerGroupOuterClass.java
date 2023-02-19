@@ -4247,7 +4247,7 @@ public final class WorkerGroupOuterClass {
           com.teneasyChat.api.Option.getDescriptor(),
           com.teneasyChat.api.common.CWorker.getDescriptor(),
           com.google.protobuf.EmptyProto.getDescriptor(),
-          io.envoyproxy.pgv.validate.Validate.getDescriptor(),
+          com.teneasyChat.validate.Validate.getDescriptor(),
         });
     internal_static_api_core_WorkerGroupQueryResponse_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -4290,13 +4290,13 @@ public final class WorkerGroupOuterClass {
     registry.add(com.teneasyChat.api.Option.info);
     registry.add(com.teneasyChat.api.Option.method);
     registry.add(com.teneasyChat.api.Option.service);
-    registry.add(io.envoyproxy.pgv.validate.Validate.rules);
+    registry.add(com.teneasyChat.validate.Validate.rules);
     com.google.protobuf.Descriptors.FileDescriptor
         .internalUpdateFileDescriptor(descriptor, registry);
     com.teneasyChat.api.Option.getDescriptor();
     com.teneasyChat.api.common.CWorker.getDescriptor();
     com.google.protobuf.EmptyProto.getDescriptor();
-    io.envoyproxy.pgv.validate.Validate.getDescriptor();
+    com.teneasyChat.validate.Validate.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

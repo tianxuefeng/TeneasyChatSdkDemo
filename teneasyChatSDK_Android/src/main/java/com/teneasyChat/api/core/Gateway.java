@@ -4762,7 +4762,7 @@ public final class Gateway {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.teneasyChat.api.Option.getDescriptor(),
           com.google.protobuf.EmptyProto.getDescriptor(),
-          io.envoyproxy.pgv.validate.Validate.getDescriptor(),
+          com.teneasyChat.validate.Validate.getDescriptor(),
           com.teneasyChat.api.common.CEntrance.getDescriptor(),
         });
     internal_static_api_core_GatewayNodeRequest_descriptor =
@@ -4810,7 +4810,7 @@ public final class Gateway {
         .internalUpdateFileDescriptor(descriptor, registry);
     com.teneasyChat.api.Option.getDescriptor();
     com.google.protobuf.EmptyProto.getDescriptor();
-    io.envoyproxy.pgv.validate.Validate.getDescriptor();
+    com.teneasyChat.validate.Validate.getDescriptor();
     com.teneasyChat.api.common.CEntrance.getDescriptor();
   }
 
