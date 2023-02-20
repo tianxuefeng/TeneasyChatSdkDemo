@@ -13,5 +13,5 @@
     <color name="statusBar">#4E4E49</color>
     <color name="chatBody">#f7f7f7</color>
     <color name="yellow">#fbe659</color>
-
+<color name="selector_send_chat">#ffffff</color>
 </resources>

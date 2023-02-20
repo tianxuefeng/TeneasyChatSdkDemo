@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,6 +48,15 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         requireActivity().title = "客服"
 //        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
        // requireActivity().titleColor = R.color.black
+      val title =  requireActivity().title
+        val sb = SpannableStringBuilder(title)
+        val emoji = "[emoticon_01]"
+        // 最大长度，对应maxLength
+//        var maxLength = 100
+//        if (sb.length + emoji.length > maxLength) {
+//            return@setOnEmojiItemClickListener
+//        }
+        sb.append(emoji)
     }
 
     override fun initView() {
