@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.android.common.view.chat.emoji.EmoticonTextView
+//import com.android.common.view.chat.emoji.EmoticonTextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 
@@ -101,19 +103,19 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
             return TYPE_Text
         }
         val obj = list!![position]
+        obj.cMsg?.apply {
+            return if (this.hasImage()){
+                return TYPE_Image
+            } else {
+                return TYPE_Text
+            }
+        }
         // 因为要处理接收和自己发送的消息，所以单纯的判断msg是不够的。需要直接判断imgPath是否为空
 //        if(obj.isSend) {
 //            if(obj.imgPath != null && obj.imgPath.isNotEmpty()) {
 //                return TYPE_Image
 //            }
 //        } else {
-            obj.cMsg?.apply {
-                return if (this.hasImage()){
-                    return TYPE_Image
-                } else {
-                    return TYPE_Text
-                }
-            }
 //        }
         return TYPE_Text
     }
@@ -124,23 +126,23 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
 
     inner class MsgViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var tvLeftTime: TextView
-        var tvLeftMsg: TextView
+        var tvLeftMsg: EmoticonTextView
         var ivLeftImg: AppCompatImageView
 
         var tvRightTime: TextView
-        var tvRightMsg: TextView
+        var tvRightMsg: EmoticonTextView
         var ivRightImg: AppCompatImageView
         var ivSendStatus: ImageView
         var lySend: View
 
         init {
             tvLeftTime = itemView.findViewById(R.id.tv_left_time)
-            tvLeftMsg = itemView.findViewById(R.id.tv_left_msg)
+            tvLeftMsg = itemView.findViewById(R.id.tv_left_msg) as EmoticonTextView
             ivLeftImg = itemView.findViewById(R.id.iv_left_image)
 
             ivRightImg = itemView.findViewById(R.id.iv_right_image)
             tvRightTime = itemView.findViewById(R.id.tv_right_time)
-            tvRightMsg = itemView.findViewById(R.id.tv_right_msg)
+            tvRightMsg = itemView.findViewById(R.id.tv_right_msg)  as EmoticonTextView
             ivSendStatus = itemView.findViewById(R.id.iv_send_status)
             lySend = itemView.findViewById(R.id.layout_send)
         }
