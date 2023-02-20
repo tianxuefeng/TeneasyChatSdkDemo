@@ -15,25 +15,20 @@
         app:layout_constraintTop_toTopOf="parent"
         android:text="21:57:52"
         />
-
     <com.android.common.view.chat.emoji.EmoticonTextView
         android:id="@+id/tv_left_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_item_send"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:singleLine="true"
-        android:textColor="@color/black"
-        android:textSize="13sp"
-        android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="1dp"
+        android:padding="10dp"
+        android:gravity="left"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_left_time"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:text="1111" />
-
-    <ImageView
+        android:textSize="16sp"
+        android:text="21:57:52123131231231233333222222"
+        />
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_left_image"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
@@ -107,7 +102,6 @@
                 android:text="21:57:521231324234234234"
                 android:textSize="16sp"
                 android:visibility="visible" />
-
             <ImageView
                 android:id="@+id/iv_right_image"
                 android:layout_width="120dp"

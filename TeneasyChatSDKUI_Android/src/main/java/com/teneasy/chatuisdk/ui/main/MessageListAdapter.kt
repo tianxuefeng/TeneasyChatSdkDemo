@@ -1,5 +1,7 @@
 package com.teneasy.chatuisdk.ui.main;
 
+//import com.android.common.view.chat.emoji.EmoticonTextView
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -9,15 +11,14 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.android.common.view.chat.emoji.EmoticonTextView
-//import com.android.common.view.chat.emoji.EmoticonTextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-
+import com.teneasy.chatuisdk.R
+import com.teneasy.chatuisdk.databinding.ItemMessageBinding
 import com.teneasy.sdk.TimeUtil
 import com.teneasy.sdk.ui.MessageItem
-import java.util.*
-import com.teneasy.chatuisdk.R
 import com.teneasy.sdk.ui.MessageSendState
+import java.util.*
 
 class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageListAdapter.MsgViewHolder>() {
     private var list: ArrayList<MessageItem>? = null
@@ -34,7 +35,16 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MsgViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_message, parent, false)
+        //val view = LayoutInflater.from(parent.context).inflate(R.layout.item_message, parent, false)
+
+
+        val view= ItemMessageBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        ).root
+
+
         return MsgViewHolder(view)
     }
 
