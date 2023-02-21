@@ -14,6 +14,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.gson.JsonObject
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
@@ -22,6 +24,7 @@ import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.teneasy.chatuisdk.BR
 import com.teneasy.chatuisdk.R
 import com.teneasy.chatuisdk.databinding.FragmentKefuBinding
+import com.teneasy.chatuisdk.ui.base.Constants
 import com.teneasy.chatuisdk.ui.base.GlideEngine
 import com.teneasy.chatuisdk.ui.http.MainApi
 import com.teneasy.chatuisdk.ui.http.ReturnData
@@ -290,6 +293,16 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                     if (res.msg.equals("ok", true) && res.data != null) {
                         binding!!.tvTitle.text = "客服${res.data.workerName}"
                         viewModel.composeAChatmodel("你好，我是客服${res.data.workerName}", true)
+
+                        // 更新头像
+                        if (res.data.workerAvatar != null && res.data.workerAvatar?.isEmpty() == false) {
+                            val url = Constants.baseUrlImage + res.data.workerAvatar
+                            print("avatar:$url")
+                            Glide.with(binding!!.civAuthorImage).load(url).dontAnimate()
+                                .skipMemoryCache(true)
+                                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                                .into(binding!!.civAuthorImage)
+                        }
                     }
                 }
             })
