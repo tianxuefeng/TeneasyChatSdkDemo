@@ -19,9 +19,8 @@ import com.teneasy.chatuisdk.ui.base.GlideEngine
 import com.teneasy.sdk.ChatLib
 import com.teneasy.sdk.ui.MessageItem
 
-class KeFuViewModel(fragment: Fragment) : ViewModel() {
+class KeFuViewModel() : ViewModel() {
     // TODO: Implement the ViewModel
-    var msgAdapter: MessageListAdapter
 
     val mlSendMsg = MutableLiveData<String>()
 
@@ -30,22 +29,20 @@ class KeFuViewModel(fragment: Fragment) : ViewModel() {
     val mlExprIcon = MutableLiveData<Int>()
     val mlMsgTypeTxt = MutableLiveData<Boolean>()
 
-    val focusChangeListener = MutableLiveData<View.OnFocusChangeListener>()
-    val textChangedListener = MutableLiveData<TextWatcher>()
+    val mlMsgList = MutableLiveData<ArrayList<MessageItem>?>()
 
-    val clickSendExprListener = MutableLiveData<View.OnClickListener>()
-    val clickSendListener = MutableLiveData<View.OnClickListener>()
+//    val focusChangeListener = MutableLiveData<View.OnFocusChangeListener>()
+//    val textChangedListener = MutableLiveData<TextWatcher>()
 
-    val clickSendImgListener = MutableLiveData<View.OnClickListener>()
+//    val clickSendExprListener = MutableLiveData<View.OnClickListener>()
+//    val clickSendListener = MutableLiveData<View.OnClickListener>()
+//
+//    val clickSendImgListener = MutableLiveData<View.OnClickListener>()
 
-    val fragment = fragment
-
-    private var msgList: ArrayList<MessageItem>
-    private var selectImgs: ArrayList<LocalMedia>
+//    private var msgList: ArrayList<MessageItem>
+//    private var selectImgs: ArrayList<LocalMedia>
 
     private var chatLib: ChatLib
-
-    private lateinit var dialogBottomMenu: DialogBottomMenu
 
     init {
         mlSendMsg.value = ""
@@ -53,144 +50,33 @@ class KeFuViewModel(fragment: Fragment) : ViewModel() {
         mlExprIcon.value = R.drawable.h5_biaoqing
         mlMsgTypeTxt.value = true
         mlBtnSendVis.value = false
-        msgList = ArrayList()
-        msgAdapter = MessageListAdapter(fragment.requireContext())
 
         chatLib = ChatLib()
-        chatLib.makeConnect(fragment.requireContext())
+        chatLib.makeConnect()
 
-        selectImgs = ArrayList()
 
-        dialogBottomMenu = DialogBottomMenu(fragment.requireContext())
-            .setItems(fragment.resources.getStringArray(R.array.bottom_menu))
-            .setOnItemClickListener(AdapterView.OnItemClickListener{adapterView, view, i, l ->
-                when (i) {
-                    0 -> {
-                        // 选择相册
-                        showSelectPic(fragment, object : OnResultCallbackListener<LocalMedia> {
-                            override fun onResult(result: java.util.ArrayList<LocalMedia>) {
-                                if(result != null && result.size > 0) {
-                                    val item = result[0]
-//                        uploadImg(item.path)
-                                    dialogBottomMenu.dismiss()
-                                    addMsgItem(chatLib.composeAChatmodelImg(item.path, true))
-                                }
-                            }
-                            override fun onCancel() {}
-                        })
-                    }
-                    1 -> {
-                        // 拍照
-                        showCamera(fragment, object : OnResultCallbackListener<LocalMedia> {
-                            override fun onResult(result: java.util.ArrayList<LocalMedia>) {
-                                if(result != null && result.size > 0) {
-                                    val item = result[0]
-//                        uploadImg(item.path)
-                                    dialogBottomMenu.dismiss()
-                                    addMsgItem(chatLib.composeAChatmodelImg(item.path, true))
-                                }
-                            }
-
-                            override fun onCancel() {}
-                        })
-                    }
-                    else -> {
-                        dialogBottomMenu.dismiss()
-                    }
-                }
-            })
-            .build()
-
-//        dialogBottomMenu = DialogBottomMenu(fragment.requireContext(), "", AdapterView.OnItemClickListener{adapterView, view, i, l ->
-//            when (i) {
-//                0 -> {
-//                    // 选择相册
-//
-//                }
-//                1 -> {
-//                    // 拍照
-//                    showCamera(fragment, object : OnResultCallbackListener<LocalMedia> {
-//                        override fun onResult(result: java.util.ArrayList<LocalMedia>) {
-//                            if(result != null && result.size > 0) {
-//                                val item = result[0]
-////                        uploadImg(item.path)
-//                                addMsgItem(chatLib.composeAChatmodelImg(item.path, true))
-//                            }
-//                        }
-//
-//                        override fun onCancel() {}
-//                    })
-//                }
-//                else -> {
-//                    dialogBottomMenu.dismiss()
-//                }
-//            }
-//        })
-//        dialogBottomMenu.setItems(fragment.resources.getStringArray(R.array.bottom_menu))
-
-        initListener()
+        mlMsgList.value = ArrayList()
     }
 
-    private fun initListener() {
-        focusChangeListener.value = View.OnFocusChangeListener { v: View, hasFocus: Boolean ->
-            if (!hasFocus) {
-                closeSoftKeyboard(v)
+    fun sendMsg(): Boolean {
+        if(mlSendMsg.value != null && mlSendMsg.value!!.trim().isNotEmpty()) {
+            val msg = mlSendMsg.value
+            chatLib.sendMsg(msg!!)
+
+            mlSendMsg.value = "";
+
+            /*val cMsg = CMessage.Message.newBuilder()
+            var cMContent = MessageContent.newBuilder()
+            cMContent.setData("测试消息")
+            cMsg.setContent(cMContent)
+            print(cMsg.content.data)*/
+            //val item = MessageItem(true, msg, 0, TimeUtil.getTimeStringAutoShort2(Date(), true))
+            if (chatLib.sendingMessageItem != null) {
+                addMsgItem(chatLib.sendingMessageItem!!)
             }
-        }
-
-        textChangedListener.value = object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                // TODO Auto-generated method stub
-                // 输入框有内容的时候，显示发送按钮，隐藏图片选择按钮
-                mlBtnSendVis.value = s != null && s.isNotEmpty()
-            }
-
-            override fun beforeTextChanged(
-                s: CharSequence?, start: Int, count: Int,
-                after: Int
-            ) {}
-
-            override fun onTextChanged(
-                s: CharSequence?, start: Int, before: Int,
-                count: Int
-            ) {}
-        }
-
-        clickSendExprListener.value = View.OnClickListener { v:View ->
-            // 发送表情
-            if(mlExprIcon.value == R.drawable.h5_biaoqing) {
-                mlExprIcon.value = R.drawable.ht_shuru
-            } else {
-                mlExprIcon.value = R.drawable.h5_biaoqing
-            }
-        }
-
-        clickSendImgListener.value = View.OnClickListener { v:View ->
-            // 发送表情
-//            mlBtnSendVis.value = mlBtnSendVis.value != true
-            dialogBottomMenu.show(v)
-        }
-
-        clickSendListener.value = View.OnClickListener { v:View ->
-            if(mlSendMsg.value != null && mlSendMsg.value!!.trim().isNotEmpty()) {
-                closeSoftKeyboard(v)
-                val msg = mlSendMsg.value
-                chatLib.sendMsg(msg!!)
-
-                mlSendMsg.value = "";
-
-                /*val cMsg = CMessage.Message.newBuilder()
-                var cMContent = MessageContent.newBuilder()
-                cMContent.setData("测试消息")
-                cMsg.setContent(cMContent)
-                print(cMsg.content.data)*/
-                //val item = MessageItem(true, msg, 0, TimeUtil.getTimeStringAutoShort2(Date(), true))
-                if (chatLib.sendingMessageItem != null) {
-                    addMsgItem(chatLib.sendingMessageItem!!)
-                }
-            } else {
-                Toast.makeText(fragment.requireContext(), "请输入信息内容", Toast.LENGTH_LONG).show()
-            }
+            return true
+        } else {
+            return false
         }
     }
 
@@ -198,22 +84,10 @@ class KeFuViewModel(fragment: Fragment) : ViewModel() {
 
     }
 
-    /**
-     * 关闭软键盘
-     *
-     * @param view 当前页面上任意一个可用的view
-     */
-    private fun closeSoftKeyboard(view: View?) {
-        if (view == null || view.windowToken == null) {
-            return
-        }
-        val imm: InputMethodManager =
-            view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
-    }
-
     fun addMsgItem(data: MessageItem) {
-        msgList.add(data)
+        val list = mlMsgList.value
+        list!!.add(data)
+        mlMsgList.value = list
         //if  data.payloadCase == CMessage.Message.PayloadCase.CONTENT
 
         /* 这是服务器时间转换为本地时间的办法
@@ -222,7 +96,7 @@ class KeFuViewModel(fragment: Fragment) : ViewModel() {
                     Log.i("ChatLib", localTime)
          */
         //Toast.makeText(context, data.cMsg.content.data, Toast.LENGTH_LONG).show()
-        msgAdapter.setList(msgList)
+
 
 //        listView.smoothScrollToPosition(msgAdapter.itemCount)
     }
@@ -241,42 +115,35 @@ class KeFuViewModel(fragment: Fragment) : ViewModel() {
                 // 初始添加
                 addMsgItem(data)
             } else {
+                val list = mlMsgList.value
                 // 修改状态
-                for (item in msgList) {
+                for (item in list!!) {
                     if (item.id == data.id && item.cMsg!!.content.data.equals(data.cMsg!!.content.data)) {
                         item.payLoadId = data.payLoadId
                         item.sendStatus = data.sendStatus
-
-                        msgAdapter.setList(msgList)
-                        msgAdapter.notifyDataSetChanged()
+                        // 用于触发observe
+                        mlMsgList.value = list
+//                        msgAdapter.setList(msgList)
+//                        msgAdapter.notifyDataSetChanged()
                         return
                     }
                 }
+
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        chatLib.disConnect()
     }
 
     fun composeAChatmodel(msg: String, left: Boolean) {
         addMsgItem(chatLib.composeAChatmodel(msg, left))
     }
 
-    //==========图片选择===========//
-    fun showCamera(
-        fragment: Fragment?,
-        resultCallbackListener: OnResultCallbackListener<LocalMedia>
-    ) {
-        PictureSelector.create(fragment)
-            .openCamera(SelectMimeType.ofImage())
-            .forResult(resultCallbackListener)
+    fun composeAChatmodelImg(imgPath: String, isLeft: Boolean) {
+        addMsgItem(chatLib.composeAChatmodelImg(imgPath, isLeft))
     }
 
-    fun showSelectPic(fragment: Fragment?,
-                      resultCallbackListener: OnResultCallbackListener<LocalMedia>) {
-        PictureSelector.create(fragment)
-            .openGallery(SelectMimeType.ofImage())
-            .setImageEngine(GlideEngine.createGlideEngine())
-            .setMaxSelectNum(1)
-            .isDisplayCamera(false)
-            .forResult(resultCallbackListener)
-    }
 }

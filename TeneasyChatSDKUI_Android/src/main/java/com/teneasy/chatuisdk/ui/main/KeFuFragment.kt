@@ -1,17 +1,28 @@
 package com.teneasy.chatuisdk.ui.main;
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.text.Editable
 import android.text.SpannableStringBuilder
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
 import android.widget.Toast
 import com.google.gson.JsonObject
+import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.config.SelectMimeType
+import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.teneasy.chatuisdk.BR
+import com.teneasy.chatuisdk.R
 import com.teneasy.chatuisdk.databinding.FragmentKefuBinding
+import com.teneasy.chatuisdk.ui.base.GlideEngine
 import com.teneasy.chatuisdk.ui.http.MainApi
 import com.teneasy.chatuisdk.ui.http.ReturnData
 import com.teneasy.chatuisdk.ui.http.bean.WorkerInfo
@@ -22,12 +33,9 @@ import com.xuexiang.xhttp2.XHttp
 import com.xuexiang.xhttp2.callback.ProgressLoadingCallBack
 import com.xuexiang.xhttp2.subsciber.ProgressDialogLoader
 import com.xuexiang.xhttp2.subsciber.impl.IProgressLoader
-import okhttp3.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.json.JSONObject
-import java.io.IOException
 import java.util.*
 
 class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
@@ -36,15 +44,19 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         fun newInstance() = KeFuFragment()
     }
 
+    private lateinit var msgAdapter: MessageListAdapter
+
     private lateinit var viewModel: KeFuViewModel
 
     private var mIProgressLoader: IProgressLoader? = null
 
     private var timer: Timer? = null
 
+    private lateinit var dialogBottomMenu: DialogBottomMenu
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = KeFuViewModel(MainFragment@this)
+        viewModel = KeFuViewModel()
         //timer = Timer()
 //        myTest.makeConnect2()
         //myTest.m
@@ -72,6 +84,102 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
     override fun initView() {
         binding!!.setVariable(BR.vm, viewModel)
         binding!!.lifecycleOwner = this
+
+        msgAdapter = context?.let { MessageListAdapter(it) }!!
+
+        binding!!.listView.adapter = msgAdapter
+
+        binding!!.etMsg.setOnFocusChangeListener { v: View, hasFocus: Boolean ->
+            if (!hasFocus) {
+                closeSoftKeyboard(v)
+            }
+        }
+        binding!!.etMsg.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // TODO Auto-generated method stub
+                // 输入框有内容的时候，显示发送按钮，隐藏图片选择按钮
+                viewModel.mlBtnSendVis.value = s != null && s.isNotEmpty()
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence?, start: Int, count: Int,
+                after: Int
+            ) {}
+
+            override fun onTextChanged(
+                s: CharSequence?, start: Int, before: Int,
+                count: Int
+            ) {}
+        })
+
+        binding!!.btnSend.setOnClickListener { v: View ->
+            if (viewModel.sendMsg()) {
+                closeSoftKeyboard(v)
+            } else {
+                Toast.makeText(context, "发送内容不能为空", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding!!.btnSendExpr.setOnClickListener {
+            // 发送表情
+            if (viewModel.mlExprIcon.value == R.drawable.h5_biaoqing) {
+                viewModel.mlExprIcon.value = R.drawable.ht_shuru
+            } else {
+                viewModel.mlExprIcon.value = R.drawable.h5_biaoqing
+            }
+        }
+        binding!!.btnSendImg.setOnClickListener { v: View ->
+            // 发送表情
+//            mlBtnSendVis.value = mlBtnSendVis.value != true
+            dialogBottomMenu.show(v)
+        }
+
+        dialogBottomMenu = DialogBottomMenu(context)
+            .setItems(resources.getStringArray(R.array.bottom_menu))
+            .setOnItemClickListener(AdapterView.OnItemClickListener{ adapterView, view, i, l ->
+                when (i) {
+                    0 -> {
+                        // 选择相册
+                        showSelectPic(object : OnResultCallbackListener<LocalMedia> {
+                            override fun onResult(result: java.util.ArrayList<LocalMedia>) {
+                                if(result != null && result.size > 0) {
+                                    val item = result[0]
+//                        uploadImg(item.path)
+                                    dialogBottomMenu.dismiss()
+                                    viewModel.composeAChatmodelImg(item.path, true)
+                                }
+                            }
+                            override fun onCancel() {}
+                        })
+                    }
+                    1 -> {
+                        // 拍照
+                        showCamera(object : OnResultCallbackListener<LocalMedia> {
+                            override fun onResult(result: java.util.ArrayList<LocalMedia>) {
+                                if(result != null && result.size > 0) {
+                                    val item = result[0]
+//                        uploadImg(item.path)
+                                    dialogBottomMenu.dismiss()
+                                    viewModel.composeAChatmodelImg(item.path, true)
+                                }
+                            }
+
+                            override fun onCancel() {}
+                        })
+                    }
+                    else -> {
+                        dialogBottomMenu.dismiss()
+                    }
+                }
+            })
+            .build()
+
+        initData()
+    }
+
+    private fun initData() {
+        viewModel.mlMsgList.observe(this) {
+            msgAdapter.setList(it)
+        }
     }
 
 //    /**
@@ -132,18 +240,22 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                 val data = event.data as GGateway.SCHi
                 val workId = data.workerId
                 loadWorker(workId)
-                /* 此处需要调用Api来获取客服的名字，并显示在头部
-                https://csapi.hfxg.xyz/v1/api/query-worker
-{
-"workerId": 1
-}
-
-header:
-X-Token ="token"
-                 */
-//                viewModel.composeAChatmodel("你好，我是客服小福 ", true)
             }
         }
+    }
+
+    /**
+     * 关闭软键盘
+     *
+     * @param view 当前页面上任意一个可用的view
+     */
+    private fun closeSoftKeyboard(view: View?) {
+        if (view == null || view.windowToken == null) {
+            return
+        }
+        val imm: InputMethodManager =
+            view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
 //    private fun addMsgItem(data: MessageItem) {
@@ -241,5 +353,22 @@ X-Token ="token"
         parent: ViewGroup?
     ): FragmentKefuBinding {
         return FragmentKefuBinding.inflate(layoutInflater, parent, false)
+    }
+
+    //==========图片选择===========//
+    fun showCamera(resultCallbackListener: OnResultCallbackListener<LocalMedia>
+    ) {
+        PictureSelector.create(KeFuFragment@this)
+            .openCamera(SelectMimeType.ofImage())
+            .forResult(resultCallbackListener)
+    }
+
+    fun showSelectPic(resultCallbackListener: OnResultCallbackListener<LocalMedia>) {
+        PictureSelector.create(KeFuFragment@this)
+            .openGallery(SelectMimeType.ofImage())
+            .setImageEngine(GlideEngine.createGlideEngine())
+            .setMaxSelectNum(1)
+            .isDisplayCamera(false)
+            .forResult(resultCallbackListener)
     }
 }

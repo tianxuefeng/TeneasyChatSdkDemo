@@ -33,7 +33,7 @@ class ChatLib {
         return socket.isOpen
     }
 
-    var context: Context? = null
+//    var context: Context? = null
     var payloadId: Long = 0
     var sendingMessageItem: MessageItem? = null
     //var chatId: Long = 2692944494602 //2692944494608客服下线了
@@ -85,7 +85,7 @@ class ChatLib {
         })
     }*/
 
-    fun makeConnect(context: Context){
+    fun makeConnect(){
         val obj = JSONObject()
         obj.put("event", "addChannel")
         obj.put("channel", "ok_btccny_ticker")
@@ -138,7 +138,7 @@ class ChatLib {
         sendingMessageItem = composeAChatmodel(textMsg, false)
         if(!isConnection()) {
             //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
-            context?.apply {   makeConnect(this)  }
+            makeConnect()
             failedToSend()
             return
         }
@@ -212,7 +212,7 @@ class ChatLib {
         if(!isConnection()) {
             //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
             failedToSend()
-            context?.apply {   makeConnect(this)  }
+            makeConnect()
             return
         }
     }
