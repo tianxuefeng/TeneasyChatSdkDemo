@@ -24,7 +24,7 @@ import java.util.*
 
 class ChatLib {
     val baseUrl = "wss://csapi.xdev.stream/v1/gateway/h5?token="
-    fun sayHello(context: Context){
+    fun sayHello(context: Context) {
         Toast.makeText(context, "Good sdk! Good!", Toast.LENGTH_LONG).show()
     }
 
@@ -123,7 +123,7 @@ class ChatLib {
                     eventBus.arg = -200
                     EventBus.getDefault().post(eventBus)
                     //println("Connection closed")
-                    Toast.makeText(context, "Closed", Toast.LENGTH_LONG).show()
+//                    Toast.makeText(context, "Closed", Toast.LENGTH_LONG).show()
                 }
 
                 override fun onError(ex: Exception) {

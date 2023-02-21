@@ -4,6 +4,11 @@ class Constant {
 
     val baseUrlImage = "https://sssacc.wwc09.com"
     val baseUrlApi = "https://csapi.xdev.stream"
+
+    val baseUrl = "https://csapi.hfxg.xyz"
+
+
+
     ///https://csapi.xdev.stream/v1/assets/upload 上传图片的Api
 
 /*

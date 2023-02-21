@@ -8,13 +8,21 @@ import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.google.gson.JsonObject
 import com.teneasy.chatuisdk.BR
 import com.teneasy.chatuisdk.databinding.FragmentKefuBinding
+import com.teneasy.chatuisdk.ui.http.MainApi
+import com.teneasy.chatuisdk.ui.http.ReturnData
+import com.teneasy.chatuisdk.ui.http.bean.WorkerInfo
 import com.teneasy.sdk.MessageEventBus
 import com.teneasy.sdk.ui.MessageItem
 import com.teneasyChat.gateway.GGateway
+import com.xuexiang.xhttp2.XHttp
+import com.xuexiang.xhttp2.callback.ProgressLoadingCallBack
+import com.xuexiang.xhttp2.subsciber.ProgressDialogLoader
+import com.xuexiang.xhttp2.subsciber.impl.IProgressLoader
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -29,6 +37,8 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
     }
 
     private lateinit var viewModel: KeFuViewModel
+
+    private var mIProgressLoader: IProgressLoader? = null
 
     private var timer: Timer? = null
 
@@ -95,6 +105,14 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         }
     }
 
+    fun getProgressLoader(): IProgressLoader? {
+        if (mIProgressLoader == null) {
+            mIProgressLoader =
+                ProgressDialogLoader(context)
+        }
+        return mIProgressLoader
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun updateMsg(event: MessageEventBus<Any>) {
         if(event.what == 0) {
@@ -145,35 +163,54 @@ X-Token ="token"
 
 
     fun loadWorker(workerId: Int) {
-        val param = JSONObject()
-        param.put("workerId", workerId)
-        //创建一个OkHttpClient对象
-        val okHttpClient = OkHttpClient()
-        val requestBody: RequestBody = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), param.toString())
-        val request: Request = Request.Builder()
-            .url("https://csapi.hfxg.xyz/v1/api/query-worker")
-            .addHeader("X-Token", "CCcQARgRIBwoxtTNgeQw.BL9S_YLEWQmWzD1NjYHaDM3dUa6UOqgwOORaC9l8WyWuEVgCbxgd67GXmlQJsm1R2aQUgFDDrvpDsq3CmWqVAA") //添加header
-            .post(requestBody)
-            .build()
-        //发送请求获取响应
-        okHttpClient.newCall(request).enqueue(object : Callback {
-            @Throws(IOException::class)
-            override fun onResponse(arg0: Call, response: Response) {
-                val body = response.body
-                if(body != null) {
-                    val json = JSONObject(body.string())
-                    if(json.getString("msg").equals("ok", ignoreCase = true)) {
-                        val workerInfo = json.getJSONObject("data")
-                        val name = workerInfo.getString("workerName")
-
-                        val msg = Message.obtain(handler, 200, name)
-                        handler.sendMessage(msg)
+        val param = JsonObject()
+        param.addProperty("workerId", workerId)
+        val request = XHttp.custom().accessToken(false)
+        request.headers("X-Token", "CCcQARgRIBwoxtTNgeQw.BL9S_YLEWQmWzD1NjYHaDM3dUa6UOqgwOORaC9l8WyWuEVgCbxgd67GXmlQJsm1R2aQUgFDDrvpDsq3CmWqVAA")
+        request.call(request.create(MainApi.IMainTask::class.java)
+            .workerInfo(param),
+            object : ProgressLoadingCallBack<ReturnData<WorkerInfo>>(getProgressLoader()) {
+                override fun onSuccess(res: ReturnData<WorkerInfo>) {
+                    if (res == null) {
+                        Toast.makeText(context, "Server error: 500", Toast.LENGTH_SHORT).show()
+                        return
+                    }
+                    if (res.msg.equals("ok", true) && res.data != null) {
+                        binding!!.tvTitle.text = "客服${res.data.workerName}"
+                        viewModel.composeAChatmodel("你好，我是客服${res.data.workerName}", true)
                     }
                 }
-            }
+            })
 
-            override fun onFailure(arg0: Call, arg1: IOException) {}
-        })
+//        val param = JSONObject()
+//        param.put("workerId", workerId)
+//        //创建一个OkHttpClient对象
+//        val okHttpClient = OkHttpClient()
+//        val requestBody: RequestBody = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), param.toString())
+//        val request: Request = Request.Builder()
+//            .url("https://csapi.hfxg.xyz/v1/api/query-worker")
+//            .addHeader("X-Token", "CCcQARgRIBwoxtTNgeQw.BL9S_YLEWQmWzD1NjYHaDM3dUa6UOqgwOORaC9l8WyWuEVgCbxgd67GXmlQJsm1R2aQUgFDDrvpDsq3CmWqVAA") //添加header
+//            .post(requestBody)
+//            .build()
+//        //发送请求获取响应
+//        okHttpClient.newCall(request).enqueue(object : Callback {
+//            @Throws(IOException::class)
+//            override fun onResponse(arg0: Call, response: Response) {
+//                val body = response.body
+//                if(body != null) {
+//                    val json = JSONObject(body.string())
+//                    if(json.getString("msg").equals("ok", ignoreCase = true)) {
+//                        val workerInfo = json.getJSONObject("data")
+//                        val name = workerInfo.getString("workerName")
+//
+//                        val msg = Message.obtain(handler, 200, name)
+//                        handler.sendMessage(msg)
+//                    }
+//                }
+//            }
+//
+//            override fun onFailure(arg0: Call, arg1: IOException) {}
+//        })
     }
 
     // 主线程更新UI
