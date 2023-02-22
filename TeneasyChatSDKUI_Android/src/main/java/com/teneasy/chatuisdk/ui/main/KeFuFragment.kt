@@ -2,18 +2,21 @@ package com.teneasy.chatuisdk.ui.main;
 
 import android.Manifest
 import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.text.Editable
-import android.text.TextWatcher
+import android.text.*
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
+import com.android.common.view.chat.emoji.EmojiPan
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.gson.JsonObject
@@ -58,11 +61,10 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
     //final RxPermissions rxPermissions = new RxPermissions(this);
 
     private lateinit var dialogBottomMenu: DialogBottomMenu
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = KeFuViewModel()
 
+        viewModel = KeFuViewModel()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,12 +117,23 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                 Toast.makeText(context, "发送内容不能为空", Toast.LENGTH_SHORT).show()
             }
         }
+        binding!!.etMsg.isFocusable = true
+        binding!!.etMsg.setFocusableInTouchMode(true);
+
+
         binding!!.btnSendExpr.setOnClickListener {
             // 发送表情
             if (viewModel.mlExprIcon.value == R.drawable.h5_biaoqing) {
                 viewModel.mlExprIcon.value = R.drawable.ht_shuru
+                binding!!.etMsg.requestFocus()
+                val inputMethodManager =  requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.showSoftInput(binding!!.etMsg, InputMethodManager.SHOW_IMPLICIT)
+                binding!!.etMsg.setRawInputType(InputType.TYPE_CLASS_TEXT)
+                binding!!.etMsg.setTextIsSelectable(true)
             } else {
                 viewModel.mlExprIcon.value = R.drawable.h5_biaoqing
+                val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.showSoftInput(binding!!.etMsg, InputMethodManager.SHOW_IMPLICIT)
             }
         }
         binding!!.btnSendImg.setOnClickListener { v: View ->
@@ -271,6 +284,9 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
 
 
     fun loadWorker(workerId: Int) {
+        if (requireActivity().isFinishing){
+            return
+        }
         val param = JsonObject()
         param.addProperty("workerId", workerId)
         val request = XHttp.custom().accessToken(false)
