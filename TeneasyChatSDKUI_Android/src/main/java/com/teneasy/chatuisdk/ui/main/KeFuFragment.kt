@@ -1,12 +1,12 @@
 package com.teneasy.chatuisdk.ui.main;
 
+import android.Manifest
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.text.Editable
-import android.text.SpannableStringBuilder
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +21,7 @@ import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.tbruyelle.rxpermissions3.RxPermissions
 import com.teneasy.chatuisdk.BR
 import com.teneasy.chatuisdk.R
 import com.teneasy.chatuisdk.databinding.FragmentKefuBinding
@@ -54,15 +55,14 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
     private var mIProgressLoader: IProgressLoader? = null
 
     private var timer: Timer? = null
+    //final RxPermissions rxPermissions = new RxPermissions(this);
 
     private lateinit var dialogBottomMenu: DialogBottomMenu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = KeFuViewModel()
-        //timer = Timer()
-//        myTest.makeConnect2()
-        //myTest.m
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,17 +71,10 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
             EventBus.getDefault().register(this)
         }
         requireActivity().title = "客服"
-//        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
        // requireActivity().titleColor = R.color.black
-      val title =  requireActivity().title
-        val sb = SpannableStringBuilder(title)
-        val emoji = "[emoticon_01]"
-        // 最大长度，对应maxLength
-//        var maxLength = 100
-//        if (sb.length + emoji.length > maxLength) {
-//            return@setOnEmojiItemClickListener
-//        }
-        sb.append(emoji)
+        // Must be done during an initialization phase like onCreate
+        // Must be done during an initialization phase like onCreate
+
     }
 
     override fun initView() {
@@ -148,7 +141,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                                     val item = result[0]
 //                        uploadImg(item.path)
                                     dialogBottomMenu.dismiss()
-                                    viewModel.composeAChatmodelImg(item.path, true)
+                                    viewModel.composeAChatmodelImg(item.path, false)
                                 }
                             }
                             override fun onCancel() {}
@@ -162,7 +155,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                                     val item = result[0]
 //                        uploadImg(item.path)
                                     dialogBottomMenu.dismiss()
-                                    viewModel.composeAChatmodelImg(item.path, true)
+                                    viewModel.composeAChatmodelImg(item.path, false)
                                 }
                             }
 
@@ -242,7 +235,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
             } else if (event.data is GGateway.SCHi) {
                 val data = event.data as GGateway.SCHi
                 val workId = data.workerId
-                loadWorker(workId)
+                loadWorker(3)
             }
         }
     }

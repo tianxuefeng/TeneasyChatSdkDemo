@@ -1,8 +1,10 @@
 package com.teneasy.chatuisdk.ui.main;
 
+import android.Manifest
 import android.app.Application
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.tbruyelle.rxpermissions3.RxPermissions
 import com.teneasy.chatuisdk.R
 import com.teneasy.chatuisdk.ui.base.Constant
 import com.teneasy.chatuisdk.ui.base.Constants
@@ -12,6 +14,8 @@ import com.xuexiang.xhttp2.XHttpSDK
 class KeFuActivity : AppCompatActivity() {
 
     var TAG_FRAGMENT = "KeFuFragment"
+    private var rxPermissions: RxPermissions? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_kefu)
@@ -22,6 +26,19 @@ class KeFuActivity : AppCompatActivity() {
                 .replace(R.id.container, KeFuFragment.newInstance(), TAG_FRAGMENT)
                 .commitNow()
         }
+
+        rxPermissions = RxPermissions(this)
+        rxPermissions!!
+            .request(Manifest.permission.CAMERA)
+            .subscribe { granted ->
+                if (granted) { // Always true pre-M
+                    // I can control the camera now
+                    print("授权摄像机")
+                } else {
+                    // Oups permission denied
+                    print("拒绝摄像机")
+                }
+            }
     }
 
     private fun initXHttp2(application: Application) {
