@@ -16,7 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
-import com.android.common.view.chat.emoji.EmojiPan
+import com.teneasy.chatuisdk.ui.utils.emoji.EmojiPan
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.gson.JsonObject

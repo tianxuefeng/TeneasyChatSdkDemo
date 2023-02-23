@@ -1,4 +1,4 @@
-package com.android.common.view.chat.emoji
+package com.teneasy.chatuisdk.ui.utils.emoji
 
 import android.content.Context
 import android.text.Spannable

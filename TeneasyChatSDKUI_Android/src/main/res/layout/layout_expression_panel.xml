@@ -7,7 +7,7 @@
     android:background="#808080">
 
 
-    <com.android.common.view.chat.emoji.EmojiPan
+    <com.teneasy.chatuisdk.ui.utils.emoji.EmojiPan
         android:id="@+id/emoji_pan"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

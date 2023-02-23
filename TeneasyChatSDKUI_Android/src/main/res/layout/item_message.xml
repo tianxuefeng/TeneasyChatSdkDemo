@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:text="21:57:52"
         />
-    <com.android.common.view.chat.emoji.EmoticonTextView
+    <com.teneasy.chatuisdk.ui.utils.emoji.EmoticonTextView
         android:id="@+id/tv_left_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
             android:layout_toRightOf="@+id/ly_right_status"
             android:orientation="vertical"
             >
-            <com.android.common.view.chat.emoji.EmoticonTextView
+            <com.teneasy.chatuisdk.ui.utils.emoji.EmoticonTextView
                 android:id="@+id/tv_right_msg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

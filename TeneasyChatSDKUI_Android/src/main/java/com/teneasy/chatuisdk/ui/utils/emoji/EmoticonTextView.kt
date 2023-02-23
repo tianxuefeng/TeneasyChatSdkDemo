@@ -1,4 +1,4 @@
-package com.android.common.view.chat.emoji
+package com.teneasy.chatuisdk.ui.utils.emoji
 
 import android.content.Context
 import android.text.SpannableStringBuilder
@@ -6,7 +6,7 @@ import android.text.TextUtils
 import android.text.style.DynamicDrawableSpan
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
-import com.android.common.view.chat.emoji.EmoticonHandler.addEmojis
+import com.teneasy.chatuisdk.ui.utils.emoji.EmoticonHandler.addEmojis
 import com.teneasy.chatuisdk.R
 
 class EmoticonTextView : AppCompatTextView {

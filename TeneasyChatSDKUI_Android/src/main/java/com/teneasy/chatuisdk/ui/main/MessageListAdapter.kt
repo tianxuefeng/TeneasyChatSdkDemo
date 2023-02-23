@@ -1,6 +1,6 @@
 package com.teneasy.chatuisdk.ui.main;
 
-//import com.android.common.view.chat.emoji.EmoticonTextView
+//import com.teneasy.chatuisdk.ui.utils.emoji.EmoticonTextView
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.android.common.view.chat.emoji.EmoticonTextView
+import com.teneasy.chatuisdk.ui.utils.emoji.EmoticonTextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.teneasy.chatuisdk.R

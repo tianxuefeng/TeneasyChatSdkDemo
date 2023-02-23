@@ -51,12 +51,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0-alpha02'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0-alpha02'
-    //implementation 'com.github.tianxuefeng:teneasy-chatsdk:1.0.8'
-   // commonMainApi("dev.icerock.moko:socket-io:0.3.0")
-    //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:ef69b5cad857254dcfb6e0f2fdecd25b4ff73f19 '
-
-    //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:master-SNAPSHOT'
-    //implementation 'com.github.tianxuefeng:TeneasyChatSdkDemo:1.1.7'
+//    api ("com.github.tianxuefeng:TeneasyChatSdkDemo:1.2.3"){
+//        exclude group: 'io.github.CymChad', module: 'BaseRecyclerViewAdapterHelper'
+//    }
     implementation project(path: ':TeneasyChatSDKUI_Android')
     implementation project(path: ':teneasyChatSDK_Android')
     //implementation project(path: ':TeneasyChatSDKUI_Android')
