@@ -27,18 +27,18 @@ class KeFuActivity : AppCompatActivity() {
                 .commitNow()
         }
 
-//        rxPermissions = RxPermissions(this)
-//        rxPermissions!!
-//            .request(Manifest.permission.CAMERA)
-//            .subscribe { granted ->
-//                if (granted) { // Always true pre-M
-//                    // I can control the camera now
-//                    print("授权摄像机")
-//                } else {
-//                    // Oups permission denied
-//                    print("拒绝摄像机")
-//                }
-//            }
+        rxPermissions = RxPermissions(this)
+        rxPermissions!!
+            .request(Manifest.permission.CAMERA)
+            .subscribe { granted ->
+                if (granted) { // Always true pre-M
+                    // I can control the camera now
+                    print("授权摄像机")
+                } else {
+                    // Oups permission denied
+                    print("拒绝摄像机")
+                }
+            }
     }
 
     private fun initXHttp2(application: Application) {

@@ -1,22 +1,20 @@
 package com.teneasy.chatuisdk.ui.main;
 
-import android.Manifest
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.text.*
-import android.view.KeyEvent
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
-import com.teneasy.chatuisdk.ui.utils.emoji.EmojiPan
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.gson.JsonObject
@@ -24,7 +22,6 @@ import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
-import com.tbruyelle.rxpermissions3.RxPermissions
 import com.teneasy.chatuisdk.BR
 import com.teneasy.chatuisdk.R
 import com.teneasy.chatuisdk.databinding.FragmentKefuBinding
@@ -162,11 +159,11 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                     }
                     1 -> {
                         // 拍照
-                        showCamera(object : OnResultCallbackListener<LocalMedia> {
+                         showCamera(object : OnResultCallbackListener<LocalMedia> {
                             override fun onResult(result: java.util.ArrayList<LocalMedia>) {
                                 if(result != null && result.size > 0) {
                                     val item = result[0]
-//                        uploadImg(item.path)
+                        //uploadImg(item.path)
                                     dialogBottomMenu.dismiss()
                                     viewModel.composeAChatmodelImg(item.path, false)
                                 }
@@ -384,6 +381,8 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
             .openCamera(SelectMimeType.ofImage())
             .forResult(resultCallbackListener)
     }
+
+
 
     fun showSelectPic(resultCallbackListener: OnResultCallbackListener<LocalMedia>) {
         PictureSelector.create(KeFuFragment@this)
