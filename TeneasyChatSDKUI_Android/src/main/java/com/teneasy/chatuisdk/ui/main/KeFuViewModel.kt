@@ -84,6 +84,10 @@ class KeFuViewModel() : ViewModel() {
 
     }
 
+    fun addMsgImg(url: String) {
+        chatLib.sendMessageImage(url)
+    }
+
     fun addMsgItem(data: MessageItem) {
         val list = mlMsgList.value
         list!!.add(data)
@@ -144,6 +148,10 @@ class KeFuViewModel() : ViewModel() {
 
     fun composeAChatmodelImg(imgPath: String, isLeft: Boolean) {
         addMsgItem(chatLib.composeAChatmodelImg(imgPath, isLeft))
+    }
+
+    fun getToken():String {
+        return chatLib.token!!
     }
 
 }

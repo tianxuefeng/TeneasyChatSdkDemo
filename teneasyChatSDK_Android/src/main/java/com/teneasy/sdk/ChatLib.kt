@@ -41,7 +41,7 @@ class ChatLib {
     /*
     测试环境 客服账号密码:  qixin001  qixin001  token: CAEQARjcCSBXKKWGwMroMA.15wWZ5uafQ0TGRbs7od1ZMmpiZrsgjAo9wqMPBKWLUgwbBeK1M9FZ8Yku5A5CYlQWlAJcOMpWBMCVD3rOJ4iAA
      */
-    var token: String? = "CAEQARjcCSBXKKWGwMroMA.15wWZ5uafQ0TGRbs7od1ZMmpiZrsgjAo9wqMPBKWLUgwbBeK1M9FZ8Yku5A5CYlQWlAJcOMpWBMCVD3rOJ4iAA"
+    var token: String? = "CCcQARgRIBwoxtTNgeQw.BL9S_YLEWQmWzD1NjYHaDM3dUa6UOqgwOORaC9l8WyWuEVgCbxgd67GXmlQJsm1R2aQUgFDDrvpDsq3CmWqVAA"
     //private lateinit var socket: WebSocketConnection;
     private lateinit var socket: WebSocketClient;
 

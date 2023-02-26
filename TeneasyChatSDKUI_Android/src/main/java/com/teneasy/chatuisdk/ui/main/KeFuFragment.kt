@@ -9,6 +9,7 @@ import android.os.Message
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,9 +38,12 @@ import com.xuexiang.xhttp2.XHttp
 import com.xuexiang.xhttp2.callback.ProgressLoadingCallBack
 import com.xuexiang.xhttp2.subsciber.ProgressDialogLoader
 import com.xuexiang.xhttp2.subsciber.impl.IProgressLoader
+import okhttp3.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.io.File
+import java.io.IOException
 import java.util.*
 
 class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
@@ -152,6 +156,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
 //                        uploadImg(item.path)
                                     dialogBottomMenu.dismiss()
                                     viewModel.composeAChatmodelImg(item.path, false)
+                                    uploadImg(item.realPath)
                                 }
                             }
                             override fun onCancel() {}
@@ -287,7 +292,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         val param = JsonObject()
         param.addProperty("workerId", workerId)
         val request = XHttp.custom().accessToken(false)
-        request.headers("X-Token", "CCcQARgRIBwoxtTNgeQw.BL9S_YLEWQmWzD1NjYHaDM3dUa6UOqgwOORaC9l8WyWuEVgCbxgd67GXmlQJsm1R2aQUgFDDrvpDsq3CmWqVAA")
+        request.headers("X-Token", viewModel.getToken())
         request.call(request.create(MainApi.IMainTask::class.java)
             .workerInfo(param),
             object : ProgressLoadingCallBack<ReturnData<WorkerInfo>>(getProgressLoader()) {
@@ -353,6 +358,69 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                 viewModel.composeAChatmodel("你好，我是客服${msg.obj}", true)
             }
         }
+    }
+
+    fun uploadImg(filePath: String) {
+//        val request = XHttp.custom().accessToken(false)
+//        request.baseUrl(Constants.baseUrlApi)
+
+        // 多文件上传Builder,用以匹配后台Springboot MultipartFile
+        val file = File(filePath)
+
+        mIProgressLoader!!.showLoading()
+        Thread(Runnable {
+            kotlin.run {
+//                val requestBody: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
+//                val part = MultipartBody.Part.createFormData("file", file.name, requestBody)
+
+                val multipartBody = MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("myFile", file.name, MultipartBody.create(MediaType.parse("multipart/form-data"), file))
+                    .addFormDataPart("type", "1")
+                    .build()
+
+                val request2 = Request.Builder().url(Constants.baseUrlApi + "/v1/assets/upload/")
+                    .addHeader("X-Token", viewModel.getToken())
+                    .post(multipartBody).build()
+
+                val okHttpClient = OkHttpClient()
+                val call = okHttpClient.newCall(request2)
+                call.enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        // 上传失败
+                        mIProgressLoader!!.dismissLoading()
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        mIProgressLoader!!.dismissLoading()
+                        val body = response.body()
+                        if(body != null) {
+                            val path = response.body()!!.string()
+                            // 发送图片
+                            viewModel.addMsgImg(Constants.baseUrlImage + path)
+                        } else {
+                            // 上传失败
+                        }
+
+                    }
+                })
+
+            }
+        }).start()
+
+
+
+//        request.call(request.create(MainApi.IMainTask::class.java)
+//            .uploads(part),
+//            object : ProgressLoadingCallBack<ReturnData<Any>> (getProgressLoader()) {
+//                override fun onSuccess(res: ReturnData<Any>) {
+//                    if (res == null) {
+//                        Toast.makeText(context, "Server error: 500", Toast.LENGTH_SHORT).show()
+//                        return
+//                    }
+//
+//                }
+//            })
     }
 
     override fun onDestroy() {

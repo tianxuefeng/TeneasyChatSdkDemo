@@ -9,6 +9,7 @@ import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 
@@ -22,5 +23,10 @@ public class MainApi {
         @POST("/v1/api/query-worker")
         @Headers({"Content-Type: application/json", "Accept: application/json"})
         Observable<ReturnData<WorkerInfo>> workerInfo(@Body JsonObject param);
+
+        @Multipart
+        @POST("/v1/assets/upload/")
+//        @Headers({"Content-Type: multipart/form-data", "Accept: multipart/form-data"})
+        Observable<ReturnData> uploads(@Part MultipartBody.Part body);
     }
 }
