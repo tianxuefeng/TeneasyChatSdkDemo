@@ -38,7 +38,10 @@ class ChatLib {
     var sendingMessageItem: MessageItem? = null
     //var chatId: Long = 2692944494602 //2692944494608客服下线了
 //    var token: String? = "CCcQARgGIBwohOeGoN8w.MDFy6dFaTLFByZSuv9lP0fcYOaOGc_WgiTnTP8dFdE3prh7iiT37Ioe5FrelrDltQocQsGB3APz0WKUVUDdcDA"//客服下线了
-    var token: String? = "CCcQARgRIBwoxtTNgeQw.BL9S_YLEWQmWzD1NjYHaDM3dUa6UOqgwOORaC9l8WyWuEVgCbxgd67GXmlQJsm1R2aQUgFDDrvpDsq3CmWqVAA"
+    /*
+    测试环境 客服账号密码:  qixin001  qixin001  token: CAEQARjcCSBXKKWGwMroMA.15wWZ5uafQ0TGRbs7od1ZMmpiZrsgjAo9wqMPBKWLUgwbBeK1M9FZ8Yku5A5CYlQWlAJcOMpWBMCVD3rOJ4iAA
+     */
+    var token: String? = "CAEQARjcCSBXKKWGwMroMA.15wWZ5uafQ0TGRbs7od1ZMmpiZrsgjAo9wqMPBKWLUgwbBeK1M9FZ8Yku5A5CYlQWlAJcOMpWBMCVD3rOJ4iAA"
     //private lateinit var socket: WebSocketConnection;
     private lateinit var socket: WebSocketClient;
 
