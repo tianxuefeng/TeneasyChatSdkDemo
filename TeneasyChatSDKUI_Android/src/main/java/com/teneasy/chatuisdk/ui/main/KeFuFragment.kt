@@ -370,9 +370,6 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         mIProgressLoader!!.showLoading()
         Thread(Runnable {
             kotlin.run {
-//                val requestBody: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
-//                val part = MultipartBody.Part.createFormData("file", file.name, requestBody)
-
                 val multipartBody = MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("myFile", file.name, MultipartBody.create(MediaType.parse("multipart/form-data"), file))
@@ -407,20 +404,6 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
 
             }
         }).start()
-
-
-
-//        request.call(request.create(MainApi.IMainTask::class.java)
-//            .uploads(part),
-//            object : ProgressLoadingCallBack<ReturnData<Any>> (getProgressLoader()) {
-//                override fun onSuccess(res: ReturnData<Any>) {
-//                    if (res == null) {
-//                        Toast.makeText(context, "Server error: 500", Toast.LENGTH_SHORT).show()
-//                        return
-//                    }
-//
-//                }
-//            })
     }
 
     override fun onDestroy() {
