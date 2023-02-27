@@ -1,6 +1,7 @@
 package com.teneasy.sdk
 
 import android.content.Context
+import android.content.LocusId
 import android.widget.Toast
 import com.google.protobuf.Timestamp
 import com.teneasy.sdk.ui.MessageItem
@@ -34,7 +35,7 @@ class ChatLib {
     }
 
 //    var context: Context? = null
-    var payloadId: Long = 0
+//    var payloadId: Long = 0
     var sendingMessageItem: MessageItem? = null
     //var chatId: Long = 2692944494602 //2692944494608客服下线了
 //    var token: String? = "CCcQARgGIBwohOeGoN8w.MDFy6dFaTLFByZSuv9lP0fcYOaOGc_WgiTnTP8dFdE3prh7iiT37Ioe5FrelrDltQocQsGB3APz0WKUVUDdcDA"//客服下线了
@@ -137,8 +138,51 @@ class ChatLib {
     }
 
     //发送文字消息
-    fun sendMsg(textMsg: String) {
-        sendingMessageItem = composeAChatmodel(textMsg, false)
+//    fun sendMsg(textMsg: String) {
+//        sendingMessageItem = composeAChatmodel(textMsg, false)
+//        if(!isConnection()) {
+//            //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
+//            makeConnect()
+//            failedToSend()
+//            return
+//        }
+//
+//       /* //第一层
+//        val content = CMessage.MessageContent.newBuilder()
+//        content.data = textMsg
+//
+//        //第二层
+//        val msg = CMessage.Message.newBuilder()
+//        msg.content = content.build()
+//        msg.sender = 0
+//        msg.chatId = 0
+//        msg.worker = 0
+//        msg.msgTime = TimeUtil.msgTime()
+//
+//        sendingMessageItem = MessageItem()
+//        sendingMessageItem!!.id = payloadId
+//        sendingMessageItem!!.isSend = true
+//        sendingMessageItem!!.cMsg = msg.build()*/
+//
+//
+//
+//        // 第三层
+//        val cSendMsg = GGateway.CSSendMessage.newBuilder()
+//        cSendMsg.msg = sendingMessageItem!!.cMsg
+//        val cSendMsgData = cSendMsg.build().toByteString()
+//
+//        //第四层
+//        val payload = GPayload.Payload.newBuilder()
+//        payload.data = cSendMsgData
+//        payload.act = GAction.Action.ActionCSSendMsg
+//        payloadId += 1
+//        payload.id = payloadId
+//
+//        //socket.sendMessage(payload.build().toByteArray(), true)
+//        socket.send(payload.build().toByteArray())
+//    }
+
+    fun sendMsg(textMsg: MessageItem) {
         if(!isConnection()) {
             //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
             makeConnect()
@@ -146,43 +190,24 @@ class ChatLib {
             return
         }
 
-       /* //第一层
-        val content = CMessage.MessageContent.newBuilder()
-        content.data = textMsg
-
-        //第二层
-        val msg = CMessage.Message.newBuilder()
-        msg.content = content.build()
-        msg.sender = 0
-        msg.chatId = 0
-        msg.worker = 0
-        msg.msgTime = TimeUtil.msgTime()
-
-        sendingMessageItem = MessageItem()
-        sendingMessageItem!!.id = payloadId
-        sendingMessageItem!!.isSend = true
-        sendingMessageItem!!.cMsg = msg.build()*/
-
-
-
         // 第三层
         val cSendMsg = GGateway.CSSendMessage.newBuilder()
-        cSendMsg.msg = sendingMessageItem!!.cMsg
+        cSendMsg.msg = textMsg!!.cMsg
         val cSendMsgData = cSendMsg.build().toByteString()
 
         //第四层
         val payload = GPayload.Payload.newBuilder()
         payload.data = cSendMsgData
         payload.act = GAction.Action.ActionCSSendMsg
-        payloadId += 1
-        payload.id = payloadId
+//        payloadId += 1
+        payload.id = textMsg.payLoadId
 
         //socket.sendMessage(payload.build().toByteArray(), true)
         socket.send(payload.build().toByteArray())
     }
 
     //发送图片类型的消息
-    fun sendMessageImage(url: String) {
+    fun sendMessageImage(url: String, id: Long) {
         //第一层
         val content = CMessage.MessageImage.newBuilder()
         content.setUri(url)
@@ -195,7 +220,7 @@ class ChatLib {
         msg.worker = 0
         msg.msgTime = TimeUtil.msgTime()
         sendingMessageItem = MessageItem()
-        sendingMessageItem!!.isLeft = true
+        sendingMessageItem!!.isLeft = false
         sendingMessageItem!!.cMsg = msg.build()
 
         // 第三层
@@ -207,8 +232,8 @@ class ChatLib {
         val payload = GPayload.Payload.newBuilder()
         payload.data = cSendMsgData
         payload.act = GAction.Action.ActionCSSendMsg
-        payloadId += 1
-        payload.id = payloadId
+//        payloadId += 1
+        payload.id = id
 
         //socket.sendMessage(payload.build().toByteArray(), true)
         socket.send(payload.build().toByteArray())
@@ -237,7 +262,7 @@ class ChatLib {
         else {
             val payLoad = GPayload.Payload.parseFrom(data)
             val msgData = payLoad.data
-            payloadId = payLoad.id
+            val payloadId = payLoad.id
             println("act: ${payLoad.act.number}")
             if(payLoad.act == GAction.Action.ActionSCRecvMsg) {
                 val msg = GGateway.SCRecvMessage.parseFrom(msgData)
@@ -248,7 +273,7 @@ class ChatLib {
                 var chatModel = MessageItem()
                 chatModel.cMsg =  msg.msg
                 chatModel.payLoadId = payloadId
-                chatModel.id = payloadId
+                chatModel.id = payloadId.toString()
                 chatModel.isLeft = true
 
                 var eventBus = MessageEventBus<MessageItem>()
@@ -281,19 +306,28 @@ class ChatLib {
             } else if(payLoad.act == GAction.Action.ActionSCSendMsgACK) {//消息回执
                 val msg = GGateway.SCSendMessage.parseFrom(msgData)
 
-                sendingMessageItem?.apply {
-                    this.payLoadId = payloadId
-                    if (msg.msgId != 0.toLong()) {
-                        //this.msgId = msg.msgId
-                        this.sendStatus = MessageSendState.发送成功
-                    }
-                    var eventBus = MessageEventBus<MessageItem>()
-                    eventBus.setData(sendingMessageItem!!)
-                    EventBus.getDefault().post(eventBus)
-                    //sendingMessageItem.cMsg!!.msgId = msg.msgId
-                    //sendingMessageItem.cMsg!!.msgTime = TimeUtil.msgTime()
-                    //EventBus.getDefault().post(sendingMessageItem)
+                val msgItem = MessageItem()
+                msgItem.payLoadId = payloadId
+                if (msg.msgId != 0.toLong()) {
+                    msgItem.sendStatus = MessageSendState.发送成功
                 }
+
+                var eventBus = MessageEventBus<MessageItem>()
+                eventBus.setData(msgItem!!)
+                EventBus.getDefault().post(eventBus)
+//                sendingMessageItem?.apply {
+//                    this.payLoadId = payloadId
+//                    if (msg.msgId != 0.toLong()) {
+//                        //this.msgId = msg.msgId
+//                        this.sendStatus = MessageSendState.发送成功
+//                    }
+//                    var eventBus = MessageEventBus<MessageItem>()
+//                    eventBus.setData(sendingMessageItem!!)
+//                    EventBus.getDefault().post(eventBus)
+//                    //sendingMessageItem.cMsg!!.msgId = msg.msgId
+//                    //sendingMessageItem.cMsg!!.msgTime = TimeUtil.msgTime()
+//                    //EventBus.getDefault().post(sendingMessageItem)
+//                }
 
                 print("消息回执: ${msg.msgId}")
             } else
@@ -321,7 +355,7 @@ class ChatLib {
 
         var chatModel = MessageItem()
         chatModel.cMsg = cMsg.build()
-        chatModel.payLoadId = payloadId
+//        chatModel.payLoadId = System.currentTimeMillis()
         chatModel.isLeft = isLeft
         return chatModel
     }
@@ -344,6 +378,7 @@ class ChatLib {
 
         var chatModel = MessageItem()
         chatModel.cMsg = cMsg.build()
+        chatModel.imgPath = imgPath
 //        chatModel.payLoadId = payloadId
         chatModel.isLeft = isLeft
         return chatModel

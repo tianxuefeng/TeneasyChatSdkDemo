@@ -3,7 +3,9 @@ package com.teneasy.chatuisdk.ui.main;
 import android.Manifest
 import android.app.Application
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.teneasy.chatuisdk.R
 import com.teneasy.chatuisdk.ui.base.Constant
@@ -26,7 +28,6 @@ class KeFuActivity : AppCompatActivity() {
                 .replace(R.id.container, KeFuFragment.newInstance(), TAG_FRAGMENT)
                 .commitNow()
         }
-
         rxPermissions = RxPermissions(this)
         rxPermissions!!
             .request(Manifest.permission.CAMERA)

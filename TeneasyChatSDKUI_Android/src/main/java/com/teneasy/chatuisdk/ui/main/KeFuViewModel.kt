@@ -31,6 +31,8 @@ class KeFuViewModel() : ViewModel() {
 
     val mlMsgList = MutableLiveData<ArrayList<MessageItem>?>()
 
+    val mlMsgMap = MutableLiveData<HashMap<Long, MessageItem>?>()
+
 //    val focusChangeListener = MutableLiveData<View.OnFocusChangeListener>()
 //    val textChangedListener = MutableLiveData<TextWatcher>()
 
@@ -56,12 +58,15 @@ class KeFuViewModel() : ViewModel() {
 
 
         mlMsgList.value = ArrayList()
+        mlMsgMap.value = hashMapOf()
     }
 
     fun sendMsg(): Boolean {
         if(mlSendMsg.value != null && mlSendMsg.value!!.trim().isNotEmpty()) {
             val msg = mlSendMsg.value
-            chatLib.sendMsg(msg!!)
+            val msgItem = chatLib.composeAChatmodel(msg!!, false)
+            addMsgItem(msgItem)
+            chatLib.sendMsg(msgItem)
 
             mlSendMsg.value = "";
 
@@ -71,9 +76,9 @@ class KeFuViewModel() : ViewModel() {
             cMsg.setContent(cMContent)
             print(cMsg.content.data)*/
             //val item = MessageItem(true, msg, 0, TimeUtil.getTimeStringAutoShort2(Date(), true))
-            if (chatLib.sendingMessageItem != null) {
-                addMsgItem(chatLib.sendingMessageItem!!)
-            }
+//            if (chatLib.sendingMessageItem != null) {
+//                addMsgItem(chatLib.sendingMessageItem!!)
+//            }
             return true
         } else {
             return false
@@ -84,14 +89,16 @@ class KeFuViewModel() : ViewModel() {
 
     }
 
-    fun addMsgImg(url: String) {
-        chatLib.sendMessageImage(url)
+    fun addMsgImg(url: String, id: Long) {
+        chatLib.sendMessageImage(url, id)
     }
 
     fun addMsgItem(data: MessageItem) {
         val list = mlMsgList.value
+        data.payLoadId = System.currentTimeMillis()
         list!!.add(data)
         mlMsgList.value = list
+        mlMsgMap.value!![data.payLoadId] = data
         //if  data.payloadCase == CMessage.Message.PayloadCase.CONTENT
 
         /* 这是服务器时间转换为本地时间的办法
@@ -120,18 +127,23 @@ class KeFuViewModel() : ViewModel() {
                 addMsgItem(data)
             } else {
                 val list = mlMsgList.value
-                // 修改状态
-                for (item in list!!) {
-                    if (item.id == data.id && item.cMsg!!.content.data.equals(data.cMsg!!.content.data)) {
-                        item.payLoadId = data.payLoadId
-                        item.sendStatus = data.sendStatus
-                        // 用于触发observe
-                        mlMsgList.value = list
-//                        msgAdapter.setList(msgList)
-//                        msgAdapter.notifyDataSetChanged()
-                        return
-                    }
+                var msgItem = mlMsgMap.value!![data.payLoadId]
+                if(msgItem != null) {
+                    msgItem.sendStatus = data.sendStatus
+                    mlMsgList.value = list
                 }
+                // 修改状态
+//                for (item in list!!) {
+//                    if (item.payLoadId == data.payLoadId/* && item.cMsg!!.content.data.equals(data.cMsg!!.content.data)*/) {
+////                        item.payLoadId = data.payLoadId
+//                        item.sendStatus = data.sendStatus
+//                        // 用于触发observe
+//                        mlMsgList.value = list
+////                        msgAdapter.setList(msgList)
+////                        msgAdapter.notifyDataSetChanged()
+//                        return
+//                    }
+//                }
 
             }
         }
@@ -146,9 +158,15 @@ class KeFuViewModel() : ViewModel() {
         addMsgItem(chatLib.composeAChatmodel(msg, left))
     }
 
-    fun composeAChatmodelImg(imgPath: String, isLeft: Boolean) {
-        addMsgItem(chatLib.composeAChatmodelImg(imgPath, isLeft))
+    fun composeAChatmodelImg(imgPath: String, isLeft: Boolean): Long {
+        val msgItem = chatLib.composeAChatmodelImg(imgPath, isLeft)
+        addMsgItem(msgItem)
+        return msgItem.payLoadId
     }
+
+//    fun updateMsgItemImg(id: Long, newId: String) {
+//        mlMsgMap!!.value!![id]!!.id = newId
+//    }
 
     fun getToken():String {
         return chatLib.token!!

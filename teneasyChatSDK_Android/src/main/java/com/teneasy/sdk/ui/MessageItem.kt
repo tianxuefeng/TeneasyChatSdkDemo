@@ -9,7 +9,7 @@ enum class MessageSendState {
 }
 
 class MessageItem {//:Serializable
-        var id: Long = 0
+        var id: String = ""
         var isLeft : Boolean = false
         //var sendError: Boolean = false
         var cMsg: CMessage.Message? = null

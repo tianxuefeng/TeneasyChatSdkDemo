@@ -2,6 +2,7 @@ package com.teneasy.chatuisdk.ui.main;
 
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,13 +10,18 @@ import android.os.Message
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
+import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.gson.JsonObject
@@ -45,6 +51,8 @@ import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 import java.io.IOException
 import java.util.*
+import kotlin.math.abs
+
 
 class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
 
@@ -80,12 +88,73 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
 
     }
 
+//    override fun initView() {
+//        netscape.javascript.JSObject.getWindow().
+//        recyclerView = findViewById(R.id.chat_listview) as RecyclerView
+//        layoutManager = LinearLayoutManager(this)
+//        layoutManager.setOrientation(LinearLayoutManager.VERTICAL)
+//        layoutManager.setStackFromEnd(false)
+//        recyclerView.setLayoutManager(layoutManager)
+//        //聊天输入相关view
+//        inputEdit = findViewById(R.id.bar_edit_text) as EditText
+//        btnSend = findViewById(R.id.bar_btn_send) as Button
+//    }
+
+
+    private fun setScrollBottom() {
+        binding!!.listView.post {
+
+            binding!!.listView.scrollToPosition(msgAdapter.itemCount - 1)
+            val layoutManager = binding!!.listView.layoutManager as LinearLayoutManager
+            val target =
+                layoutManager.findViewByPosition(msgAdapter.itemCount - 1)
+            if (target != null) {
+                // int offset=  recyclerView.getMeasuredHeight() - target.getMeasuredHeight();
+                layoutManager.scrollToPositionWithOffset(
+                    msgAdapter.itemCount - 1,
+                    Int.MAX_VALUE
+                ) //滚动偏移到底部
+            }
+        }
+    }
+
+    var isShow = false
+
     override fun initView() {
+        (activity)?.window?.decorView?.viewTreeObserver
+            ?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+
+                fun screenHeight(): Int {
+                    return (context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager?)!!.defaultDisplay.height
+                }
+
+                override fun onGlobalLayout() {
+                    val rect = Rect()
+                    requireActivity().window.decorView
+                        .getWindowVisibleDisplayFrame(rect)
+                    val screenHeight = screenHeight()
+                    val keyboardHeight: Int = screenHeight - rect.bottom //软键盘高度
+                    if (abs(keyboardHeight) > screenHeight / 5 && !isShow) {
+                        setScrollBottom()
+                        isShow = true
+                    } else {
+                        isShow = false
+                    }
+                }
+            }) //监听软键盘弹出
         binding!!.setVariable(BR.vm, viewModel)
         binding!!.lifecycleOwner = this
 
         msgAdapter = context?.let { MessageListAdapter(it) }!!
+        msgAdapter.setList(viewModel.mlMsgList.value)
 
+        val layoutManager = LinearLayoutManager(context)
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
+        layoutManager.stackFromEnd = false
+        binding!!.listView.layoutManager = layoutManager
+
+//        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
+//        binding!!.listView.layoutManager = layoutManager
         binding!!.listView.adapter = msgAdapter
 
         binding!!.etMsg.setOnFocusChangeListener { v: View, hasFocus: Boolean ->
@@ -155,8 +224,8 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                                     val item = result[0]
 //                        uploadImg(item.path)
                                     dialogBottomMenu.dismiss()
-                                    viewModel.composeAChatmodelImg(item.path, false)
-                                    uploadImg(item.realPath)
+                                    val id = viewModel.composeAChatmodelImg(item.path, false)
+                                    uploadImg(item.realPath, id)
                                 }
                             }
                             override fun onCancel() {}
@@ -170,7 +239,8 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                                     val item = result[0]
                         //uploadImg(item.path)
                                     dialogBottomMenu.dismiss()
-                                    viewModel.composeAChatmodelImg(item.path, false)
+                                    val id = viewModel.composeAChatmodelImg(item.path, false)
+                                    uploadImg(item.realPath, id)
                                 }
                             }
 
@@ -187,9 +257,65 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         initData()
     }
 
+
+//    val mRunnable = Runnable {
+//        if (msgAdapter.itemCount > 0 && binding!!.listView != null) {
+//            val layoutManager  = binding!!.listView.layoutManager as LinearLayoutManager
+//            val target = layoutManager.findViewByPosition(msgAdapter.itemCount - 1)
+//
+//            if(target != null) {
+//                if(!msgAdapter.getList()!![msgAdapter.itemCount-1].isLeft) {
+//                    val img = target!!.findViewById(R.id.iv_left_image) as AppCompatImageView
+//
+//                }
+//                val offset = binding!!.listView.measuredHeight - target.measuredHeight
+//                layoutManager.scrollToPositionWithOffset(msgAdapter.itemCount  - 1, offset)
+//            }
+////            binding!!.listView.scrollToPosition(msgAdapter.itemCount - 1)
+//        }
+//    }
+
     private fun initData() {
+
         viewModel.mlMsgList.observe(this) {
-            msgAdapter.setList(it)
+//            msgAdapter.setList(it)
+            msgAdapter.notifyDataSetChanged()
+
+            if(it!!.size > 1) {
+//                moveToPosition(it!!.size - 1)
+////                binding!!.listView.scrollToPosition(it!!.size - 1)
+////                binding!!.listView.postDelayed(mRunnable, 10)
+//
+                val layoutManager  = binding!!.listView.layoutManager as LinearLayoutManager
+////                val lastIndex = it.size - 1
+                layoutManager.scrollToPositionWithOffset(it.size - 1, 0)
+                binding!!.listView.post {
+                    val target = layoutManager.findViewByPosition(msgAdapter.itemCount - 1)
+                    if(target != null) {
+                        val offset = binding!!.listView.measuredHeight - target.measuredHeight
+                        layoutManager.scrollToPositionWithOffset(msgAdapter.itemCount - 1, offset)
+                    }
+                }
+////                scroller.targetPosition = binding!!.listView.adapter!!.itemCount - 1
+////                binding!!.listView.layoutManager!!.startSmoothScroll(scroller)
+            }
+        }
+    }
+
+    fun moveToPosition(position: Int) {
+        val layoutManager = binding!!.listView.layoutManager
+        //因为只有LinearLayoutManager 才有获得可见位置的方法
+        if (layoutManager is LinearLayoutManager) {
+            val linearLayoutManager = layoutManager
+            val firstItem = linearLayoutManager.findFirstVisibleItemPosition()
+            val lastItem = linearLayoutManager.findLastVisibleItemPosition()
+            if (position < firstItem || position > lastItem) {
+                binding!!.listView.smoothScrollToPosition(position)
+            } else {
+                val movePosition = position - firstItem
+                val top: Int = binding!!.listView.getChildAt(movePosition).top
+                binding!!.listView.smoothScrollBy(0, top)
+            }
         }
     }
 
@@ -360,14 +486,14 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         }
     }
 
-    fun uploadImg(filePath: String) {
+    fun uploadImg(filePath: String, id: Long) {
 //        val request = XHttp.custom().accessToken(false)
 //        request.baseUrl(Constants.baseUrlApi)
 
         // 多文件上传Builder,用以匹配后台Springboot MultipartFile
         val file = File(filePath)
 
-        mIProgressLoader!!.showLoading()
+//        mIProgressLoader!!.showLoading()
         Thread(Runnable {
             kotlin.run {
                 val multipartBody = MultipartBody.Builder()
@@ -394,7 +520,8 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                         if(body != null) {
                             val path = response.body()!!.string()
                             // 发送图片
-                            viewModel.addMsgImg(Constants.baseUrlImage + path)
+                            viewModel.addMsgImg(Constants.baseUrlImage + path, id)
+//                            viewModel.updateMsgItemImg(id, urlPath)
                         } else {
                             // 上传失败
                         }

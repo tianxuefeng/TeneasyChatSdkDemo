@@ -3,22 +3,28 @@ package com.teneasy.chatuisdk.ui.main;
 //import com.teneasy.chatuisdk.ui.utils.emoji.EmoticonTextView
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.teneasy.chatuisdk.ui.utils.emoji.EmoticonTextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.teneasy.chatuisdk.R
 import com.teneasy.chatuisdk.databinding.ItemMessageBinding
+import com.teneasy.chatuisdk.ui.utils.emoji.EmoticonTextView
 import com.teneasy.sdk.TimeUtil
 import com.teneasy.sdk.ui.MessageItem
 import com.teneasy.sdk.ui.MessageSendState
 import java.util.*
+
 
 class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageListAdapter.MsgViewHolder>() {
     private var list: ArrayList<MessageItem>? = null
@@ -30,7 +36,7 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
     }
 
     fun setList(list: ArrayList<MessageItem>?) {
-        this.list = ArrayList(list)
+        this.list = list//ArrayList(list)
         notifyDataSetChanged()
     }
 
@@ -99,10 +105,24 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
             }else{
                 holder.tvLeftMsg.visibility = View.GONE
                 holder.ivLeftImg.visibility = View.VISIBLE
-                Glide.with(act).load(item.cMsg!!.image.uri).dontAnimate()
+//                Glide.with(act).load(item.cMsg!!.image.uri).dontAnimate()
+//                    .skipMemoryCache(true)
+//                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+//                    .into(holder.ivLeftImg)
+
+                Glide.with(act)
+                    .asBitmap()
+                    .load(item.cMsg!!.image.uri).dontAnimate()
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                    .into(holder.ivLeftImg)
+                    .into(object: CustomTarget<Bitmap>() {
+                        override fun onResourceReady(
+                            resource: Bitmap,transition: Transition<in Bitmap>?
+                        ) {
+                            holder.ivLeftImg.setImageBitmap(resource)
+                        }
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    })
             }
         }
     }
