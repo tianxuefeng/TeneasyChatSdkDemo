@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
                 android:padding="10dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:scaleType="fitEnd"
                 android:gravity="right"
                 android:textSize="16sp"
