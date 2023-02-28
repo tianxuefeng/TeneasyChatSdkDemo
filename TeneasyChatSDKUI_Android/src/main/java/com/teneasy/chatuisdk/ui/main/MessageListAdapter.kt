@@ -83,10 +83,26 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
             }else{
                 holder.tvRightMsg.visibility = View.GONE
                 holder.ivRightImg.visibility = View.VISIBLE
-                Glide.with(act).load(item.cMsg!!.image.uri).dontAnimate()
+//                Glide.with(act).load(item.cMsg!!.image.uri).dontAnimate()
+//                    .skipMemoryCache(true)
+//                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+//                    .into(holder.ivRightImg)
+
+                Glide.with(act)
+                    .asBitmap()
+                    .load(item.cMsg!!.image.uri).dontAnimate()
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                    .into(holder.ivRightImg)
+                    .into(object: CustomTarget<Bitmap>() {
+                        override fun onResourceReady(
+                            resource: Bitmap,transition: Transition<in Bitmap>?
+                        ) {
+                            holder.ivRightImg.setImageBitmap(resource)
+//                            resource.width
+//                            holder.ivRightImg.measuredHeight
+                        }
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    })
             }
         } else {
             holder.tvLeftTime.text = localTime
@@ -109,7 +125,6 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
 //                    .skipMemoryCache(true)
 //                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
 //                    .into(holder.ivLeftImg)
-
                 Glide.with(act)
                     .asBitmap()
                     .load(item.cMsg!!.image.uri).dontAnimate()
@@ -120,6 +135,9 @@ class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageList
                             resource: Bitmap,transition: Transition<in Bitmap>?
                         ) {
                             holder.ivLeftImg.setImageBitmap(resource)
+//                            resource.width
+//                            holder.ivLeftImg.width
+//                            holder.ivLeftImg.measuredHeight
                         }
                         override fun onLoadCleared(placeholder: Drawable?) {}
                     })

@@ -17,11 +17,8 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
-import android.widget.EditText
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.gson.JsonObject
@@ -121,27 +118,27 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
     var isShow = false
 
     override fun initView() {
-        (activity)?.window?.decorView?.viewTreeObserver
-            ?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-
-                fun screenHeight(): Int {
-                    return (context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager?)!!.defaultDisplay.height
-                }
-
-                override fun onGlobalLayout() {
-                    val rect = Rect()
-                    requireActivity().window.decorView
-                        .getWindowVisibleDisplayFrame(rect)
-                    val screenHeight = screenHeight()
-                    val keyboardHeight: Int = screenHeight - rect.bottom //软键盘高度
-                    if (abs(keyboardHeight) > screenHeight / 5 && !isShow) {
-                        setScrollBottom()
-                        isShow = true
-                    } else {
-                        isShow = false
-                    }
-                }
-            }) //监听软键盘弹出
+//        (activity)?.window?.decorView?.viewTreeObserver
+//            ?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+//
+//                fun screenHeight(): Int {
+//                    return (context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager?)!!.defaultDisplay.height
+//                }
+//
+//                override fun onGlobalLayout() {
+//                    val rect = Rect()
+//                    requireActivity().window.decorView
+//                        .getWindowVisibleDisplayFrame(rect)
+//                    val screenHeight = screenHeight()
+//                    val keyboardHeight: Int = screenHeight - rect.bottom //软键盘高度
+//                    if (abs(keyboardHeight) > screenHeight / 5 && !isShow) {
+//                        setScrollBottom()
+//                        isShow = true
+//                    } else {
+//                        isShow = false
+//                    }
+//                }
+//            }) //监听软键盘弹出
         binding!!.setVariable(BR.vm, viewModel)
         binding!!.lifecycleOwner = this
 
@@ -292,7 +289,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                 binding!!.listView.post {
                     val target = layoutManager.findViewByPosition(msgAdapter.itemCount - 1)
                     if(target != null) {
-                        val offset = binding!!.listView.measuredHeight - target.measuredHeight
+                        val offset = binding!!.listView.measuredHeight - target.measuredHeight - 50
                         layoutManager.scrollToPositionWithOffset(msgAdapter.itemCount - 1, offset)
                     }
                 }
@@ -300,15 +297,15 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
 ////                binding!!.listView.layoutManager!!.startSmoothScroll(scroller)
             }
         }
+//        binding.listView.canScrollVertically(1)
     }
 
     fun moveToPosition(position: Int) {
         val layoutManager = binding!!.listView.layoutManager
         //因为只有LinearLayoutManager 才有获得可见位置的方法
         if (layoutManager is LinearLayoutManager) {
-            val linearLayoutManager = layoutManager
-            val firstItem = linearLayoutManager.findFirstVisibleItemPosition()
-            val lastItem = linearLayoutManager.findLastVisibleItemPosition()
+            val firstItem = layoutManager.findFirstVisibleItemPosition()
+            val lastItem = layoutManager.findLastVisibleItemPosition()
             if (position < firstItem || position > lastItem) {
                 binding!!.listView.smoothScrollToPosition(position)
             } else {
