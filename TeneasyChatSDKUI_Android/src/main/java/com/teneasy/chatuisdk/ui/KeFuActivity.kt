@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.teneasy.chatuisdk.R
-import com.teneasy.chatuisdk.ui.base.Constant
 import com.teneasy.chatuisdk.ui.base.Constants
 import com.xuexiang.xhttp2.XHttpSDK
 

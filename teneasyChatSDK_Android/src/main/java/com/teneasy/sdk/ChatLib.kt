@@ -236,13 +236,13 @@ class ChatLib {
         payload.id = id
 
         //socket.sendMessage(payload.build().toByteArray(), true)
-        socket.send(payload.build().toByteArray())
         if(!isConnection()) {
             //Toast.makeText(this.context, "dis-connected", Toast.LENGTH_LONG).show()
             failedToSend()
             makeConnect()
             return
         }
+        socket.send(payload.build().toByteArray())
     }
 
     //目前每隔150秒，通信就好自动断掉，建议每隔60秒调用它

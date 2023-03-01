@@ -373,7 +373,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
             } else if (event.data is GGateway.SCHi) {
                 val data = event.data as GGateway.SCHi
                 val workId = data.workerId
-                loadWorker(3)
+                loadWorker(workId)
             }
         }
     }
@@ -508,11 +508,11 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                 call.enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
                         // 上传失败
-                        mIProgressLoader!!.dismissLoading()
+                        mIProgressLoader?.dismissLoading()
                     }
 
                     override fun onResponse(call: Call, response: Response) {
-                        mIProgressLoader!!.dismissLoading()
+                        mIProgressLoader?.dismissLoading()
                         val body = response.body()
                         if(body != null) {
                             val path = response.body()!!.string()
