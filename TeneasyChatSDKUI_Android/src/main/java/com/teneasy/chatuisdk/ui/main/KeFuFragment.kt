@@ -337,7 +337,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                 //需要执行的任务
                 viewModel.sendHeartBeat()
             }
-        }, 0,30000)     // 便于测试，暂时设定为30秒
+        }, 0,5000)    //每隔5秒发送心跳
     }
 
     private fun closeTimer() {
