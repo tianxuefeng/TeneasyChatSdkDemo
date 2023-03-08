@@ -90,54 +90,37 @@ dependencies {
 }
 
 // ./gradlew publish
-/*
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId 'com.github.tianxuefeng'
-            artifactId 'teneasy-chatsdkui'
-            version '1.2.5'
-            //from components.android
-        }
-    }
-//https://github.com/tianxuefeng/TeneasyChatSdkDemo
-    repositories {
-        maven {
-            url 'https://maven.pkg.github.com/tianxuefeng/TeneasyChatSdkDemo'
-            credentials {
-                username 'tianxuefeng'
-                //password 'duxingke-123'
-                password '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'
-            }
-        }
-    }
-}*/
-
-publishing {
+/*publishing {
     repositories {
         maven {
             name = "teneasySDK"
             url = uri("https://maven.pkg.github.com/tianxuefeng/TeneasyChatSdkDemo")
             credentials {
                 username = "tianxuefeng"
-                password = "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"//8月过期
+                password = "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"//6月过期
             }
         }
     }
     publications {
-        maven(MavenPublication) {
+        release(MavenPublication) {
             groupId 'com.github.tianxuefeng'
             artifactId 'teneasy-chatsdkui'
             version '1.2.6'
             //from components.release
         }
     }
-}
+}*/
 
-/*
- url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.tianxuefeng'
+                artifactId = 'teneasy-chatsdkui'
+                version = '1.3.0'
             }
- */
+        }
+    }
+}
