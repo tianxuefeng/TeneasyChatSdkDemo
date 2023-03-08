@@ -8,14 +8,14 @@ pluginManagement {
             url "https://jitpack.io"
             credentials { username authToken }
         }
-//        maven {
-//            name = "teneasySDK"
-//            url = uri("https://maven.pkg.github.com/tianxuefeng/TeneasyChatSdkDemo")
-//            credentials {
-//                username = "tianxuefeng"
-//                password = "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"//8月过期
-//            }
-//        }
+        maven {
+            name = "teneasySDK"
+            url = uri("https://maven.pkg.github.com/tianxuefeng/TeneasyChatSdkDemo")
+            credentials {
+                username = "tianxuefeng"
+                password = "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"//8月过期
+            }
+        }
     }
 }
 dependencyResolutionManagement {
@@ -28,13 +28,13 @@ dependencyResolutionManagement {
             url "https://jitpack.io"
             credentials { username authToken }
         }
-//        maven {
-//            url = uri("https://maven.pkg.github.com/tianxuefeng/TeneasyChatSdkDemo")
-//            credentials {
-//                username = "tianxuefeng"
-//                password = "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"//8月过期
-//            }
-//        }
+        maven {
+            url = uri("https://maven.pkg.github.com/tianxuefeng/TeneasyChatSdkDemo")
+            credentials {
+                username = "tianxuefeng"
+                password = "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"//8月过期
+            }
+        }
     }
 }
 rootProject.name = "TeneasyChatSdkDemo"
