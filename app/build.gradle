@@ -73,6 +73,7 @@ dependencies {
 
     // PictureSelector图片选择
     implementation 'io.github.lucksiege:pictureselector:v3.10.5'
+    implementation 'com.github.tianxuefeng.teneasy-chatsdkui:1.2.6'
 
     //implementation project(path: ':teneasyChatSDKUI_Android', configuration: 'default')
 }

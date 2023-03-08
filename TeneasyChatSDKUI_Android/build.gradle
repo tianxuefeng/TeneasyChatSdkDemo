@@ -25,11 +25,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_11
     }
     dataBinding {
         enabled = true
@@ -89,17 +89,55 @@ dependencies {
         implementation 'io.reactivex.rxjava3:rxjava:3.1.5'
 }
 
-
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
-                from components.release
-                groupId = 'com.github.tianxuefeng'
-                artifactId = 'teneasy-chatsdkui'
-                version = '1.1.0'
+// ./gradlew publish
+/*
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'com.github.tianxuefeng'
+            artifactId 'teneasy-chatsdkui'
+            version '1.2.5'
+            //from components.android
+        }
+    }
+//https://github.com/tianxuefeng/TeneasyChatSdkDemo
+    repositories {
+        maven {
+            url 'https://maven.pkg.github.com/tianxuefeng/TeneasyChatSdkDemo'
+            credentials {
+                username 'tianxuefeng'
+                //password 'duxingke-123'
+                password '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'
             }
         }
     }
+}*/
+
+publishing {
+    repositories {
+        maven {
+            name = "teneasySDK"
+            url = uri("https://maven.pkg.github.com/tianxuefeng/TeneasyChatSdkDemo")
+            credentials {
+                username = "tianxuefeng"
+                password = "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"//8月过期
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            groupId 'com.github.tianxuefeng'
+            artifactId 'teneasy-chatsdkui'
+            version '1.2.6'
+            //from components.release
+        }
+    }
 }
+
+/*
+ url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+            }
+ */
