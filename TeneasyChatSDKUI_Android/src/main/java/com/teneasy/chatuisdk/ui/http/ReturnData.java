@@ -2,6 +2,10 @@ package com.teneasy.chatuisdk.ui.http;
 
 import java.io.Serializable;
 
+/**
+ * API返回数据实体，统一化返回结构，便于解析处理
+ * @param <T>
+ */
 public class ReturnData<T> implements Serializable {
 
     private int code;

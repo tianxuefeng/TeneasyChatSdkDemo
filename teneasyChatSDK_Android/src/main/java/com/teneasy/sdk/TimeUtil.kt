@@ -6,6 +6,9 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * 时间格式化工具
+ */
 object TimeUtil {
     /**
      * 返回指定pattern样的日期时间字符串。

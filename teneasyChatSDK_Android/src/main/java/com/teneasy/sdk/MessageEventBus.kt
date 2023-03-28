@@ -1,5 +1,8 @@
 package com.teneasy.sdk
 
+/**
+ * EventBus自定义数据实体
+ */
 class MessageEventBus<T> {
     var what = 0
     var arg = 0

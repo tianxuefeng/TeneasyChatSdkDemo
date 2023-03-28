@@ -11,9 +11,7 @@ import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.teneasy.chatuisdk.R;
 
 /**
- * @author：luck
- * @date：2019-11-13 17:02
- * @describe：Glide加载引擎
+ * Glide加载引擎，用于图片选择界面
  */
 public class GlideEngine implements ImageEngine {
 
