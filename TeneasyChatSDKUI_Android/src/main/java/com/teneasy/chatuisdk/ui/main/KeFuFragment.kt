@@ -50,7 +50,9 @@ import java.io.IOException
 import java.util.*
 import kotlin.math.abs
 
-
+/**
+ * 客服主界面fragment
+ */
 class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
 
     companion object {
@@ -64,7 +66,6 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
     private var mIProgressLoader: IProgressLoader? = null
 
     private var timer: Timer? = null
-    //final RxPermissions rxPermissions = new RxPermissions(this);
 
     private lateinit var dialogBottomMenu: DialogBottomMenu
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,66 +80,10 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
             EventBus.getDefault().register(this)
         }
         requireActivity().title = "客服"
-       // requireActivity().titleColor = R.color.black
-        // Must be done during an initialization phase like onCreate
-        // Must be done during an initialization phase like onCreate
-
     }
 
-//    override fun initView() {
-//        netscape.javascript.JSObject.getWindow().
-//        recyclerView = findViewById(R.id.chat_listview) as RecyclerView
-//        layoutManager = LinearLayoutManager(this)
-//        layoutManager.setOrientation(LinearLayoutManager.VERTICAL)
-//        layoutManager.setStackFromEnd(false)
-//        recyclerView.setLayoutManager(layoutManager)
-//        //聊天输入相关view
-//        inputEdit = findViewById(R.id.bar_edit_text) as EditText
-//        btnSend = findViewById(R.id.bar_btn_send) as Button
-//    }
-
-
-    private fun setScrollBottom() {
-        binding!!.listView.post {
-
-            binding!!.listView.scrollToPosition(msgAdapter.itemCount - 1)
-            val layoutManager = binding!!.listView.layoutManager as LinearLayoutManager
-            val target =
-                layoutManager.findViewByPosition(msgAdapter.itemCount - 1)
-            if (target != null) {
-                // int offset=  recyclerView.getMeasuredHeight() - target.getMeasuredHeight();
-                layoutManager.scrollToPositionWithOffset(
-                    msgAdapter.itemCount - 1,
-                    Int.MAX_VALUE
-                ) //滚动偏移到底部
-            }
-        }
-    }
-
-    var isShow = false
-
+    // UI初始化
     override fun initView() {
-//        (activity)?.window?.decorView?.viewTreeObserver
-//            ?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-//
-//                fun screenHeight(): Int {
-//                    return (context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager?)!!.defaultDisplay.height
-//                }
-//
-//                override fun onGlobalLayout() {
-//                    val rect = Rect()
-//                    requireActivity().window.decorView
-//                        .getWindowVisibleDisplayFrame(rect)
-//                    val screenHeight = screenHeight()
-//                    val keyboardHeight: Int = screenHeight - rect.bottom //软键盘高度
-//                    if (abs(keyboardHeight) > screenHeight / 5 && !isShow) {
-//                        setScrollBottom()
-//                        isShow = true
-//                    } else {
-//                        isShow = false
-//                    }
-//                }
-//            }) //监听软键盘弹出
         binding!!.setVariable(BR.vm, viewModel)
         binding!!.lifecycleOwner = this
 
@@ -150,8 +95,6 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         layoutManager.stackFromEnd = false
         binding!!.listView.layoutManager = layoutManager
 
-//        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
-//        binding!!.listView.layoutManager = layoutManager
         binding!!.listView.adapter = msgAdapter
 
         binding!!.etMsg.setOnFocusChangeListener { v: View, hasFocus: Boolean ->
@@ -159,6 +102,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                 closeSoftKeyboard(v)
             }
         }
+        // 聊天界面输入框，输入事件。实现文本输入和表情输入的UI切换功能
         binding!!.etMsg.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 // TODO Auto-generated method stub
@@ -177,6 +121,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
             ) {}
         })
 
+        // 点击发送按钮，发送消息
         binding!!.btnSend.setOnClickListener { v: View ->
             if (viewModel.sendMsg()) {
                 closeSoftKeyboard(v)
@@ -185,9 +130,9 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
             }
         }
         binding!!.etMsg.isFocusable = true
-        binding!!.etMsg.setFocusableInTouchMode(true);
+        binding!!.etMsg.isFocusableInTouchMode = true;
 
-
+        // 发送表情
         binding!!.btnSendExpr.setOnClickListener {
             // 发送表情
             if (viewModel.mlExprIcon.value == R.drawable.h5_biaoqing) {
@@ -205,10 +150,10 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         }
         binding!!.btnSendImg.setOnClickListener { v: View ->
             // 发送表情
-//            mlBtnSendVis.value = mlBtnSendVis.value != true
             dialogBottomMenu.show(v)
         }
 
+        // 底部菜单初始化
         dialogBottomMenu = DialogBottomMenu(context)
             .setItems(resources.getStringArray(R.array.bottom_menu))
             .setOnItemClickListener(AdapterView.OnItemClickListener{ adapterView, view, i, l ->
@@ -219,8 +164,8 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                             override fun onResult(result: java.util.ArrayList<LocalMedia>) {
                                 if(result != null && result.size > 0) {
                                     val item = result[0]
-//                        uploadImg(item.path)
                                     dialogBottomMenu.dismiss()
+                                    // 上传图片之前，首先在聊天框添加一个图片消息，更新聊天界面
                                     val id = viewModel.composeAChatmodelImg(item.path, false)
                                     uploadImg(item.realPath, id)
                                 }
@@ -234,7 +179,6 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                             override fun onResult(result: java.util.ArrayList<LocalMedia>) {
                                 if(result != null && result.size > 0) {
                                     val item = result[0]
-                        //uploadImg(item.path)
                                     dialogBottomMenu.dismiss()
                                     val id = viewModel.composeAChatmodelImg(item.path, false)
                                     uploadImg(item.realPath, id)
@@ -254,37 +198,13 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         initData()
     }
 
-
-//    val mRunnable = Runnable {
-//        if (msgAdapter.itemCount > 0 && binding!!.listView != null) {
-//            val layoutManager  = binding!!.listView.layoutManager as LinearLayoutManager
-//            val target = layoutManager.findViewByPosition(msgAdapter.itemCount - 1)
-//
-//            if(target != null) {
-//                if(!msgAdapter.getList()!![msgAdapter.itemCount-1].isLeft) {
-//                    val img = target!!.findViewById(R.id.iv_left_image) as AppCompatImageView
-//
-//                }
-//                val offset = binding!!.listView.measuredHeight - target.measuredHeight
-//                layoutManager.scrollToPositionWithOffset(msgAdapter.itemCount  - 1, offset)
-//            }
-////            binding!!.listView.scrollToPosition(msgAdapter.itemCount - 1)
-//        }
-//    }
-
+    // 数据初始化
     private fun initData() {
-
         viewModel.mlMsgList.observe(this) {
-//            msgAdapter.setList(it)
             msgAdapter.notifyDataSetChanged()
 
             if(it!!.size > 1) {
-//                moveToPosition(it!!.size - 1)
-////                binding!!.listView.scrollToPosition(it!!.size - 1)
-////                binding!!.listView.postDelayed(mRunnable, 10)
-//
                 val layoutManager  = binding!!.listView.layoutManager as LinearLayoutManager
-////                val lastIndex = it.size - 1
                 layoutManager.scrollToPositionWithOffset(it.size - 1, 0)
                 binding!!.listView.post {
                     val target = layoutManager.findViewByPosition(msgAdapter.itemCount - 1)
@@ -293,43 +213,11 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                         layoutManager.scrollToPositionWithOffset(msgAdapter.itemCount - 1, offset)
                     }
                 }
-////                scroller.targetPosition = binding!!.listView.adapter!!.itemCount - 1
-////                binding!!.listView.layoutManager!!.startSmoothScroll(scroller)
-            }
-        }
-//        binding.listView.canScrollVertically(1)
-    }
-
-    fun moveToPosition(position: Int) {
-        val layoutManager = binding!!.listView.layoutManager
-        //因为只有LinearLayoutManager 才有获得可见位置的方法
-        if (layoutManager is LinearLayoutManager) {
-            val firstItem = layoutManager.findFirstVisibleItemPosition()
-            val lastItem = layoutManager.findLastVisibleItemPosition()
-            if (position < firstItem || position > lastItem) {
-                binding!!.listView.smoothScrollToPosition(position)
-            } else {
-                val movePosition = position - firstItem
-                val top: Int = binding!!.listView.getChildAt(movePosition).top
-                binding!!.listView.smoothScrollBy(0, top)
             }
         }
     }
 
-//    /**
-//     * 关闭软键盘
-//     *
-//     * @param view 当前页面上任意一个可用的view
-//     */
-//    private fun closeSoftKeyboard(view: View?) {
-//        if (view == null || view.windowToken == null) {
-//            return
-//        }
-//        val imm: InputMethodManager =
-//            view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//        imm.hideSoftInputFromWindow(view.windowToken, 0)
-//    }
-
+    // 启动计时器，持续调用心跳方法
     private fun startTimer() {
         closeTimer()
         timer?.schedule(object : TimerTask() {
@@ -340,6 +228,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         }, 0,5000)    //每隔5秒发送心跳
     }
 
+    // 关闭计时器
     private fun closeTimer() {
         if(timer != null) {
             timer?.cancel()
@@ -355,6 +244,7 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         return mIProgressLoader
     }
 
+    // EventBus 消息接收解析，针对socket sdk中的消息进行捕捉和解析。
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun updateMsg(event: MessageEventBus<Any>) {
         if(event.what == 0) {
@@ -392,23 +282,11 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-//    private fun addMsgItem(data: MessageItem) {
-//        msgList.add(data)
-//        //if  data.payloadCase == CMessage.Message.PayloadCase.CONTENT
-//
-//        /* 这是服务器时间转换为本地时间的办法
-//          val msgDate =  Date(msg.msgTime.seconds * 1000L)
-//                    val localTime = TimeUtil.getTimeStringAutoShort2(msgDate, true)
-//                    Log.i("ChatLib", localTime)
-//         */
-//        //Toast.makeText(context, data.cMsg.content.data, Toast.LENGTH_LONG).show()
-//        msgAdapter.setList(msgList)
-//
-//        bin.smoothScrollToPosition(msgAdapter.itemCount)
-//    }
-
-
-    fun loadWorker(workerId: Int) {
+    /**
+     * 通过workerId加载客服头像，并添加一条打招呼的消息
+     * @param workerId
+     */
+    private fun loadWorker(workerId: Int) {
         if (requireActivity().isFinishing){
             return
         }
@@ -440,57 +318,17 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                     }
                 }
             })
-
-//        val param = JSONObject()
-//        param.put("workerId", workerId)
-//        //创建一个OkHttpClient对象
-//        val okHttpClient = OkHttpClient()
-//        val requestBody: RequestBody = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), param.toString())
-//        val request: Request = Request.Builder()
-//            .url("https://csapi.hfxg.xyz/v1/api/query-worker")
-//            .addHeader("X-Token", "CCcQARgRIBwoxtTNgeQw.BL9S_YLEWQmWzD1NjYHaDM3dUa6UOqgwOORaC9l8WyWuEVgCbxgd67GXmlQJsm1R2aQUgFDDrvpDsq3CmWqVAA") //添加header
-//            .post(requestBody)
-//            .build()
-//        //发送请求获取响应
-//        okHttpClient.newCall(request).enqueue(object : Callback {
-//            @Throws(IOException::class)
-//            override fun onResponse(arg0: Call, response: Response) {
-//                val body = response.body
-//                if(body != null) {
-//                    val json = JSONObject(body.string())
-//                    if(json.getString("msg").equals("ok", ignoreCase = true)) {
-//                        val workerInfo = json.getJSONObject("data")
-//                        val name = workerInfo.getString("workerName")
-//
-//                        val msg = Message.obtain(handler, 200, name)
-//                        handler.sendMessage(msg)
-//                    }
-//                }
-//            }
-//
-//            override fun onFailure(arg0: Call, arg1: IOException) {}
-//        })
     }
 
-    // 主线程更新UI
-    private val handler: Handler = object : Handler(Looper.myLooper()!!) {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            if(binding != null && msg.what == 200) {
-                binding!!.tvTitle.text = "客服${msg.obj}"
-                viewModel.composeAChatmodel("你好，我是客服${msg.obj}", true)
-            }
-        }
-    }
 
+    /**
+     * 上传图片。上传成功后，会直接调用socket进行消息发送。
+     *  @param filePath
+     *  @param id
+     */
     fun uploadImg(filePath: String, id: Long) {
-//        val request = XHttp.custom().accessToken(false)
-//        request.baseUrl(Constants.baseUrlApi)
-
         // 多文件上传Builder,用以匹配后台Springboot MultipartFile
         val file = File(filePath)
-
-//        mIProgressLoader!!.showLoading()
         Thread(Runnable {
             kotlin.run {
                 val multipartBody = MultipartBody.Builder()
@@ -518,9 +356,9 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
                             val path = response.body()!!.string()
                             // 发送图片
                             viewModel.addMsgImg(Constants.baseUrlImage + path, id)
-//                            viewModel.updateMsgItemImg(id, urlPath)
                         } else {
                             // 上传失败
+                            Toast.makeText(context, "上传失败", Toast.LENGTH_LONG).show()
                         }
 
                     }
@@ -550,16 +388,16 @@ class KeFuFragment : BaseBindingFragment<FragmentKefuBinding>() {
     }
 
     //==========图片选择===========//
-    fun showCamera(resultCallbackListener: OnResultCallbackListener<LocalMedia>
+    // 调用拍照
+    private fun showCamera(resultCallbackListener: OnResultCallbackListener<LocalMedia>
     ) {
         PictureSelector.create(KeFuFragment@this)
             .openCamera(SelectMimeType.ofImage())
             .forResult(resultCallbackListener)
     }
 
-
-
-    fun showSelectPic(resultCallbackListener: OnResultCallbackListener<LocalMedia>) {
+    // 选择图片
+    private fun showSelectPic(resultCallbackListener: OnResultCallbackListener<LocalMedia>) {
         PictureSelector.create(KeFuFragment@this)
             .openGallery(SelectMimeType.ofImage())
             .setImageEngine(GlideEngine.createGlideEngine())

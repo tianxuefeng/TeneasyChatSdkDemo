@@ -63,7 +63,7 @@ class KeFuViewModel() : ViewModel() {
     }
 
     /**
-     * 根据传递的图片地址，发送图片消息
+     * 根据传递的图片地址，发送图片消息。该方法会发送socket消息
      * @param url
      * @param id
      */
@@ -72,9 +72,10 @@ class KeFuViewModel() : ViewModel() {
     }
 
     /**
-     * 传递
+     * 往聊天界面添加一个消息，不会触发socket消息发送。该方法自动会生成消息ID（以当前时间currentTimeMillis）
+     *
      */
-    fun addMsgItem(data: MessageItem) {
+    private fun addMsgItem(data: MessageItem) {
         val list = mlMsgList.value
         data.payLoadId = System.currentTimeMillis()
         list!!.add(data)
@@ -82,12 +83,17 @@ class KeFuViewModel() : ViewModel() {
         mlMsgMap.value!![data.payLoadId] = data
     }
 
-    //需要每60秒调用一次这个函数，确保socket的活动状态。
-    fun sendHeartBeat(){
+    /**
+     * 需要每60秒调用一次这个函数，确保socket的活动状态。
+     */
+    fun sendHeartBeat() {
         chatLib.sendHeartBeat()
         println("确保通信在活跃状态")
     }
 
+    /**
+     * 根据消息类型和状态，更新消息的显示状态
+     */
     fun updateMsgStatus(data: MessageItem) {
         if (data!!.isLeft)
             addMsgItem(data)
@@ -102,19 +108,6 @@ class KeFuViewModel() : ViewModel() {
                     msgItem.sendStatus = data.sendStatus
                     mlMsgList.value = list
                 }
-                // 修改状态
-//                for (item in list!!) {
-//                    if (item.payLoadId == data.payLoadId/* && item.cMsg!!.content.data.equals(data.cMsg!!.content.data)*/) {
-////                        item.payLoadId = data.payLoadId
-//                        item.sendStatus = data.sendStatus
-//                        // 用于触发observe
-//                        mlMsgList.value = list
-////                        msgAdapter.setList(msgList)
-////                        msgAdapter.notifyDataSetChanged()
-//                        return
-//                    }
-//                }
-
             }
         }
     }
@@ -124,10 +117,20 @@ class KeFuViewModel() : ViewModel() {
         chatLib.disConnect()
     }
 
+    /**
+     * 往聊天界面添加一个消息。不会触发socket消息发送
+     * @param msg
+     * @param left
+     */
     fun composeAChatmodel(msg: String, left: Boolean) {
         addMsgItem(chatLib.composeAChatmodel(msg, left))
     }
 
+    /**
+     * 往聊天界面添加一个图片消息。不会触发socket消息发送
+     * @param imgPath
+     * @param isLeft
+     */
     fun composeAChatmodelImg(imgPath: String, isLeft: Boolean): Long {
         val msgItem = chatLib.composeAChatmodelImg(imgPath, isLeft)
         addMsgItem(msgItem)

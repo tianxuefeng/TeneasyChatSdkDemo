@@ -25,7 +25,9 @@ import com.teneasy.sdk.ui.MessageItem
 import com.teneasy.sdk.ui.MessageSendState
 import java.util.*
 
-
+/**
+ * 聊天界面列表adapter
+ */
 class MessageListAdapter (myContext: Context) : RecyclerView.Adapter<MessageListAdapter.MsgViewHolder>() {
     private var list: ArrayList<MessageItem>? = null
     var TYPE_Text : Int = 0

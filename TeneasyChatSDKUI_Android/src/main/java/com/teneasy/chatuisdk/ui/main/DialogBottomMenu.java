@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * 自定义底部菜单
+ */
 public class DialogBottomMenu {
     private Context context;
 
@@ -40,12 +43,6 @@ public class DialogBottomMenu {
 
     public DialogBottomMenu(Context context, String title) {
         this.context = context;
-//        if(title != null && !title.isEmpty()) {
-//            tvTitle.setVisibility(View.VISIBLE);
-//            tvTitle.setText(title);
-//        } else {
-//            tvTitle.setVisibility(View.GONE);
-//        }
         init();
     }
 
@@ -111,10 +108,6 @@ public class DialogBottomMenu {
     public void show(View parent) {
         popupWindow.showAtLocation(parent, Gravity.BOTTOM, 0, -10);
         backgroundAlpha(0.5f);
-//
-//        int[] location = new int[2];
-//        parent.getLocationOnScreen(location);
-//        popupWindow.showAtLocation(parent, Gravity.LEFT | Gravity.BOTTOM, 0, -location[1]);
     }
 
     public void dismiss() {

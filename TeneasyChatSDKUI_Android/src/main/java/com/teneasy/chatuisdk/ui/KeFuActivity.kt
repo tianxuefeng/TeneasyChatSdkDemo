@@ -3,6 +3,7 @@ package com.teneasy.chatuisdk.ui.main;
 import android.Manifest
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -11,7 +12,9 @@ import com.teneasy.chatuisdk.R
 import com.teneasy.chatuisdk.ui.base.Constants
 import com.xuexiang.xhttp2.XHttpSDK
 
-
+/**
+ * 客户activity。
+ */
 class KeFuActivity : AppCompatActivity() {
 
     var TAG_FRAGMENT = "KeFuFragment"
@@ -33,10 +36,10 @@ class KeFuActivity : AppCompatActivity() {
             .subscribe { granted ->
                 if (granted) { // Always true pre-M
                     // I can control the camera now
-                    print("授权摄像机")
+                    Log.i(TAG_FRAGMENT, "授权摄像机")
                 } else {
                     // Oups permission denied
-                    print("拒绝摄像机")
+                    Log.i(TAG_FRAGMENT, "拒绝摄像机")
                 }
             }
     }
@@ -55,12 +58,7 @@ class KeFuActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val fragment: KeFuFragment? =
             supportFragmentManager.findFragmentByTag(TAG_FRAGMENT) as KeFuFragment?
-        /*if (fragment.allowBackPressed()) { // and then you define a method allowBackPressed with the logic to allow back pressed or not
-            super.onBackPressed()
-        }*/
-        if (fragment != null){
-            fragment.exit()
-        }
+        fragment?.exit()
         super.onBackPressed()
     }
 }
