@@ -37,6 +37,7 @@ dependencyResolutionManagement {
 //        }
     }
 }
-rootProject.name = "TeneasyChatSdk"
+rootProject.name = "TeneasyChatSdkDemo"
 include ':app'
 include ':teneasyChatSDK_Android'
+include ':teneasyChatSDKUI_Android'

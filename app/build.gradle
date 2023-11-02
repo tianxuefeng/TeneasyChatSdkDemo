@@ -7,10 +7,10 @@ plugins {
 }
 
 android {
-    namespace 'com.example.teneasychatsdk'
+    namespace 'com.example.teneasychatsdkdemo'
     compileSdk 31
     defaultConfig {
-        applicationId "com.example.teneasychatsdk"
+        applicationId "com.example.teneasychatsdkdemo"
         minSdk 21
         targetSdk 31
         versionCode 1
@@ -56,7 +56,7 @@ dependencies {
 //    }
     //api ("com.github.tianxuefeng:TeneasyChatSdkDemo:1.3.0")
     implementation project(path: ':teneasyChatSDK_Android')
-    //implementation project(path: ':TeneasyChatSDKUI_Android')
+    implementation project(path: ':teneasyChatSDKUI_Android')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
